@@ -1,25 +1,34 @@
-const http = require('http');
-const fs = require('fs');
+const express = require('express');
 const path = require('path');
+const app = express();
+const PORT = 3000;
 
-// Define the path to the HTML file
-const htmlFilePath = path.join(__dirname, 'HTML', 'start.html');
+// Set EJS as the templating engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'view'));  // Make sure this matches your actual directory name
 
-// Create an HTTP server
-const server = http.createServer((req, res) => {
-    // Read the HTML file
-    fs.readFile(htmlFilePath, (err, data) => {
-        if (err) {
-            res.writeHead(500, { 'Content-Type': 'text/plain' });
-            res.end('Error loading the HTML file.');
-        } else {
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(data);
-        }
-    });
+// Serve static files
+app.use('/css', express.static(path.join(__dirname, 'CSS')));
+app.use('/js', express.static(path.join(__dirname, 'js')));
+app.use('/img', express.static(path.join(__dirname, 'img')));
+
+// Routes
+app.get('/', (req, res) => {
+    res.render('start');  // Changed from 'view' to 'start'
 });
 
-// Server listens on port 3000
-server.listen(3000, () => {
-    console.log('Server running at http://localhost:3000/');
+app.get('/about', (req, res) => {
+    res.render('about');  // Changed from 'view' to 'about'
+});  // Add your about route here
+
+app.get('/settings', (req, res) => {
+    res.render('settings');  // Changed from 'view' to 'settings'
+});  // Add your settings route here
+
+app.get('/user', (req, res) => {
+    res.render('user');  // Changed from 'view' to 'user'
+});  // Add your user route here
+
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
