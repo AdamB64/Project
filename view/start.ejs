@@ -5,12 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start Page</title>
+    <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
     <link rel="stylesheet" type="text/css" href="/CSS/Start.css">
-</head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/JS/index.js" defer></script>
 
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
 
+        <h1 id="title">Create a company account to be able to use during reomote and/or hybrid work</h1>
+        <h2 class="subtitle">You can create a company account by clicking the button below</h2>
+        <h2 class="subtitle">If you already have a company account, you can log in by clicking the button below</h2>
+        <button id="CRBT" class="button">Create Company Account</button>
+        <button id="LGBT" class="button">login Into Company Account</button>
 </body>
 
 </html>

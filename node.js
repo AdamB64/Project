@@ -29,6 +29,19 @@ app.get('/user', (req, res) => {
     res.render('user');  // Changed from 'view' to 'user'
 });  // Add your user route here
 
+
+app.get('/create', (req, res) => {
+    res.render('create');  // Changed from 'view' to 'create'
+});  // Add your create route here
+
+app.get('/login', (req, res) => {
+    res.render('login');  // Changed from 'view' to 'login'
+});  // Add your login route here
+
+
+
+
+// Start the server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

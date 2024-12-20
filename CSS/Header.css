@@ -1,0 +1,63 @@
+/* Header Styles */
+
+/* CSS Reset */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+#HD {
+    background-color: #171515;
+    padding: 10px 20px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    /* Aligns children to opposite ends */
+    align-items: center;
+    /* Vertically centers the items */
+    width: 100%;
+}
+
+#HDTitle {
+    font-size: 2.5em;
+    align-items: start;
+    margin: 0;
+    display: inline-block;
+    padding: 5px 100px;
+    /* Align the title with the nav */
+}
+
+#HDNav {
+    align-items: end;
+    display: inline-block;
+}
+
+#HDList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: flex-end;
+    /* Align items to the right */
+}
+
+.HDLitem {
+    margin-left: 50px;
+    font-size: 2em;
+}
+
+.HDLitemLink {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.HDLitemLink:hover {
+    text-decoration: underline;
+}
