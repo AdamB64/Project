@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
     <link rel="stylesheet" type="text/css" href="/CSS/Create.css">
 </head>
@@ -12,6 +14,34 @@
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
 
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'ComInfo')">Company Infomation</button>
+            <button class="tablinks" onclick="openTab(event, 'Super')">supervisor</button>
+            <button class="tablinks" onclick="openTab(event, 'TeamMem')">Team Memebers</button>
+            <button class="tablinks" onclick="openTab(event, 'create')">Create</button>
+        </div>
+
+        <div id="ComInfo" class="tabcontent">
+            <h3>Input here the Company Infomation</h3>
+            <p>Home content goes here.</p>
+        </div>
+
+        <div id="Super" class="tabcontent">
+            <h3>Add all supervisors</h3>
+            <p>News content goes here.</p>
+        </div>
+
+        <div id="TeamMem" class="tabcontent">
+            <h3>Add all Team Memebers</h3>
+            <p>Contact content goes here.</p>
+        </div>
+
+        <div id="create" class="tabcontent">
+            <h1>Create a company account</h1>
+            <button>create</button>
+        </div>
+
+        <script src="/js/create.js"></script>
 </body>
 
 </html>
