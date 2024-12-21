@@ -69,19 +69,19 @@ function generateInput() {
 
         userContainer.innerHTML = `
 <h3>Members ${i}</h3>
-<label for="firstName${i}">First Name:</label>
+<label for="MemfirstName${i}">First Name:</label>
 <input type="text" id="MemfirstName${i}" name="firstName${i}" placeholder="Enter first name">
 <br>
-<label for="lastName${i}">Last Name:</label>
+<label for="MemlastName${i}">Last Name:</label>
 <input type="text" id="MemlastName${i}" name="lastName${i}" placeholder="Enter last name">
 <br>
-<label for="email${i}">Email:</label>
+<label for="Mememail${i}">Email:</label>
 <input type="email" id="Mememail${i}" name="email${i}" placeholder="Enter email address">
 <br>
-<label for="role${i}">Role:</label>
+<label for="Memrole${i}">Role:</label>
 <input type="text" id="Memrole${i}" name="role${i}" placeholder="Enter role">
 <br>
-<label for="password${i}">Password:</label>
+<label for="Mempassword${i}">Password:</label>
 <input type="password" id="Mempassword${i}" name="password${i}" placeholder="Enter password">
 `;
 
