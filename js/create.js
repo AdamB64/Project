@@ -13,3 +13,40 @@ function openTab(evt, cityName) {
     document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
 }
+function generateInputs() {
+    const numInputs = parseInt(document.getElementById('numInputs').value);
+    const inputContainer = document.getElementById('inputContainer');
+
+    // Clear any previous inputs
+    inputContainer.innerHTML = '';
+
+    if (isNaN(numInputs) || numInputs <= 0) {
+        alert('Please enter a valid number greater than 0.');
+        return;
+    }
+
+    for (let i = 1; i <= numInputs; i++) {
+        const userContainer = document.createElement('div');
+        userContainer.className = 'form-group';
+
+        userContainer.innerHTML = `
+<h3>Supervisor ${i}</h3>
+<label for="firstName${i}">First Name:</label>
+<input type="text" id="firstName${i}" name="firstName${i}" placeholder="Enter first name">
+<br>
+<label for="lastName${i}">Last Name:</label>
+<input type="text" id="lastName${i}" name="lastName${i}" placeholder="Enter last name">
+<br>
+<label for="email${i}">Email:</label>
+<input type="email" id="email${i}" name="email${i}" placeholder="Enter email address">
+<br>
+<label for="role${i}">Role:</label>
+<input type="text" id="role${i}" name="role${i}" placeholder="Enter role">
+<br>
+<label for="password${i}">Password:</label>
+<input type="password" id="password${i}" name="password${i}" placeholder="Enter password">
+`;
+
+        inputContainer.appendChild(userContainer);
+    }
+}

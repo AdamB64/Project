@@ -13,35 +13,48 @@
 
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
-        <h2 id="Help">Now you will you will input Infomation about the company to make the company account</h2>
-        <div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'ComInfo')">Company Infomation</button>
-            <button class="tablinks" onclick="openTab(event, 'Super')">supervisor</button>
-            <button class="tablinks" onclick="openTab(event, 'TeamMem')">Team Memebers</button>
-            <button class="tablinks" onclick="openTab(event, 'create')">Create</button>
-        </div>
+        <div id="content">
+            <h2 id="Help">Now you will you will input Infomation about the company to make the company account</h2>
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'ComInfo')">Company Infomation</button>
+                <button class="tablinks" onclick="openTab(event, 'Super')">supervisor</button>
+                <button class="tablinks" onclick="openTab(event, 'TeamMem')">Team Memebers</button>
+                <button class="tablinks" onclick="openTab(event, 'create')">Create</button>
+            </div>
 
-        <div id="ComInfo" class="tabcontent">
-            <h3>Input here the Company Infomation</h3>
-            <p>Home content goes here.</p>
-        </div>
+            <div id="ComInfo" class="tabcontent">
+                <h2>Input here the Company Infomation</h2>
+                <input type="text" id="name" placeholder="Company Name">
+                <input type="text" id="address" placeholder="Company Address">
+                <input type="text" id="email" placeholder="Company Email">
+                <input type="text" id="industry" placeholder="Company Industry">
+            </div>
 
-        <div id="Super" class="tabcontent">
-            <h3>Add all supervisors</h3>
-            <p>News content goes here.</p>
-        </div>
+            <div id="Super" class="tabcontent">
+                <h2>Add all supervisors</h2>
+                <p>Add how many supervisors you have at this time.(dont worry you can add more at a later date)</p>
+                <h1>Dynamic Input Form</h1>
+                <div>
+                    <label for="numInputs">Number of Users:</label>
+                    <input type="number" id="numInputs" min="1" placeholder="Enter a number">
+                    <button onclick="generateInputs()" class="button">Generate Inputs</button>
+                </div>
+                <div id="inputContainer" class="input-container"></div>
+            </div>
 
-        <div id="TeamMem" class="tabcontent">
-            <h3>Add all Team Memebers</h3>
-            <p>Contact content goes here.</p>
-        </div>
+            <div id="TeamMem" class="tabcontent">
+                <h3>Add all Team Memebers</h3>
+                <p>Contact content goes here.</p>
+            </div>
 
-        <div id="create" class="tabcontent">
-            <h1>Create a company account</h1>
-            <button>create</button>
-        </div>
+            <div id="create" class="tabcontent">
+                <h1 id="">Create a company account</h1>
+                <button class="button">create</button>
+            </div>
 
-        <script src="/js/create.js"></script>
+            <script src="/js/create.js"></script>
+
+        </div>
 </body>
 
 </html>

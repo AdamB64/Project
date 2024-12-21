@@ -1,5 +1,3 @@
-/* Header Styles */
-
 /* CSS Reset */
 html,
 body {
@@ -7,12 +5,19 @@ body {
     padding: 0;
     width: 100%;
     height: 100%;
+    overflow-x: hidden;
+    /* Prevent horizontal scrolling */
 }
 
 
+/* Header Styles */
 #HD {
+    font-size: 1.5e, ;
     background-color: #171515;
-    padding: 10px 20px;
+    padding: 10px 5%;
+    /* Use percentage-based padding for responsiveness */
+    box-sizing: border-box;
+    /* Include padding in the element's width */
 }
 
 .header-content {
@@ -21,21 +26,29 @@ body {
     /* Aligns children to opposite ends */
     align-items: center;
     /* Vertically centers the items */
+    flex-wrap: wrap;
+    /* Allow items to wrap on small screens */
     width: 100%;
 }
 
 #HDTitle {
-    font-size: 2.5em;
-    align-items: start;
+    font-size: 2em;
+    /* Reduce font size for better scaling */
     margin: 0;
     display: inline-block;
-    padding: 5px 100px;
-    /* Align the title with the nav */
+    padding: 5px 0;
+    /* Adjust padding for smaller devices */
+    flex: 1;
+    /* Let the title take up space dynamically */
+    text-align: left;
+    /* Align title to the left */
 }
 
 #HDNav {
-    align-items: end;
-    display: inline-block;
+    flex: 1;
+    /* Allow the nav to adjust dynamically */
+    display: flex;
+    justify-content: flex-end;
 }
 
 #HDList {
@@ -45,11 +58,16 @@ body {
     display: flex;
     justify-content: flex-end;
     /* Align items to the right */
+    flex-wrap: wrap;
+    /* Wrap items on smaller screens */
+    gap: 10px;
+    /* Add space between items */
 }
 
 .HDLitem {
-    margin-left: 50px;
-    font-size: 2em;
+    margin: 3.9px;
+    font-size: 1.5em;
+    /* Adjust size for smaller devices */
 }
 
 .HDLitemLink {
@@ -60,4 +78,50 @@ body {
 
 .HDLitemLink:hover {
     text-decoration: underline;
+}
+
+#HDLogo {
+    width: 50px;
+    /* Adjust size for smaller devices */
+    height: auto;
+    /* Maintain aspect ratio */
+}
+
+/* Media Query for Small Screens */
+@media (max-width: 768px) {
+    #HDLogo {
+        width: 25px;
+        /* Further reduce size on smaller devices */
+    }
+
+    #HDTitle {
+        font-size: 1.3em;
+        /* Further reduce font size on smaller devices */
+        text-align: center;
+    }
+
+    #HDNav {
+        justify-content: center;
+        /* Center align navigation links */
+    }
+
+    .HDLitem {
+        font-size: 1em;
+        /* Further reduce link size */
+    }
+}
+
+.button {
+    display: block;
+    /* Makes the button a block-level element */
+    margin: 25px auto 0;
+    /* Vertically keeps 50px from top, horizontally centers it */
+    color: rgb(0, 0, 0);
+    padding: 16px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 18px;
 }

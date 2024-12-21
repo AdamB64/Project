@@ -14,7 +14,15 @@
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
-    font-size: 17px;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .tab button {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+    }
+
 }
 
 /* Change background color of buttons on hover */
@@ -57,6 +65,16 @@
     text-decoration: underline;
 }
 
-h2 {
+h2,
+p {
     text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
 }
