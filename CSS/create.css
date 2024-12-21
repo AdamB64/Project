@@ -34,3 +34,29 @@
     border: 1px solid #ccc;
     border-top: none;
 }
+
+.tab {
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    /* Aligns children (buttons) horizontally at the center */
+    align-items: center;
+    /* (Optional) Aligns children vertically at the center */
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+#tablinks {
+    padding: 14px 16px;
+    display: flex;
+    justify-content: center;
+    margin-right: 10px;
+    text-decoration: underline;
+}
+
+h2 {
+    text-align: center;
+}
