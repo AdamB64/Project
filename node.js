@@ -38,7 +38,9 @@ app.get('/login', (req, res) => {
     res.render('login');  // Changed from 'view' to 'login'
 });  // Add your login route here
 
-
+app.get('/home', (req, res) => {
+    res.render('home');  // Changed from 'view' to 'home'
+});  // Add your home route here
 
 
 // Start the server

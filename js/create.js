@@ -89,3 +89,7 @@ function generateInput() {
     }
 }
 
+document.getElementById('CreateCompany').addEventListener('click', async (e) => {
+    window.location.href = '/home';
+})
+
