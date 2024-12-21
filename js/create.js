@@ -30,22 +30,22 @@ function generateInputs() {
         userContainer.className = 'form-group';
 
         userContainer.innerHTML = `
-<h3>Supervisor ${i}</h3>
-<label for="firstName${i}">First Name:</label>
-<input type="text" id="firstName${i}" name="firstName${i}" placeholder="Enter first name">
-<br>
-<label for="lastName${i}">Last Name:</label>
-<input type="text" id="lastName${i}" name="lastName${i}" placeholder="Enter last name">
-<br>
-<label for="email${i}">Email:</label>
-<input type="email" id="email${i}" name="email${i}" placeholder="Enter email address">
-<br>
-<label for="role${i}">Role:</label>
-<input type="text" id="role${i}" name="role${i}" placeholder="Enter role">
-<br>
-<label for="password${i}">Password:</label>
-<input type="password" id="password${i}" name="password${i}" placeholder="Enter password">
-`;
+                                <h3>Supervisor ${i}</h3>
+                                <label for="firstName${i}">First Name:</label>
+                                <input type="text" id="firstName${i}" name="firstName${i}" placeholder="Enter first name">
+                                <br>
+                                <label for="lastName${i}">Last Name:</label>
+                                <input type="text" id="lastName${i}" name="lastName${i}" placeholder="Enter last name">
+                                <br>
+                                <label for="email${i}">Email:</label>
+                                <input type="email" id="email${i}" name="email${i}" placeholder="Enter email address">
+                                <br>
+                                <label for="role${i}">Role:</label>
+                                <input type="text" id="role${i}" name="role${i}" placeholder="Enter role">
+                                <br>
+                                <label for="password${i}">Password:</label>
+                                <input type="password" id="password${i}" name="password${i}" placeholder="Enter password">
+                            `;
 
         inputContainer.appendChild(userContainer);
     }
@@ -68,22 +68,22 @@ function generateInput() {
         userContainer.className = 'form-mem-group';
 
         userContainer.innerHTML = `
-<h3>Members ${i}</h3>
-<label for="MemfirstName${i}">First Name:</label>
-<input type="text" id="MemfirstName${i}" name="firstName${i}" placeholder="Enter first name">
-<br>
-<label for="MemlastName${i}">Last Name:</label>
-<input type="text" id="MemlastName${i}" name="lastName${i}" placeholder="Enter last name">
-<br>
-<label for="Mememail${i}">Email:</label>
-<input type="email" id="Mememail${i}" name="email${i}" placeholder="Enter email address">
-<br>
-<label for="Memrole${i}">Role:</label>
-<input type="text" id="Memrole${i}" name="role${i}" placeholder="Enter role">
-<br>
-<label for="Mempassword${i}">Password:</label>
-<input type="password" id="Mempassword${i}" name="password${i}" placeholder="Enter password">
-`;
+                                <h3>Members ${i}</h3>
+                                <label for="MemfirstName${i}">First Name:</label>
+                                <input type="text" id="MemfirstName${i}" name="firstName${i}" placeholder="Enter first name">
+                                <br>
+                                <label for="MemlastName${i}">Last Name:</label>
+                                <input type="text" id="MemlastName${i}" name="lastName${i}" placeholder="Enter last name">
+                                <br>
+                                <label for="Mememail${i}">Email:</label>
+                                <input type="email" id="Mememail${i}" name="email${i}" placeholder="Enter email address">
+                                <br>
+                                <label for="Memrole${i}">Role:</label>
+                                <input type="text" id="Memrole${i}" name="role${i}" placeholder="Enter role">
+                                <br>
+                                <label for="Mempassword${i}">Password:</label>
+                                <input type="password" id="Mempassword${i}" name="password${i}" placeholder="Enter password">
+                            `;
 
         inputContainer.appendChild(userContainer);
     }
