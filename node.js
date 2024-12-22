@@ -2,7 +2,10 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const PORT = 3000;
+const mongoose = require('./mongo/mongo.js');
 
+
+app.use(express.json());
 // Set EJS as the templating engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'view'));  // Make sure this matches your actual directory name

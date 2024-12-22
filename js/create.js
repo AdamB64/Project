@@ -1,4 +1,5 @@
 document.getElementById('ComInfo').style.display = "block";
+
 function openTab(evt, cityName) {
     document.getElementById('Help').style.display = "none";
     var i, tabcontent, tablinks;
@@ -13,6 +14,7 @@ function openTab(evt, cityName) {
     document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
 }
+
 function generateInputs() {
     const numInputs = parseInt(document.getElementById('numInputs').value);
     const inputContainer = document.getElementById('inputContainer');
@@ -89,7 +91,111 @@ function generateInput() {
     }
 }
 
-document.getElementById('CreateCompany').addEventListener('click', async (e) => {
-    window.location.href = '/home';
-})
+function validateInputs() {
+    // Validate Company Information
+    const companyName = document.getElementById('name').value.trim();
+    const companyAddress = document.getElementById('address').value.trim();
+    const companyEmail = document.getElementById('email').value.trim();
+    const companyIndustry = document.getElementById('industry').value.trim();
 
+    if (!companyName || !companyAddress || !validateEmail(companyEmail) || !companyIndustry) {
+        alert("Please fill out all company information fields with valid data.");
+        return false;
+    }
+
+    // Validate Supervisors
+    const numSupervisors = parseInt(document.getElementById('numInputs').value) || 0;
+    if (numSupervisors < 1) {
+        alert("You must add at least one supervisor.");
+        return false;
+    }
+    for (let i = 1; i <= numSupervisors; i++) {
+        const firstName = document.getElementById(`firstName${i}`).value.trim();
+        const lastName = document.getElementById(`lastName${i}`).value.trim();
+        const email = document.getElementById(`email${i}`).value.trim();
+        const role = document.getElementById(`role${i}`).value.trim();
+        const password = document.getElementById(`password${i}`).value.trim();
+
+        if (!firstName || !lastName || !validateEmail(email) || !role || !password) {
+            alert(`Please fill out all fields for Supervisor ${i} with valid data.`);
+            return false;
+        }
+    }
+
+    // Validate Team Members
+    const numMembers = parseInt(document.getElementById('numInput').value) || 0;
+    if (numMembers < 1) {
+        alert("You must add at least one team member.");
+        return false;
+    }
+    for (let i = 1; i <= numMembers; i++) {
+        const firstName = document.getElementById(`MemfirstName${i}`).value.trim();
+        const lastName = document.getElementById(`MemlastName${i}`).value.trim();
+        const email = document.getElementById(`Mememail${i}`).value.trim();
+        const role = document.getElementById(`Memrole${i}`).value.trim();
+        const password = document.getElementById(`Mempassword${i}`).value.trim();
+
+        if (!firstName || !lastName || !validateEmail(email) || !role || !password) {
+            alert(`Please fill out all fields for Member ${i} with valid data.`);
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+document.getElementById('CreateCompany').addEventListener('click', async (e) => {
+    if (validateInputs()) {
+        alert("Company account created successfully!");
+        // Gather company information
+        const company = {
+            name: document.getElementById('name').value.trim(),
+            address: document.getElementById('address').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            industry: document.getElementById('industry').value.trim()
+        };
+
+        // Gather supervisors information
+        const numSupervisors = parseInt(document.getElementById('numInputs').value) || 0;
+        const supervisors = [];
+        for (let i = 1; i <= numSupervisors; i++) {
+            supervisors.push({
+                firstName: document.getElementById(`firstName${i}`).value.trim(),
+                lastName: document.getElementById(`lastName${i}`).value.trim(),
+                email: document.getElementById(`email${i}`).value.trim(),
+                role: document.getElementById(`role${i}`).value.trim(),
+                password: document.getElementById(`password${i}`).value.trim()
+            });
+        }
+
+        // Gather team members information
+        const numMembers = parseInt(document.getElementById('numInput').value) || 0;
+        const members = [];
+        for (let i = 1; i <= numMembers; i++) {
+            members.push({
+                firstName: document.getElementById(`MemfirstName${i}`).value.trim(),
+                lastName: document.getElementById(`MemlastName${i}`).value.trim(),
+                email: document.getElementById(`Mememail${i}`).value.trim(),
+                role: document.getElementById(`Memrole${i}`).value.trim(),
+                password: document.getElementById(`Mempassword${i}`).value.trim()
+            });
+        }
+
+        // Output JSON objects
+        console.log("Company:", JSON.stringify(company, null, 2));
+        console.log("Supervisors:", JSON.stringify(supervisors, null, 2));
+        console.log("Members:", JSON.stringify(members, null, 2));
+
+        // Proceed to next action, e.g., sending data to a server or redirecting
+        alert("Data has been logged to the console.");
+        // Optionally redirect: window.location.href = '/home';
+        window.location.href = '/home';
+    } else {
+        e.preventDefault();
+    }
+});
