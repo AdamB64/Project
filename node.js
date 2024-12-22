@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const PORT = 3000;
-const mongoose = require('./mongo/mongo.js');
+const Company = require('./mongo/company.js');
 
 app.use(express.json());
 // Set EJS as the templating engine
@@ -45,7 +45,35 @@ app.get('/home', (req, res) => {
 });  // Add your home route here
 
 
+// Add your routes here
+app.post('/add-company', async (req, res) => {
+    try {
+        // Log the incoming request body for verification
+        console.log('Incoming Request Body:', req.body);
+
+        const { company, supervisors, members } = req.body;
+
+        // Explicitly map the fields to ensure correct structure
+        const newCompany = new Company({
+            name: company.name,
+            address: company.address,
+            email: company.email,
+            industry: company.industry,
+            supervisors,
+            members,
+        });
+
+        await newCompany.save();
+
+        res.status(201).send({ message: 'Company data added successfully', newCompany });
+    } catch (error) {
+        console.error('Error saving data:', error);
+        res.status(500).send({ message: 'An error occurred while saving the data', error });
+    }
+});
+
+
 // Start the server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

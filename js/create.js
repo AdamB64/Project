@@ -187,14 +187,34 @@ document.getElementById('CreateCompany').addEventListener('click', async (e) => 
         }
 
         // Output JSON objects
-        console.log("Company:", JSON.stringify(company, null, 2));
-        console.log("Supervisors:", JSON.stringify(supervisors, null, 2));
-        console.log("Members:", JSON.stringify(members, null, 2));
+        console.log("Company:", JSON.stringify(company, null, 2) + "Supervisor:" + JSON.stringify(supervisors, null, 2) + "Member:" + JSON.stringify(members, null, 2));
+        fetch('/add-company', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                company,
+                supervisors,
+                members
+            }) // Send a properly structured JSON object
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to send data to the server');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response from server:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
 
-        // Proceed to next action, e.g., sending data to a server or redirecting
         alert("Data has been logged to the console.");
         // Optionally redirect: window.location.href = '/home';
-        window.location.href = '/home';
+        //window.location.href = '/home';
     } else {
         e.preventDefault();
     }
