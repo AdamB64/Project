@@ -214,7 +214,7 @@ document.getElementById('CreateCompany').addEventListener('click', async (e) => 
 
         alert("Data has been logged to the console.");
         // Optionally redirect: window.location.href = '/home';
-        //window.location.href = '/home';
+        window.location.href = '/home';
     } else {
         e.preventDefault();
     }
