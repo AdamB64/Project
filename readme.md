@@ -1,0 +1,2 @@
+<h1>getting the website up</h1>
+<h2>download the start.sh file and make sure its a executable and from there you will run it and the server will up up on local host on its own but will also need a mongodb for it to link up to that you will make by making a .env file and writing MONGO_URL="the mongodb connection string"</h3>
