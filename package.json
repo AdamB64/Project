@@ -4,9 +4,13 @@
   "description": "honours project",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "npm install node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Adam Buchan",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "node": "^18.20.6",
+    "server.js": "^1.0.0"
+  }
 }
