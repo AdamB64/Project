@@ -49,7 +49,7 @@ app.get('/home', (req, res) => {
 app.post('/add-company', async (req, res) => {
     try {
         // Log the incoming request body for verification
-        console.log('Incoming Request Body:', req.body);
+        //console.log('Incoming Request Body:', req.body);
 
         const { company, supervisors, members } = req.body;
 

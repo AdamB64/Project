@@ -1,0 +1,81 @@
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .tab button {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+    }
+
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.tab {
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    /* Aligns children (buttons) horizontally at the center */
+    align-items: center;
+    /* (Optional) Aligns children vertically at the center */
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+#tablinks {
+    padding: 14px 16px;
+    display: flex;
+    justify-content: center;
+    margin-right: 10px;
+    text-decoration: underline;
+}
+
+h2,
+h1,
+p {
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}

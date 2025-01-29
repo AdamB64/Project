@@ -176,6 +176,7 @@ document.getElementById('CreateCompany').addEventListener('click', async (e) => 
         // Gather team members information
         const numMembers = parseInt(document.getElementById('numInput').value) || 0;
         const members = [];
+        const firstemail = document.getElementById(`email1`).value.trim();
         for (let i = 1; i <= numMembers; i++) {
             members.push({
                 firstName: document.getElementById(`MemfirstName${i}`).value.trim(),
@@ -212,9 +213,10 @@ document.getElementById('CreateCompany').addEventListener('click', async (e) => 
                 console.error('Error:', error);
             });
 
-        alert("Data has been logged to the console.");
-        // Optionally redirect: window.location.href = '/home';
-        window.location.href = '/home';
+        //alert("Data has been logged to the console.");
+        //redirect: window.location.href = '/home';
+        console.log("Data has been logged to the console.");
+        window.location.href = '/home?email=' + firstemail;
     } else {
         e.preventDefault();
     }

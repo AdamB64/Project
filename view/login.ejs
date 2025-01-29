@@ -6,11 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
-    <link rel="stylesheet" type="text/css" href="/CSS/Login.css">
+    <link rel="stylesheet" type="text/css" href="/CSS/login.css">
+    <script src="/js/login.js"></script>
 </head>
 
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
+        <h1 class="info">logging into the company flow</h1>
+        <h2 class="info">pick what you are a supervisor or a Memeber and log into the flow</h2>
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'supervisor')">supervisor</button>
+            <button class="tablinks" onclick="openTab(event, 'Memeber')">Memebers</button>
+        </div>
+
+        <div id="supervisor" class="tabcontent">
+            <h2>Input here the Company Infomation</h2>
+            <input type="text" id="name" placeholder="Company Name">
+            <input type="text" id="address" placeholder="Company Address">
+            <input type="text" id="email" placeholder="Company Email">
+            <input type="text" id="industry" placeholder="Company Industry">
+        </div>
+
+        <div id="Memeber" class="tabcontent">
+            <h2>Add all supervisors</h2>
+            <p>Add how many supervisors you have at this time.(dont worry you can add more at a later date)</p>
+            <h1>supervisors Input Form</h1>
+            The first supervisor will be the one you are logged into.
+            <br>
+            <div>
+                <label for="numInputs">Number of Users:</label>
+                <input type="number" id="numInputs" min="1" placeholder="Enter a number">
+                <button onclick="generateInputs()" class="button">Generate Inputs</button>
+            </div>
+            <div id="inputContainer" class="input-container"></div>
+        </div>
+
         <div class="login-container">
             <h1>Login</h1>
             <form action="/login" method="POST">
