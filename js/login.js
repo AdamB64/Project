@@ -1,6 +1,10 @@
 function openTab(evt, cityName) {
     //console.log(evt + cityName);
-    document.getElementsByClassName('info').style.display = "none";
+    let elements = document.getElementsByClassName('info');
+    // Loop through each element and hide it
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].style.display = "none";
+    }
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {

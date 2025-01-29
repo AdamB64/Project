@@ -20,34 +20,25 @@
         </div>
 
         <div id="supervisor" class="tabcontent">
-            <h2>Input here the Company Infomation</h2>
-            <input type="text" id="name" placeholder="Company Name">
-            <input type="text" id="address" placeholder="Company Address">
-            <input type="text" id="email" placeholder="Company Email">
-            <input type="text" id="industry" placeholder="Company Industry">
+            <div class="login-container">
+                <h1>Login</h1>
+                <form action="/login" method="POST">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
         </div>
 
         <div id="Memeber" class="tabcontent">
-            <h2>Add all supervisors</h2>
-            <p>Add how many supervisors you have at this time.(dont worry you can add more at a later date)</p>
-            <h1>supervisors Input Form</h1>
-            The first supervisor will be the one you are logged into.
-            <br>
-            <div>
-                <label for="numInputs">Number of Users:</label>
-                <input type="number" id="numInputs" min="1" placeholder="Enter a number">
-                <button onclick="generateInputs()" class="button">Generate Inputs</button>
+            <div class="login-container">
+                <h1>Login</h1>
+                <form action="/login" method="POST">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
             </div>
-            <div id="inputContainer" class="input-container"></div>
-        </div>
-
-        <div class="login-container">
-            <h1>Login</h1>
-            <form action="/login" method="POST">
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
         </div>
 </body>
 
