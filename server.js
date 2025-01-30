@@ -16,7 +16,7 @@ app.use('/img', express.static(path.join(__dirname, 'img')));
 
 // Routes
 app.get('/', (req, res) => {
-    res.render('start');  // Changed from 'view' to 'start'
+    res.render('start');  // start page
 });
 
 app.get('/about', (req, res) => {
