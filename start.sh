@@ -1,6 +1,5 @@
 sudo apt-get update
 sudo apt-get install git-all
-sudo apt install nodejs
 node --version
 sudo apt install curl
 curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash 
