@@ -181,7 +181,7 @@ app.post("/SLogin", async (req, res) => {
             { expiresIn: "1h" }                          // Expiration Time
         );
         //comfirm token
-        console.log(token);
+        //console.log(token);
 
         //test to see if token is working
         //res.json({ token, role: "supervisor", message: "Login Successful" });
@@ -194,6 +194,81 @@ app.post("/SLogin", async (req, res) => {
         res.redirect('/home');
     } catch (error) {
         res.status(500).json({ message: "Server error" });
+    }
+});
+
+app.post("/MLogin", async (req, res) => {
+    try {
+        const { email, password, companyEmail } = req.body;
+
+        //see if body is being passed
+        //console.log(req.body);
+        // Find company
+        //console.log(companyEmail);
+        const Mcompany = await Company.findOne({ email: companyEmail });
+        if (!Mcompany) return res.status(400).json({ message: "Company not found" });
+
+        // Find supervisor in company
+        const member = Mcompany.members.find(mem => mem.email === email);
+        if (!member) return res.status(400).json({ message: "member not found" });
+
+        // Check password
+        const isMatch = await bcrypt.compare(password, member.password);
+        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+        //console.log(Mcompany.members + member + isMatch);
+
+        // Generate JWT Token
+        const Mtoken = jwt.sign(
+            { id: member._id, role: "member" },  // Payload
+            process.env.JWT_SECRET,                      // Secret Key
+            { expiresIn: "1h" }                          // Expiration Time
+        );
+        //comfirm token
+        //console.log(Mtoken);
+
+        //test to see if token is working
+        //res.json({ token, role: "supervisor", message: "Login Successful" });
+        res.cookie("token", Mtoken, {
+            httpOnly: true, // Prevents JavaScript access
+            secure: process.env.NODE_ENV === "production", // Use HTTPS in production
+            sameSite: "strict", // Helps prevent CSRF attacks
+            maxAge: 60 * 60 * 1000 // 1 hour expiration
+        });
+        res.redirect('/home');
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+
+app.post('/logout', (req, res) => {
+    res.clearCookie("token");
+    res.redirect("/login");
+});
+
+app.post('/users', async (req, res) => {
+    try {
+        const UToken = req.cookies?.token;
+        if (!UToken) {
+            return res.status(401).json({ message: "Unauthorized: No token provided" });
+        }
+
+        const user = null;
+        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+            if (err) {
+                return res.status(403).json({ message: "Forbidden: Invalid token" });
+            }
+            console.log("ran1");
+            user = u;
+        });
+        console.log(user);
+        const USuper = await Company.findOne({ "supervisors._id": user.id });
+        console.log(USuper);
+        return res.json({ USuper });
+
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
     }
 });
 
