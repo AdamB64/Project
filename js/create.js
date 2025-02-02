@@ -216,7 +216,7 @@ document.getElementById('CreateCompany').addEventListener('click', async (e) => 
         //alert("Data has been logged to the console.");
         //redirect: window.location.href = '/home';
         console.log("Data has been logged to the console.");
-        window.location.href = '/home?email=' + firstemail;
+        //window.location.href = '/home?email=' + firstemail;
     } else {
         e.preventDefault();
     }
