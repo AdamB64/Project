@@ -151,7 +151,6 @@ function validateEmail(email) {
 
 document.getElementById('CreateCompany').addEventListener('click', async (e) => {
     if (validateInputs()) {
-        alert("Company account created successfully!");
         // Gather company information
         const company = {
             name: document.getElementById('name').value.trim(),
@@ -176,7 +175,6 @@ document.getElementById('CreateCompany').addEventListener('click', async (e) => 
         // Gather team members information
         const numMembers = parseInt(document.getElementById('numInput').value) || 0;
         const members = [];
-        const firstemail = document.getElementById(`email1`).value.trim();
         for (let i = 1; i <= numMembers; i++) {
             members.push({
                 firstName: document.getElementById(`MemfirstName${i}`).value.trim(),
@@ -188,8 +186,8 @@ document.getElementById('CreateCompany').addEventListener('click', async (e) => 
         }
 
         // Output JSON objects
-        console.log("Company:", JSON.stringify(company, null, 2) + "Supervisor:" + JSON.stringify(supervisors, null, 2) + "Member:" + JSON.stringify(members, null, 2));
-        fetch('/add-company', {
+        //console.log("Company:", JSON.stringify(company, null, 2) + "Supervisor:" + JSON.stringify(supervisors, null, 2) + "Member:" + JSON.stringify(members, null, 2));
+        response = fetch('/add-company', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -208,15 +206,23 @@ document.getElementById('CreateCompany').addEventListener('click', async (e) => 
             })
             .then(data => {
                 console.log('Response from server:', data);
+                if (data.message === 'Company already exists') {
+                    alert("Company email already in use \n Please try again with a different email");
+                } else if (data.message === 'Supervisor already exists') {
+                    alert("Supervisor email already in use \n Please try again with a different email");
+                } else if (data.message === 'Member already exists') {
+                    alert("Member email already in use \n Please try again with a different email");
+                } else {
+                    console.log("Data has been logged to the console.");
+                    alert("Company account created successfully!");
+                    window.location.href = '/home';
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-
         //alert("Data has been logged to the console.");
         //redirect: window.location.href = '/home';
-        console.log("Data has been logged to the console.");
-        //window.location.href = '/home?email=' + firstemail;
     } else {
         e.preventDefault();
     }

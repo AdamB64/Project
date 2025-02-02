@@ -87,7 +87,16 @@ function authenticateToken(req, res, next) {
 // Add your routes here
 app.post('/add-company', async (req, res) => {
     try {
+        //get company, supervisors, and members from the body
         const { company, supervisors, members } = req.body;
+
+        //make sure that the company, supervisors, and members emails are not already in the database
+        const companyExists = await Company.findOne({ email: company.email });
+        if (companyExists) { console.log("ran"); return res.status(201).send({ message: 'Company already exists' }); }
+        const supervisorExists = await Company.findOne({ "supervisors.email": supervisors[0].email });
+        if (supervisorExists) { return res.status(201).send({ message: 'Supervisor already exists' }); }
+        const memberExists = await Company.findOne({ "members.email": members[0].email });
+        if (memberExists) { return res.status(201).send({ message: 'Member already exists' }); }
 
         // Encrypt passwords for supervisors
         const encryptedSupervisors = await Promise.all(supervisors.map(async (supervisor) => {
@@ -119,28 +128,26 @@ app.post('/add-company', async (req, res) => {
 
         await newCompany.save();
 
-        console.log("1" + newCompany.supervisor)
-        console.log("2" + newCompany.supervisor?.[0]?._id)
-        console.log("3" + newCompany.supervisor[0][0]._id)
+        //console.log(newCompany.supervisors?.[0]?._id)
         //res.status(201).send({ message: 'Company data added successfully', newCompany });
         // Generate JWT Token
         const token = jwt.sign(
-            { id: newCompany.supervisor?.[0]?._id, role: "supervisor" },  // Payload
+            { id: newCompany.supervisors?.[0]?._id, role: "supervisor" },  // Payload
             process.env.JWT_SECRET,                      // Secret Key
             { expiresIn: "1h" }                          // Expiration Time
         );
         //comfirm token
-        console.log(token);
+        //console.log(token);
 
         //test to see if token is working
-        //res.json({ token, role: "supervisor", message: "Login Successful" });
         res.cookie("token", token, {
             httpOnly: true, // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production", // Use HTTPS in production
             sameSite: "strict", // Helps prevent CSRF attacks
             maxAge: 60 * 60 * 1000 // 1 hour expiration
         });
-        res.redirect('/home');
+        //console.log("home");
+        res.json({ message: "Login Successful" });
     } catch (error) {
         console.error('Error saving data:', error);
         res.status(500).send({ message: 'An error occurred while saving the data', error });
