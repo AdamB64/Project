@@ -190,15 +190,15 @@ app.post("/SLogin", async (req, res) => {
         // Find company
         //console.log(companyEmail);
         const company = await Company.findOne({ email: companyEmail });
-        if (!company) return res.status(400).json({ message: "Company not found" });
+        if (!company) return res.status(400).send('<script>alert("Company Not Found");window.location.href = "/login"; // Redirect back to login page</script>');
 
         // Find supervisor in company
         const supervisor = company.supervisors.find(sup => sup.email === email);
-        if (!supervisor) return res.status(400).json({ message: "Supervisor not found" });
+        if (!supervisor) return res.status(400).send('<script>alert("Supervisor Not Found");window.location.href = "/login"; // Redirect back to login page</script>');
 
         // Check password
         const isMatch = await bcrypt.compare(password, supervisor.password);
-        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+        if (!isMatch) return res.status(400).send('<script>alert("invalid credentials");window.location.href = "/login"; // Redirect back to login page</script>');
 
         // Generate JWT Token
         const token = jwt.sign(
@@ -232,15 +232,15 @@ app.post("/MLogin", async (req, res) => {
         // Find company
         //console.log(companyEmail);
         const Mcompany = await Company.findOne({ email: companyEmail });
-        if (!Mcompany) return res.status(400).json({ message: "Company not found" });
+        if (!Mcompany) return res.status(400).send('<script>alert("Company Not Found");window.location.href = "/login"; // Redirect back to login page</script>');
 
         // Find supervisor in company
         const member = Mcompany.members.find(mem => mem.email === email);
-        if (!member) return res.status(400).json({ message: "member not found" });
+        if (!member) return res.status(400).send('<script>alert("Member Not Found");window.location.href = "/login"; // Redirect back to login page</script>');
 
         // Check password
         const isMatch = await bcrypt.compare(password, member.password);
-        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+        if (!isMatch) return res.status(400).send('<script>alert("Invalid credentials");window.location.href = "/login"; // Redirect back to login page</script>');
 
         //console.log(Mcompany.members + member + isMatch);
 
