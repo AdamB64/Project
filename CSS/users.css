@@ -5,37 +5,27 @@ body {
     padding: 0;
 }
 
-.header {
-    background-color: #212121;
-    color: white;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header a {
-    color: white;
-    text-decoration: none;
-    margin: 0 15px;
-    font-size: 16px;
-}
-
-.header a:hover {
-    text-decoration: underline;
-}
-
 .container {
     margin: 50px auto;
-    max-width: 600px;
+    max-width: 700px;
     padding: 20px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+@media screen and (max-width: 700px) {
+    .container {
+        max-height: 100%;
+        margin: 0;
+        border-radius: 0;
+        max-width: 347px;
+    }
+
+}
+
 p {
-    font-size: 16px;
+    font-size: 26px;
     margin: 10px 0;
 }
 
@@ -53,9 +43,9 @@ button {
     color: white;
     padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 button:hover {
