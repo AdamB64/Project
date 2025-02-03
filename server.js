@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const path = require('path');
 const app = express();
 const PORT = 3000;
@@ -17,6 +18,13 @@ app.use(express.json());
 app.use(cors()); // Enable CORS
 app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
 app.use(cookieParser()); // Enable cookie parsing
+app.use(session({
+    secret: process.env.secret,  // Change this to a strong, random string
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }  // Set to `true` if using HTTPS
+}));
+
 
 // Set EJS as the templating engine
 app.set('view engine', 'ejs');
@@ -43,8 +51,10 @@ app.get('/settings', (req, res) => {
 });  // Add your settings route here
 
 app.get('/user', authenticateToken, (req, res) => {
-    res.render('user');  // Changed from 'view' to 'user'
-});  // Add your user route here
+    //console.log("session " + [req.session.supInfo]);
+    const users = req.session.supInfo ? [req.session.supInfo] : [];
+    res.render('user', { users: users });  // Changed from 'view' to 'user'
+});
 
 
 app.get('/create', (req, res) => {
@@ -92,7 +102,7 @@ app.post('/add-company', async (req, res) => {
 
         //make sure that the company, supervisors, and members emails are not already in the database
         const companyExists = await Company.findOne({ email: company.email });
-        if (companyExists) { console.log("ran"); return res.status(201).send({ message: 'Company already exists' }); }
+        if (companyExists) { return res.status(201).send({ message: 'Company already exists' }); }
         const supervisorExists = await Company.findOne({ "supervisors.email": supervisors[0].email });
         if (supervisorExists) { return res.status(201).send({ message: 'Supervisor already exists' }); }
         const memberExists = await Company.findOne({ "members.email": members[0].email });
@@ -254,19 +264,59 @@ app.post('/users', async (req, res) => {
             return res.status(401).json({ message: "Unauthorized: No token provided" });
         }
 
-        const user = null;
+        let user = null;
         jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
             if (err) {
                 return res.status(403).json({ message: "Forbidden: Invalid token" });
             }
-            console.log("ran1");
+            //console.log("ran1");
             user = u;
         });
-        console.log(user);
+        //console.log(user);
         const USuper = await Company.findOne({ "supervisors._id": user.id });
-        console.log(USuper);
-        return res.json({ USuper });
+        let sup = USuper.supervisors.length;
+        for (let i = 0; i < sup; i++) {
+            if (USuper.supervisors[i]._id == user.id) {
+                let US = USuper.supervisors.find(sup => sup._id.toString() === user.id);
+                const array = Object.values(US);
+                //console.log("loop1 " + US);
+                //console.log("loop2 " + array);
+                req.session.supInfo = US;
+                return res.json({ supervisor: US });
+            }
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
+app.post('/change-password/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { password } = req.body;
+        console.log("password " + password + " userId " + userId);
+
+        if (!password) {
+            return res.status(400).json({ message: "Password is required" });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const updatedUser = await Company.findOneAndUpdate(
+            { "supervisors._id": userId },
+            { $set: { "supervisors.$.password": hashedPassword } },
+            { new: true, runValidators: true }
+        );
+        //testing to see first what the updatesUser was getting and also to see if the user was found
+        //const u = await Company.findOne({ "supervisors._id": userId });
+        //console.log("updatedUser " + updatedUser);
+        //console.log("u " + u);
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({ message: "Password updated successfully", updatedUser });
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }

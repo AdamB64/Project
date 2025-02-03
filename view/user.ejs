@@ -6,12 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users Page</title>
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
-    <script src="../js/users.js"></script>
+    <link rel="stylesheet" type="text/css" href="/CSS/Users.css">
+    <script src="/js/users.js"></script>
 </head>
 
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
-
+        <div class="container">
+            <% if (typeof users !=="undefined" && users.length> 0) { %>
+                <p><strong>First Name:</strong>
+                    <%= users[0].firstName %>
+                </p>
+                <p><strong>Last Name:</strong>
+                    <%= users[0].lastName %>
+                </p>
+                <p><strong>Email:</strong>
+                    <%= users[0].email %>
+                </p>
+                <p><strong>Role:</strong>
+                    <%= users[0].role %>
+                </p>
+                <div class="button-container">
+                    <button onclick="changePassword('<%= users[0]._id %>')">Change Password</button>
+                </div>
+                <% } else { %>
+                    <p>No user data available. Please wait for the data to be retrieved.</p>
+                    <% } %>
+        </div>
 </body>
 
 </html>
