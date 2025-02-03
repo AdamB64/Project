@@ -14,7 +14,7 @@ const cookieParser = require("cookie-parser");
 const saltRounds = 10;
 
 //---------------------set up app---------------------
-app.use(express.json());
+app.use(express.json({ limit: '16mb' }));
 app.use(cors()); // Enable CORS
 app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
 app.use(cookieParser()); // Enable cookie parsing
@@ -52,7 +52,7 @@ app.get('/settings', (req, res) => {
 
 app.get('/user', authenticateToken, (req, res) => {
     //console.log("session " + [req.session.supInfo]);
-    const users = req.session.supInfo ? [req.session.supInfo] : [];
+    const users = req.session.Info ? [req.session.Info] : [];
     res.render('user', { users: users });  // Changed from 'view' to 'user'
 });
 
@@ -95,6 +95,11 @@ function authenticateToken(req, res, next) {
 
 //---------------------POST routes---------------------
 // Add your routes here
+
+// Default Black Profile Image (Use a hosted image or a Base64 string)
+const DEFAULT_PROFILE_IMAGE = "https://avatar.iran.liara.run/public/boy?username=Ash"; //  Placeholder
+
+
 app.post('/add-company', async (req, res) => {
     try {
         //get company, supervisors, and members from the body
@@ -126,14 +131,25 @@ app.post('/add-company', async (req, res) => {
             return member;
         }));
 
+        // Assuming encryptedSupervisors and encryptedMembers are arrays of objects
+        const updatedSupervisors = encryptedSupervisors.map(supervisor => ({
+            ...supervisor,
+            profile: DEFAULT_PROFILE_IMAGE
+        }));
+
+        const updatedMembers = encryptedMembers.map(member => ({
+            ...member,
+            profile: DEFAULT_PROFILE_IMAGE
+        }));
+
         // Create a new company instance
         const newCompany = new Company({
             name: company.name,
             address: company.address,
             email: company.email,
             industry: company.industry,
-            supervisors: encryptedSupervisors,
-            members: encryptedMembers,
+            supervisors: updatedSupervisors,
+            members: updatedMembers,
         });
 
         await newCompany.save();
@@ -263,6 +279,7 @@ app.post('/users', async (req, res) => {
         if (!UToken) {
             return res.status(401).json({ message: "Unauthorized: No token provided" });
         }
+        //console.log(UToken);
 
         let user = null;
         jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
@@ -273,15 +290,29 @@ app.post('/users', async (req, res) => {
             user = u;
         });
         //console.log(user);
-        const USuper = await Company.findOne({ "supervisors._id": user.id });
-        let sup = USuper.supervisors.length;
+        const USuper = await Company.findOne({ "supervisors._id": user.id })
+        const Umem = await Company.findOne({ "members._id": user.id });
+
+
+        let sup;
+        if (USuper == null) {
+            //console.log("ran");
+            sup = Umem.members.length;
+        } else {
+            sup = USuper.supervisors.length;
+        }
+
+
         for (let i = 0; i < sup; i++) {
-            if (USuper.supervisors[i]._id == user.id) {
+            if (Umem.members[i]._id == user.id) {
+                //console.log("ran");
+                let UM = Umem.members.find(sup => sup._id.toString() === user.id);
+                //console.log(UM);
+                req.session.Info = UM;
+                return res.json({ member: UM });
+            } else if (USuper.supervisors[i]._id == user.id) {
                 let US = USuper.supervisors.find(sup => sup._id.toString() === user.id);
-                const array = Object.values(US);
-                //console.log("loop1 " + US);
-                //console.log("loop2 " + array);
-                req.session.supInfo = US;
+                req.session.Info = US;
                 return res.json({ supervisor: US });
             }
         }
@@ -294,7 +325,7 @@ app.post('/change-password/:userId', async (req, res) => {
     try {
         const { userId } = req.params;
         const { password } = req.body;
-        console.log("password " + password + " userId " + userId);
+        //console.log("password " + password + " userId " + userId);
 
         if (!password) {
             return res.status(400).json({ message: "Password is required" });
@@ -305,6 +336,10 @@ app.post('/change-password/:userId', async (req, res) => {
         const updatedUser = await Company.findOneAndUpdate(
             { "supervisors._id": userId },
             { $set: { "supervisors.$.password": hashedPassword } },
+            { new: true, runValidators: true }
+        ) || await Company.findOneAndUpdate(
+            { "members._id": userId }, // If not found, search in members
+            { $set: { "members.$.password": hashedPassword } },
             { new: true, runValidators: true }
         );
         //testing to see first what the updatesUser was getting and also to see if the user was found
@@ -319,6 +354,43 @@ app.post('/change-password/:userId', async (req, res) => {
         res.json({ message: "Password updated successfully", updatedUser });
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
+
+// Upload Profile Image in Base64
+app.post("/upload-profile", async (req, res) => {
+    try {
+        const { userId, profileImage } = req.body;
+        //console.log("userId " + userId + " profileImage " + profileImage);
+
+        if (!profileImage) {
+            return res.status(400).json({ success: false, message: "No image provided" });
+        }
+
+        // Update user's profile image
+        const user = await Company.findOneAndUpdate(
+            { "supervisors._id": userId }, // Search in supervisors first
+            { $set: { "supervisors.$.profile": profileImage } },
+            { new: true, runValidators: true }
+        ) || await Company.findOneAndUpdate(
+            { "members._id": userId }, // If not found, search in members
+            { $set: { "members.$.profile": profileImage } },
+            { new: true, runValidators: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        res.json({
+            success: true,
+            message: "Profile image updated successfully",
+            profileImage
+        });
+    } catch (error) {
+        console.error("Image upload error:", error);
+        res.status(500).json({ success: false, message: "Error uploading image", error });
     }
 });
 

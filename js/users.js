@@ -38,3 +38,51 @@ function changePassword(userId) {
             .catch(error => console.error("Error:", error));
     }
 }
+
+function changeProfile(userId) {
+    document.getElementById('fileInput').click();
+}
+
+function uploadImage(event, userId) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file); // Convert to Base64
+
+    reader.onload = async () => {
+        const base64Image = reader.result;
+
+        const response = await fetch("/upload-profile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId, profileImage: base64Image })
+        });
+
+        const data = await response.json();
+        console.log("Upload Profile:", data);
+        if (data.success) {
+            document.getElementById("profileImage").src = data.profileImage;
+            alert("Profile picture updated successfully!");
+        } else {
+            alert("Failed to update profile picture.");
+        }
+    };
+
+    reader.onerror = (error) => console.error("Error converting image:", error);
+}
+
+function logout() {
+    fetch('/logout', {
+        method: 'POST',
+        credentials: 'include'
+    })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url; // Redirects to the login page
+            } else {
+                console.error("Logout failed.");
+            }
+        })
+        .catch(error => console.error('Error logging out:', error));
+}
