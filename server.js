@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const { AutoEncryptionLoggerLevel } = require('mongodb-legacy');
 const cookieParser = require("cookie-parser");
+const e = require('express');
 
 //how many round should be used to generate the encrypted password
 const saltRounds = 10;
@@ -51,7 +52,7 @@ app.get('/settings', (req, res) => {
 });  // Add your settings route here
 
 app.get('/user', authenticateToken, (req, res) => {
-    console.log("session " + [req.session.Info]);
+    //console.log("session " + [req.session.Info]);
     const users = req.session.Info ? [req.session.Info] : [];
     res.render('user', { users: users });  // Changed from 'view' to 'user'
 });
@@ -74,7 +75,34 @@ app.get('/home', authenticateToken, (req, res) => {
         code = process.env.MEM_ROLE
     }
     res.render('home', { Code: code });  // Changed from 'view' to 'home'
-});  // Add your home route here
+});
+
+app.get('/chats', authenticateToken, (req, res) => {
+    res.render('chat');  // Changed from 'view' to 'chats'
+});
+
+app.get('/projects', authenticateToken, (req, res) => {
+    res.render('project');  // Changed from 'view' to 'projects'
+});
+
+
+app.get('/Members', authenticateToken, (req, res) => {
+    if (req.user.role === "supervisor") {
+        res.render('Members');
+    }
+    else {
+        res.redirect("/");
+    }
+});
+
+app.get('/invite', authenticateToken, (req, res) => {
+    if (req.user.role === "supervisor") {
+        res.render('invite');
+    }
+    else {
+        res.redirect("/");
+    }
+});
 
 //middleware function to check token of users
 // Middleware to protect routes
