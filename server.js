@@ -4,6 +4,7 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 const Company = require('./mongo/company.js');
+const Project = require('./mongo/project.js');
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
@@ -86,9 +87,13 @@ app.get('/projects', authenticateToken, (req, res) => {
 });
 
 
-app.get('/Members', authenticateToken, (req, res) => {
+app.get('/Members', authenticateToken, async (req, res) => {
     if (req.user.role === "supervisor") {
-        res.render('Members');
+        //console.log(req.user);
+        const company = await Company.find({ "members.level": "Member", email: req.user.Company_email });
+        const members = company.map(c => c.members).flat();
+        //console.log(members);
+        res.render('Members', { members: members });
     }
     else {
         res.redirect("/");
@@ -193,7 +198,7 @@ app.post('/add-company', async (req, res) => {
         //res.status(201).send({ message: 'Company data added successfully', newCompany });
         // Generate JWT Token
         const token = jwt.sign(
-            { id: newCompany.supervisors?.[0]?._id, role: "supervisor" },  // Payload
+            { id: newCompany.supervisors?.[0]?._id, role: "supervisor", Company_email: newCompany.email },  // Payload
             process.env.JWT_SECRET,                      // Secret Key
             { expiresIn: "1h" }                          // Expiration Time
         );
