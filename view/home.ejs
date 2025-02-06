@@ -12,9 +12,17 @@
 
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
-        <div id="page">
-
-        </div>
+        <% if (typeof Code !=="undefined" ) { %>
+            <%- Code %>
+                <% } else { %>
+                    <p>No user data available. Please wait for the data to be
+                        retrieved.</p>
+                    <script>
+                        setTimeout(function () {
+                            location.reload();
+                        }, 3000); // Wait 3 seconds before reloading
+                    </script>
+                    <% } %>
 </body>
 
 </html>

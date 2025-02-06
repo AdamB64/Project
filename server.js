@@ -51,7 +51,7 @@ app.get('/settings', (req, res) => {
 });  // Add your settings route here
 
 app.get('/user', authenticateToken, (req, res) => {
-    //console.log("session " + [req.session.supInfo]);
+    console.log("session " + [req.session.Info]);
     const users = req.session.Info ? [req.session.Info] : [];
     res.render('user', { users: users });  // Changed from 'view' to 'user'
 });
@@ -66,13 +66,14 @@ app.get('/login', (req, res) => {
 });  // Add your login route here
 
 app.get('/home', authenticateToken, (req, res) => {
-    let code;
-    if(req.session.Info.role=="member"){
-        code='<div id="members"><div id="sidebar"><ul class="top-section"><li><a class="sideA" href="/Projects">Projects</a></li><li><a class="sideA" href="/Chats">Chats</a></li></ul><ul class="bottom-section"><li><a class="sideA" href="/User">User</a></li><li><a class="sideA" href="/Settings">Settings</a></li><li><form action="/logout" method="POST"><button class="sideA" type="submit">Logout</button></form></li></ul></div></div>'
-    }else if(req.session.Info.role=="supervisor"){
-        code='<div id="super"></div>'
+    //console.log(req.user.role);
+    let code;// = process.env.MEM_ROLE
+    if (req.user.role === "supervisor") {
+        code = process.env.SUB_ROLE
+    } else if (req.user.role === "member") {
+        code = process.env.MEM_ROLE
     }
-    res.render('home',{Code:code});  // Changed from 'view' to 'home'
+    res.render('home', { Code: code });  // Changed from 'view' to 'home'
 });  // Add your home route here
 
 //middleware function to check token of users
@@ -223,7 +224,7 @@ app.post("/SLogin", async (req, res) => {
             sameSite: "strict", // Helps prevent CSRF attacks
             maxAge: 60 * 60 * 1000 // 1 hour expiration
         });
-        res.redirect('/home');
+        res.redirect(`/home`);
     } catch (error) {
         res.status(500).json({ message: "Server error" });
     }
@@ -267,7 +268,7 @@ app.post("/MLogin", async (req, res) => {
             sameSite: "strict", // Helps prevent CSRF attacks
             maxAge: 60 * 60 * 1000 // 1 hour expiration
         });
-        res.redirect('/home');
+        res.redirect(`/home`);
     } catch (error) {
         res.status(500).json({ message: "Server error" });
     }

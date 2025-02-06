@@ -8,6 +8,7 @@ const companySchema = new mongoose.Schema({
     industry: { type: String, required: true },
     supervisors: [
         {
+            level: { type: String, required: true, default: 'Supervisor' },
             firstName: { type: String, required: true },
             lastName: { type: String, required: true },
             email: { type: String, required: true, unique: true },
@@ -18,6 +19,7 @@ const companySchema = new mongoose.Schema({
     ],
     members: [
         {
+            level: { type: String, required: true, default: 'Member' },
             firstName: { type: String, required: true },
             lastName: { type: String, required: true },
             email: { type: String, required: true, unique: true },
