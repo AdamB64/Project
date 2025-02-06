@@ -1,0 +1,55 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    flex: auto;
+}
+
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100% - 60px);
+    /* Full height minus header */
+    width: 10%;
+    /* Sidebar takes up 10% of the viewport width */
+    background-color: #6a6767;
+    /* Light gray background */
+    position: fixed;
+    top: 60px;
+    /* Start below the header */
+    left: 0;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+
+.top-section {
+    margin-bottom: auto;
+}
+
+bottom-section {
+    margin-top: auto;
+}
+
+a.sideA,
+button.sideA {
+    margin-bottom: 8px;
+    margin-top: 10px;
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: blue;
+    text-decoration: none;
+    border: none;
+    /* Needed for button */
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+a.sideA:hover,
+button.sideA:hover {
+    background-color: darkblue;
+}

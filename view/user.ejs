@@ -38,6 +38,11 @@
                 </div>
                 <% } else { %>
                     <p>No user data available. Please wait for the data to be retrieved.</p>
+                    <script>
+                        setTimeout(function () {
+                            location.reload();
+                        }, 3000); // Wait 5 seconds before reloading
+                    </script>
                     <% } %>
         </div>
         <button id="logout" onclick="logout()">Logout</button>
