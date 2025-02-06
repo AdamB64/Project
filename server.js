@@ -72,7 +72,7 @@ app.get('/home', authenticateToken, (req, res) => {
     }else if(req.session.Info.role=="supervisor"){
         code='<div id="super"></div>'
     }
-    res.render('home',{code:code});  // Changed from 'view' to 'home'
+    res.render('home',{Code:code});  // Changed from 'view' to 'home'
 });  // Add your home route here
 
 //middleware function to check token of users
