@@ -66,7 +66,13 @@ app.get('/login', (req, res) => {
 });  // Add your login route here
 
 app.get('/home', authenticateToken, (req, res) => {
-    res.render('home');  // Changed from 'view' to 'home'
+    let code;
+    if(req.session.Info.role=="member"){
+        code='<div id="members"><div id="sidebar"><ul class="top-section"><li><a class="sideA" href="/Projects">Projects</a></li><li><a class="sideA" href="/Chats">Chats</a></li></ul><ul class="bottom-section"><li><a class="sideA" href="/User">User</a></li><li><a class="sideA" href="/Settings">Settings</a></li><li><form action="/logout" method="POST"><button class="sideA" type="submit">Logout</button></form></li></ul></div></div>'
+    }else if(req.session.Info.role=="supervisor"){
+        code='<div id="super"></div>'
+    }
+    res.render('home',{code:code});  // Changed from 'view' to 'home'
 });  // Add your home route here
 
 //middleware function to check token of users
