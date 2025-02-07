@@ -12,29 +12,27 @@
 <body>
     <%- include('header') %>
 
-        <% console.log(members) %>
-            <% console.log(members.profile) %>
-                <div class="container">
-                    <% members.forEach(member=> { %>
-                        <div class="member-box">
-                            <img src="<%= member.profile %>" alt="Profile Picture">
-                            <h3>
-                                <%= member.firstName %>
-                                    <%= member.lastName %>
-                            </h3>
-                            <p><strong>Email:</strong>
-                                <%= member.email %>
-                            </p>
-                            <p><strong>Username:</strong>
-                                <%= member.email.split('@')[0] %>
-                            </p>
-                            <p><strong>Role:</strong>
-                                <%= member.role %>
-                            </p>
-                            <button class="button"></button>
-                        </div>
-                        <% }) %>
+        <div class="container">
+            <% members.forEach(member=> { %>
+                <div class="member-box">
+                    <img src="<%= member.profile %>" alt="Profile Picture">
+                    <h3>
+                        <%= member.firstName %>
+                            <%= member.lastName %>
+                    </h3>
+                    <p><strong>Email:</strong>
+                        <%= member.email %>
+                    </p>
+                    <p><strong>Username:</strong>
+                        <%= member.email.split('@')[0] %>
+                    </p>
+                    <p><strong>Role:</strong>
+                        <%= member.role %>
+                    </p>
+                    <button class="button"></button>
                 </div>
+                <% }) %>
+        </div>
 </body>
 
 </html>
