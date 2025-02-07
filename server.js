@@ -242,7 +242,7 @@ app.post("/SLogin", async (req, res) => {
 
         // Generate JWT Token
         const token = jwt.sign(
-            { id: supervisor._id, role: "supervisor" },  // Payload
+            { id: supervisor._id, role: "supervisor", Company_email: companyEmail },  // Payload
             process.env.JWT_SECRET,                      // Secret Key
             { expiresIn: "1h" }                          // Expiration Time
         );
@@ -286,7 +286,7 @@ app.post("/MLogin", async (req, res) => {
 
         // Generate JWT Token
         const Mtoken = jwt.sign(
-            { id: member._id, role: "member" },  // Payload
+            { id: member._id, role: "member", Company_email: companyEmail },  // Payload
             process.env.JWT_SECRET,                      // Secret Key
             { expiresIn: "1h" }                          // Expiration Time
         );
