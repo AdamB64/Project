@@ -25,3 +25,47 @@ document.addEventListener("DOMContentLoaded", function () {
         modalOverlay.classList.add("hidden");
     });
 });
+
+function addMember() {
+    var dropdown = document.getElementById("projectDropDown");
+    var selectedValue = dropdown.value;
+    var selectedText = dropdown.options[dropdown.selectedIndex].text;
+
+    if (selectedValue) {
+
+        var list = document.getElementById("memberList");
+
+        // Check if the member is already in the list
+        var existingItems = list.getElementsByTagName("li");
+        for (var i = 0; i < existingItems.length; i++) {
+            if (existingItems[i].getAttribute("data-value") === selectedValue) {
+                alert("Member is already added!");
+                return;
+            }
+        }
+
+        // Create a new list item
+        var listItem = document.createElement("li");
+        listItem.setAttribute("data-value", selectedValue);
+        listItem.textContent = selectedText;
+
+        // Create a hidden input field to submit the value
+        var hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "members[]"; // Allow multiple selections
+        hiddenInput.value = selectedValue;
+        listItem.appendChild(hiddenInput);
+
+        // Add a remove button
+        var removeButton = document.createElement("button");
+        removeButton.textContent = "Remove";
+        removeButton.onclick = function () {
+            list.removeChild(listItem);
+        };
+
+        listItem.appendChild(removeButton);
+        list.appendChild(listItem);
+    } else {
+        alert("Please select a member first!");
+    }
+}

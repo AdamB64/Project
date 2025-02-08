@@ -82,8 +82,14 @@ app.get('/chats', authenticateToken, (req, res) => {
     res.render('chat');  // Changed from 'view' to 'chats'
 });
 
-app.get('/projects', authenticateToken, (req, res) => {
-    res.render('project');  // Changed from 'view' to 'projects'
+app.get('/projects', authenticateToken, async (req, res) => {
+    if (req.user.role === "supervisor") {
+        const company = await Company.find({ "members.level": "Member", email: req.user.Company_email });
+        const members = company.map(c => c.members).flat();
+        res.render('project', { members });  // Changed from 'view' to 'projects'
+    } else {
+        res.redirect("/");
+    }
 });
 
 
@@ -315,6 +321,7 @@ app.post('/logout', (req, res) => {
 
 app.post('/users', async (req, res) => {
     try {
+        let sup;
         const UToken = req.cookies?.token;
         if (!UToken) {
             return res.status(401).json({ message: "Unauthorized: No token provided" });
@@ -329,31 +336,32 @@ app.post('/users', async (req, res) => {
             //console.log("ran1");
             user = u;
         });
-        //console.log(user);
-        const USuper = await Company.findOne({ "supervisors._id": user.id })
-        const Umem = await Company.findOne({ "members._id": user.id });
-
-
-        let sup;
-        if (USuper == null) {
-            //console.log("ran");
-            sup = Umem.members.length;
-        } else {
+        console.log(user);
+        if (user.role === "supervisor") {
+            const USuper = await Company.findOne({ "supervisors._id": user.id })
             sup = USuper.supervisors.length;
-        }
 
+            for (let i = 0; i < sup; i++) {
+                if (USuper.supervisors[i]._id == user.id) {
+                    console.log("ran1");
+                    let US = USuper.supervisors.find(sup => sup._id.toString() === user.id);
+                    req.session.Info = US;
+                    console.log(US);
+                    return res.json({ supervisor: US });
+                }
+            }
+        } else if (user.role === "member") {
+            const Umem = await Company.findOne({ "members._id": user.id });
+            sup = Umem.members.length;
 
-        for (let i = 0; i < sup; i++) {
-            if (Umem.members[i]._id == user.id) {
-                //console.log("ran");
-                let UM = Umem.members.find(sup => sup._id.toString() === user.id);
-                //console.log(UM);
-                req.session.Info = UM;
-                return res.json({ member: UM });
-            } else if (USuper.supervisors[i]._id == user.id) {
-                let US = USuper.supervisors.find(sup => sup._id.toString() === user.id);
-                req.session.Info = US;
-                return res.json({ supervisor: US });
+            for (let i = 0; i < sup; i++) {
+                if (Umem.members[i]._id == user.id) {
+                    console.log("ran1");
+                    let UM = Umem.members.find(sup => sup._id.toString() === user.id);
+                    console.log("UM " + UM);
+                    req.session.Info = UM;
+                    return res.json({ member: UM });
+                }
             }
         }
     } catch (error) {
@@ -435,7 +443,10 @@ app.post("/upload-profile", async (req, res) => {
 });
 
 
+app.post('/addProject', async (req, res) => {
+    console.log(req.body);
 
+});
 
 
 

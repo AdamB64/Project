@@ -18,9 +18,35 @@
             <div class="model">
                 <h2>create new project</h2>
                 <p>Project Name</p>
-                <button id="createProjectBtn">Create</button>
-                <button id="closeModelBtn">Close</button>
+                <form action="/addProject" method="POST">
+                    <p>Input the details about the project</p>
+                    <input type="text" name="projectName" id="projectName" required>
+                    <input type="text" name="projectDescription" id="projectDescription" required>
+                    <input type="date" name="projectStartDate" id="projectStartDate" required>
+                    <input type="date" name="projectDeadline" id="projectDeadline" required>
+                    <input type="text" name="projectStatus" id="projectStatus" required>
+                    <p>Group Members</p>
+                    <select id="projectDropDown">
+                        <option value="" disabled selected>Select members</option>
+                        <% members.forEach(function(member) { %>
+                            <option value="<%= member.email %>">
+                                <%= member.firstName %>
+                                    <%= member.lastName %>
+                            </option>
+                            <% }); %>
+                    </select>
+                    <button type="button" onclick="addMember()">add</button>
+                    <list id="memberList"></list>
+                    <br>
+                    <button type="submit">Create</button>
+                </form>
+                <br>
+                <br>
+                <button class="button" id="closeModelBtn">Cancel</button>
             </div>
         </div>
         <div id="BCover"></div>
+        <div>
+
+        </div>
 </body>

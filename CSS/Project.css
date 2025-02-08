@@ -1,8 +1,10 @@
 /* General Styles */
+html,
 body {
     font-family: Arial, sans-serif;
     text-align: center;
     padding: 50px;
+    overflow: hidden;
 }
 
 /* Button Styling */
@@ -48,4 +50,62 @@ button {
 .hidden {
     display: none;
     /* Hides the modal initially */
+}
+
+select,
+option {
+    color: black !important;
+    background-color: white !important;
+}
+
+/* General styling for all input fields */
+input[type="text"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for focus state */
+input[type="text"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* Styling for the select dropdown */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath fill='%23007BFF' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px 14px;
+    cursor: pointer;
+}
+
+/* Styling for textarea */
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Add a label spacing */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
 }

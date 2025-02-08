@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         });
 
+        console.log('Response:', response);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
