@@ -8,8 +8,19 @@
     <title>Home Page</title>
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/Project.css">
+    <script src="/JS/Project.js"></script>
 </head>
 
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
+        <button id="addProject">Add Project</button>
+        <div id="modalOverlay" class="hidden">
+            <div class="model">
+                <h2>create new project</h2>
+                <p>Project Name</p>
+                <button id="createProjectBtn">Create</button>
+                <button id="closeModelBtn">Close</button>
+            </div>
+        </div>
+        <div id="BCover"></div>
 </body>
