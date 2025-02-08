@@ -82,11 +82,11 @@ app.get('/chats', authenticateToken, (req, res) => {
     res.render('chat');  // Changed from 'view' to 'chats'
 });
 
-app.get('/projects', authenticateToken, async (req, res) => {
+app.get('/sprojects', authenticateToken, async (req, res) => {
     if (req.user.role === "supervisor") {
         const company = await Company.find({ "members.level": "Member", email: req.user.Company_email });
         const members = company.map(c => c.members).flat();
-        res.render('project', { members });  // Changed from 'view' to 'projects'
+        res.render('sproject', { members });  // Changed from 'view' to 'projects'
     } else {
         res.redirect("/");
     }
@@ -336,17 +336,15 @@ app.post('/users', async (req, res) => {
             //console.log("ran1");
             user = u;
         });
-        console.log(user);
+        //console.log(user);
         if (user.role === "supervisor") {
             const USuper = await Company.findOne({ "supervisors._id": user.id })
             sup = USuper.supervisors.length;
 
             for (let i = 0; i < sup; i++) {
                 if (USuper.supervisors[i]._id == user.id) {
-                    console.log("ran1");
                     let US = USuper.supervisors.find(sup => sup._id.toString() === user.id);
                     req.session.Info = US;
-                    console.log(US);
                     return res.json({ supervisor: US });
                 }
             }
@@ -358,7 +356,6 @@ app.post('/users', async (req, res) => {
                 if (Umem.members[i]._id == user.id) {
                     console.log("ran1");
                     let UM = Umem.members.find(sup => sup._id.toString() === user.id);
-                    console.log("UM " + UM);
                     req.session.Info = UM;
                     return res.json({ member: UM });
                 }
@@ -444,8 +441,45 @@ app.post("/upload-profile", async (req, res) => {
 
 
 app.post('/addProject', async (req, res) => {
-    console.log(req.body);
+    try {
+        let mem = []
+        const { projectName, projectDescription, projectStartDate, projectDeadline, projectStatus, members } = req.body;
+        for (let i = 0; i < members.length; i++) {
 
+            console.log(mem);
+        }
+        mem = await Company.find(
+            { "members.email": { $in: members } },
+            {
+                _id: 1,
+                name: 1,
+                members: {
+                    $filter: {
+                        input: "$members",
+                        as: "member",
+                        cond: { $in: ["$$member.email", members] }
+                    }
+                }
+            }
+        );
+        console.log(JSON.stringify(mem, null, 2));
+
+        /*const newProject = new Project({
+            name: projectName,
+            description: projectDescription,
+            startDate: projectStartDate,
+            deadline: projectDeadline,
+            status: projectStatus,
+            members: members
+        });
+
+        await newProject.save();
+        res.status(201).send({ message: 'Project data added successfully', newProject });
+        */
+    } catch (error) {
+        console.error('Error saving data:', error);
+        res.status(500).send({ message: 'An error occurred while saving the data', error });
+    }
 });
 
 

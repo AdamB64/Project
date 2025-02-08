@@ -7,6 +7,7 @@ const ProjectSchema = new mongoose.Schema({
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     status: { type: String, required: true },
+    companyEmail: { type: String, required: true },
     members: [
         {
             level: { type: String, required: true, },
