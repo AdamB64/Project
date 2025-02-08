@@ -33,7 +33,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'view'));  // Make sure this matches your actual directory name
 
 // Serve static files
-app.use('/css', express.static(path.join(__dirname, 'CSS')));
+app.use('/CSS', express.static(path.join(__dirname, 'CSS')));
 app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
