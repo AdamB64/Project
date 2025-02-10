@@ -3,6 +3,7 @@ html {
     justify-content: center;
     text-align: center;
     height: 100vh;
+    background-color: #06a2d1;
     /* Ensures the body doesn't scroll */
 }
 
