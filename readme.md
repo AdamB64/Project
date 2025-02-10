@@ -11,7 +11,6 @@ A web-based project management system that allows users to create, manage, and t
 - [Installation](#installation)
 - [Usage](#usage)
 - [Scripts](#scripts)
-- [License](#license)
 
 ## Overview
 
