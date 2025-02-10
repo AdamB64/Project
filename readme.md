@@ -118,7 +118,7 @@ Example Routes in server.js:
 /create - Project creation page for supervisors.
 /user - Displays user-specific data.
 
-## script:
+## Scripts:
 sudo apt-get update
 sudo apt-get install git-all
 node --version
