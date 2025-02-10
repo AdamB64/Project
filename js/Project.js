@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("Project.js Loaded!");
     const openModalBtn = document.getElementById("addProject");
     const modalOverlay = document.getElementById("modalOverlay");
     const closeModalBtn = document.getElementById("closeModelBtn");
@@ -20,9 +19,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Handle "Create New Project"
     createProjectBtn.addEventListener("click", function () {
-        alert("New Project Created!");
-        cover.classList.remove("cover");
-        modalOverlay.classList.add("hidden");
+        // Collect all required fields
+        const projectName = document.getElementById("projectName").value.trim();
+        const projectDescription = document.getElementById("projectDescription").value.trim();
+        const projectStartDate = document.getElementById("projectStartDate").value.trim();
+        const projectDeadline = document.getElementById("projectDeadline").value.trim();
+        const projectStatus = document.getElementById("projectStatus").value.trim();
+        const projectDropDown = document.getElementById("projectDropDown");
+
+        if (!projectName || !projectDescription || !projectStartDate || !projectDeadline || !projectStatus || projectDropDown.selectedIndex === 0) {
+            alert("Please fill in all fields and select a project member.");
+            return;
+        } else {
+            cover.classList.remove("cover");
+            modalOverlay.classList.add("hidden");
+        }
     });
 });
 
@@ -52,7 +63,7 @@ function addMember() {
         // Create a hidden input field to submit the value
         var hiddenInput = document.createElement("input");
         hiddenInput.type = "hidden";
-        hiddenInput.name = "members[]"; // Allow multiple selections
+        hiddenInput.name = "members"; // Allow multiple selections
         hiddenInput.value = selectedValue;
         listItem.appendChild(hiddenInput);
 
@@ -69,3 +80,43 @@ function addMember() {
         alert("Please select a member first!");
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("projectForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+
+        // Debugging: Check form fields before adding custom data
+        let project = {};
+        let mem = [];
+        for (let [key, value] of formData.entries()) {
+            if (key === "members") {
+                mem.push(value);
+            } else {
+                project[key] = value;
+            }
+        }
+        project["members"] = mem;
+        //console.log(project);
+
+        jsonData = JSON.stringify(project);
+        //console.log(jsonData);
+
+        fetch("/addProject", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: jsonData,
+        })
+            .then(response => {
+                console.log(response);
+                alert("Project created successfully!");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Failed to create project.");
+            });
+    });
+});

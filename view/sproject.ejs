@@ -16,14 +16,15 @@
         <button id="addProject">Add Project</button>
         <div id="modalOverlay" class="hidden">
             <div class="model">
-                <h2>create new project</h2>
-                <p>Project Name</p>
-                <form action="/addProject" method="POST">
-                    <p>Input the details about the project</p>
+                <h3>create new project</h3>
+                <form id="projectForm">
+                    <p>Project Name and description</p>
                     <input type="text" name="projectName" id="projectName" required>
                     <input type="text" name="projectDescription" id="projectDescription" required>
+                    <p>project start and end dates</p>
                     <input type="date" name="projectStartDate" id="projectStartDate" required>
                     <input type="date" name="projectDeadline" id="projectDeadline" required>
+                    <p>project status</p>
                     <input type="text" name="projectStatus" id="projectStatus" required>
                     <p>Group Members</p>
                     <select id="projectDropDown">
@@ -38,7 +39,7 @@
                     <button type="button" onclick="addMember()">add</button>
                     <list id="memberList"></list>
                     <br>
-                    <button type="submit">Create</button>
+                    <button id="createProjectBtn">Create</button>
                 </form>
                 <br>
                 <br>

@@ -442,12 +442,10 @@ app.post("/upload-profile", async (req, res) => {
 
 app.post('/addProject', async (req, res) => {
     try {
+        //console.log(req.body);
         let mem = []
         const { projectName, projectDescription, projectStartDate, projectDeadline, projectStatus, members } = req.body;
-        for (let i = 0; i < members.length; i++) {
-
-            console.log(mem);
-        }
+        //console.log(projectName + " " + projectDescription + " " + projectStartDate + " " + projectDeadline + " " + projectStatus + " " + members);
         mem = await Company.find(
             { "members.email": { $in: members } },
             {
@@ -462,20 +460,58 @@ app.post('/addProject', async (req, res) => {
                 }
             }
         );
-        console.log(JSON.stringify(mem, null, 2));
 
-        /*const newProject = new Project({
+
+        const me = mem.flatMap(m => m.members);
+        let member = me.map(({ level, firstName, lastName, email, profile }) => ({ level, firstName, lastName, email, profile }));
+        const com = await Company.findOne({ "members.email": member[0].email });
+
+
+        const UToken = req.cookies?.token;
+        let user = null;
+        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+            if (err) {
+                return res.status(403).json({ message: "Forbidden: Invalid token" });
+            }
+            //console.log("ran1");
+            user = u;
+        });
+        //console.log(user);
+        const company = await Company.findOne({ email: user.Company_email }).lean();
+        //console.log(company)
+        const supervisor = company.supervisors.find(sup => sup._id.toString() === user.id);
+        //console.log(supervisor)
+        // Ensure members is an array
+        const membersArray = Array.isArray(member) ? [...member] : [];
+
+        // Add supervisor as a new entry, not overwriting existing members
+        const superMember = {
+            level: supervisor.level,
+            firstName: supervisor.firstName,
+            lastName: supervisor.lastName,
+            email: supervisor.email,
+            profile: supervisor.profile
+        };
+
+        // Push supervisor into the array
+        membersArray.push(superMember);
+
+        //console.log("Final Members:", membersArray);
+
+
+        const newProject = new Project({
             name: projectName,
             description: projectDescription,
             startDate: projectStartDate,
-            deadline: projectDeadline,
+            endDate: projectDeadline,
             status: projectStatus,
-            members: members
+            companyEmail: com.email,
+            members: membersArray
         });
+        //console.log("project" + newProject);
 
         await newProject.save();
         res.status(201).send({ message: 'Project data added successfully', newProject });
-        */
     } catch (error) {
         console.error('Error saving data:', error);
         res.status(500).send({ message: 'An error occurred while saving the data', error });
