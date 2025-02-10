@@ -97,7 +97,8 @@ app.get('/sprojects', authenticateToken, async (req, res) => {
             user = u;
         });
         const projects = await Project.find({ "companyEmail": user.Company_email });
-        console.log(projects);
+        //console.log(projects);
+
         const company = await Company.find({ "members.level": "Member", email: req.user.Company_email });
         const members = company.map(c => c.members).flat();
         res.render('sproject', { members, project: projects });  // Changed from 'view' to 'projects'
