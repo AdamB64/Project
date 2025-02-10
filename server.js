@@ -84,9 +84,23 @@ app.get('/chats', authenticateToken, (req, res) => {
 
 app.get('/sprojects', authenticateToken, async (req, res) => {
     if (req.user.role === "supervisor") {
+        let user
+        const UToken = req.cookies?.token;
+        if (!UToken) {
+            return res.status(401).json({ message: "Unauthorized: No token provided" });
+        }
+
+        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+            if (err) {
+                return res.status(403).json({ message: "Forbidden: Invalid token" });
+            }
+            user = u;
+        });
+        const projects = await Project.find({ "companyEmail": user.Company_email });
+        console.log(projects);
         const company = await Company.find({ "members.level": "Member", email: req.user.Company_email });
         const members = company.map(c => c.members).flat();
-        res.render('sproject', { members });  // Changed from 'view' to 'projects'
+        res.render('sproject', { members, project: projects });  // Changed from 'view' to 'projects'
     } else {
         res.redirect("/");
     }

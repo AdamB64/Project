@@ -2,6 +2,8 @@
 html {
     justify-content: center;
     text-align: center;
+    height: 100vh;
+    /* Ensures the body doesn't scroll */
 }
 
 /* Button Styling */
@@ -127,4 +129,97 @@ label {
 
 .memberList button {
     margin: 5px;
+}
+
+.wrapper {
+    margin-top: 25px;
+    width: 60%;
+    margin-left: 20%;
+    margin-right: 20%;
+    max-width: 900px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* The Scrollable Project Container */
+.project-container {
+    width: 100%;
+    max-height: 400px;
+    /* Adjust height to fit your design */
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+/* Individual Project Boxes */
+.project-box {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    position: relative;
+    /* Allows absolute positioning for the badge */
+    transition: transform 0.2s ease-in-out;
+}
+
+.project-box:hover {
+    transform: scale(1.03);
+}
+
+.project-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.project-details {
+    font-size: 14px;
+    color: #555;
+    margin-top: 5px;
+}
+
+.project-dates {
+    font-size: 12px;
+    color: #777;
+    margin-top: 5px;
+}
+
+.project-status {
+    font-weight: bold;
+    margin-top: 10px;
+    color: green;
+}
+
+.project-company {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Member Count Badge */
+.member-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff5733;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: bold;
 }

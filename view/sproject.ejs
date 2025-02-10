@@ -5,7 +5,7 @@
     <link rel="icon" type="image/png" href="/images/icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Project Page</title>
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/Project.css">
     <script src="/JS/Project.js"></script>
@@ -47,7 +47,33 @@
             </div>
         </div>
         <div id="BCover"></div>
-        <div>
-
+        <div class="wrapper">
+            <h1>Project Dashboard</h1>
+            <div class="project-container">
+                <% project.forEach(proj=> { %>
+                    <div class="project-box">
+                        <div class="member-badge">
+                            <%= proj.members.length %> Members
+                        </div> <!-- Badge at Top Right -->
+                        <div class="project-title">
+                            <%= proj.name %>
+                        </div>
+                        <div class="project-details">
+                            <%= proj.description %>
+                        </div>
+                        <div class="project-dates">
+                            <strong>Start:</strong>
+                            <%= new Date(proj.startDate).toDateString() %><br>
+                                <strong>End:</strong>
+                                <%= new Date(proj.endDate).toDateString() %>
+                        </div>
+                        <div class="project-status">Status: <%= proj.status %>
+                        </div>
+                        <div class="project-company">Company: <%= proj.companyEmail %>
+                        </div>
+                        <button></button>
+                    </div>
+                    <% }) %>
+            </div>
         </div>
 </body>
