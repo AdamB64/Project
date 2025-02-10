@@ -97,8 +97,37 @@ This application serves as a platform for project management, offering functiona
 
 ## Usage
 
-This project includes multiple features for supervisors and members:
+The application supports the following functionalities:
 
-Supervisors: Create projects, invite members, and manage users.
-Members: View assigned projects and manage tasks.
-Authentication: Secure login using JWT tokens.
+Supervisors:
+Create projects.
+Invite members to their company.
+Manage members and track project progress.
+
+Members:
+View assigned projects.
+Manage tasks and update progress.
+
+General:
+Secure login using JWT authentication.
+Profile management with optional image uploads.
+
+Example Routes in server.js:
+/ - Renders the start page.
+/login - User login page.
+/home - Dashboard for authenticated users.
+/create - Project creation page for supervisors.
+/user - Displays user-specific data.
+
+## script:
+sudo apt-get update
+sudo apt-get install git-all
+node --version
+sudo apt install curl
+curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash 
+sudo apt-get install -y nodejs
+git clone https://AdamB64:(githubtoken)@github.com/AdamB64/Project.git
+ls
+cd Project
+npm ci
+npm start
