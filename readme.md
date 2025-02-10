@@ -119,6 +119,7 @@ Example Routes in server.js:
 /user - Displays user-specific data.
 
 ## Scripts:
+```bash
 sudo apt-get update
 sudo apt-get install git-all
 node --version
