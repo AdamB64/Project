@@ -16,6 +16,18 @@
             <!-- Chat Messages -->
             <div class="chat-container" id="chat-box">
                 <!-- Messages will go here -->
+                <% msg.forEach(function(message) { %>
+                    <div class="message <%= msg.sender == user._id ? 'sent' : 'received' %>">
+                        <p id="time/date">
+                            <%= message.timestamp %>
+                        </p>
+                        <strong>
+                            <%= message.sender==user._id ? "You" : chatter.firstName %>:
+                        </strong>
+                        <%= message.sender %>
+                            <%= message.message %>
+                    </div>
+                    <% }); %>
             </div>
 
             <!-- Chat Form -->

@@ -136,10 +136,6 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
     const com = await Company.findOne({ "members._id": req.params.id });
     const Chatuser = com.members.find(mem => mem._id.toString() === req.params.id);
     const UToken = req.cookies?.token;
-    if (!UToken) {
-        return res.status(401).json({ message: "Unauthorized: No token provided" });
-    }
-    //console.log(UToken);
 
     let user = null;
     jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
@@ -158,7 +154,13 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
         chatter = c.members.find(mem => mem._id.toString() === req.user.id);
     }
 
-    res.render('chat', { user: Chatuser, chatter: chatter });
+    const m = await Chat.find({ "users.id": Chatuser._id, "users.id": chatter._id });
+    let msg = m.flatMap(m => m.input);
+
+    // Process timestamps
+    console.log(msg);
+
+    res.render('chat', { user: Chatuser, chatter: chatter, msg: msg });
 });
 
 //middleware function to check token of users
@@ -567,13 +569,12 @@ app.post('/addProject', async (req, res) => {
 
 app.post('/addChat', async (req, res) => {
     try {
-        const { user, message, time, profile, chatter } = req.body;
+        const { user, message, time, profile, chatter, date } = req.body;
 
 
         //check if a chat already exists between the two users
         let existingChat = await Chat.findOne({ "users.id": user, "users.id": chatter });
         if (!existingChat) {
-            console.log("No chat found");
 
             const newChat = new Chat({
                 users: [
@@ -584,15 +585,15 @@ app.post('/addChat', async (req, res) => {
                     profile: profile,
                     sender: user,
                     message: message,
-                    timestamp: time
+                    timestamp: time,
+                    date: date
                 }
             });
             await newChat.save();
         } else {
-            console.log("Chat found");
             await Chat.findOneAndUpdate(
                 { "users.id": user, "users.id": chatter },
-                { $push: { input: { profile: profile, sender: user, message: message, timestamp: time } } },
+                { $push: { input: { profile: profile, sender: user, message: message, timestamp: time, date: date } } },
                 { new: true, runValidators: true }
             );
         }

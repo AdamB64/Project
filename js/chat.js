@@ -7,6 +7,15 @@ function getCurrentTime() {
     return `${hours}:${minutes}:${seconds}`;
 }
 
+function getCurrentDate() {
+    const now = new Date();
+    const year = now.getFullYear().toString(); // Get year (YYYY)
+    const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Get month (01-12)
+    const day = now.getDate().toString().padStart(2, '0'); // Get date (01-31)
+
+    return `${year}-${month}-${day}`;
+}
+
 document.getElementById("form").addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -16,7 +25,8 @@ document.getElementById("form").addEventListener("submit", function (event) {
     const profile = window.chatData.user.profile;
     const message = formData.get("msg");
     const time = getCurrentTime();
-    let data = { user, message, time, profile, chatter };
+    const date = getCurrentDate();
+    let data = { user, message, time, profile, chatter, date };
     data = JSON.stringify(data);
     const msg = document.getElementById("msg");
     msg.value = "";

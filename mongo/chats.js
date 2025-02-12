@@ -9,7 +9,8 @@ const chatSchema = new mongoose.Schema({
             profile: { type: String, required: true },
             sender: { type: String, required: true },
             message: { type: String, required: true },
-            timestamp: { type: String, required: true }
+            timestamp: { type: String, required: true },
+            date: { type: String, required: true }
         }
     ]
 });
