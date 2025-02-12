@@ -1,10 +1,12 @@
 const express = require('express');
 const session = require('express-session');
+const mongoose = require('./mongo/mongo.js');
 const path = require('path');
 const app = express();
 const PORT = 3000;
 const Company = require('./mongo/company.js');
 const Project = require('./mongo/project.js');
+const Chat = require('./mongo/chats.js');
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
@@ -79,7 +81,7 @@ app.get('/home', authenticateToken, (req, res) => {
 });
 
 app.get('/chats', authenticateToken, (req, res) => {
-    res.render('chat');  // Changed from 'view' to 'chats'
+    res.render('chats');  // Changed from 'view' to 'chats'
 });
 
 app.get('/sprojects', authenticateToken, async (req, res) => {
@@ -128,6 +130,35 @@ app.get('/invite', authenticateToken, (req, res) => {
     else {
         res.redirect("/");
     }
+});
+
+app.get('/chat/:id', authenticateToken, async (req, res) => {
+    const com = await Company.findOne({ "members._id": req.params.id });
+    const Chatuser = com.members.find(mem => mem._id.toString() === req.params.id);
+    const UToken = req.cookies?.token;
+    if (!UToken) {
+        return res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
+    //console.log(UToken);
+
+    let user = null;
+    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        //console.log("ran1");
+        user = u;
+    });
+    let chatter
+    if (user.role === "supervisor") {
+        const c = await Company.findOne({ "supervisors._id": req.user.id });
+        chatter = c.supervisors.find(sup => sup._id.toString() === req.user.id);
+    } else if (user.role === "member") {
+        const c = await Company.findOne({ "members._id": req.user.id });
+        chatter = c.members.find(mem => mem._id.toString() === req.user.id);
+    }
+
+    res.render('chat', { user: Chatuser, chatter: chatter });
 });
 
 //middleware function to check token of users
@@ -533,6 +564,44 @@ app.post('/addProject', async (req, res) => {
     }
 });
 
+
+app.post('/addChat', async (req, res) => {
+    try {
+        const { user, message, time, profile, chatter } = req.body;
+
+
+        //check if a chat already exists between the two users
+        let existingChat = await Chat.findOne({ "users.id": user, "users.id": chatter });
+        if (!existingChat) {
+            console.log("No chat found");
+
+            const newChat = new Chat({
+                users: [
+                    { id: chatter },
+                    { id: user }
+                ],
+                input: {
+                    profile: profile,
+                    sender: user,
+                    message: message,
+                    timestamp: time
+                }
+            });
+            await newChat.save();
+        } else {
+            console.log("Chat found");
+            await Chat.findOneAndUpdate(
+                { "users.id": user, "users.id": chatter },
+                { $push: { input: { profile: profile, sender: user, message: message, timestamp: time } } },
+                { new: true, runValidators: true }
+            );
+        }
+    }
+    catch (error) {
+        console.error('Error saving data:', error);
+        res.status(500).send({ message: 'An error occurred while saving the data', error });
+    }
+});
 
 
 

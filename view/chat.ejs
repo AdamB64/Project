@@ -5,12 +5,44 @@
     <link rel="icon" type="image/png" href="/images/icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Chat Page</title>
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/Chat.css">
 </head>
 
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
+        <div id="main">
+            <!-- Chat Messages -->
+            <div class="chat-container" id="chat-box">
+                <!-- Messages will go here -->
+            </div>
 
+            <!-- Chat Form -->
+            <form id="form" class="chat-form">
+                <input type="text" id="msg" name="msg" placeholder="Type your message here" required>
+                <button type="submit" id="send">Send</button>
+            </form>
+        </div>
+        <script>
+            window.chatData = {
+                user: {
+                    level: "<%= user.level %>",
+                    firstName: "<%= user.firstName %>",
+                    lastName: "<%= user.lastName %>",
+                    email: "<%= user.email %>",
+                    role: "<%= user.role %>",
+                    profile: "<%= user.profile %>",
+                    _id: "<%= user._id %>"
+                },
+                chatter: {
+                    lastName: "<%= chatter.lastName %>",
+                    email: "<%= chatter.email %>",
+                    role: "<%= chatter.role %>",
+                    profile: "<%= chatter.profile %>",
+                    _id: "<%= chatter._id %>"
+                }
+            };
+        </script>
+        <script src="/js/chat.js"></script>
 </body>

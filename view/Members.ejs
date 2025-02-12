@@ -30,7 +30,13 @@
                     <p><strong>Role:</strong>
                         <%= member.role %>
                     </p>
-                    <button class="button"></button>
+                    <button class="button" onClick="ChatUser('<%= member._id %>')">chat with user</button>
+                    <script>
+                        function ChatUser(users) {
+                            window.location.href = `/chat/${users}`;
+                        }
+
+                    </script>
                 </div>
                 <% }) %>
         </div>

@@ -1,6 +1,7 @@
 /* CSS Reset */
 html,
 body {
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -11,7 +12,7 @@ body {
 
 /* Header Styles */
 #HD {
-    height: 12%;
+    height: 15%;
     position: fixed;
     top: 0;
     left: 0;
@@ -23,6 +24,7 @@ body {
     box-sizing: border-box;
     /* Include padding in the element's width */
     z-index: 1000;
+    margin-bottom: 20%;
 }
 
 .header-content {
@@ -54,16 +56,14 @@ body {
     flex: 1;
     /* Allow the nav to adjust dynamically */
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
 }
 
 #HDList {
-    font-size: 3rem;
+    font-size: 2.5rem;
     list-style: none;
-    padding: 0;
-    margin: 0;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     /* Align items to the right */
     flex-wrap: wrap;
     /* Wrap items on smaller screens */
@@ -95,7 +95,7 @@ body {
 
 /* Prevent content overlap */
 body {
-    padding-top: 70px;
+    padding-top: 100px;
 }
 
 /* Media Query for Small Screens */
