@@ -156,10 +156,18 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
         chatter = c.members.find(mem => mem._id.toString() === req.user.id);
     }
 
-    const m = await Chat.find({ "users.id": Chatuser._id, "users.id": chatter._id });
-    let msg = m.flatMap(m => m.input);
+    let msg;
 
-    // Process timestamps
+    let existingChat = await Chat.findOne({ "users.id": chatter._id, "users.id": Chatuser._id });
+    if (existingChat) {
+
+        const m = await Chat.findOne({ "users.id": chatter._id, "users.id": Chatuser._id });
+        console.log(m);
+        msg = m.input;
+    } else {
+        console.log("no chat");
+        msg = [];
+    }
 
     res.render('chat', { user: chatter, chatter: Chatuser, msg: msg });
 });
