@@ -133,8 +133,8 @@ app.get('/invite', authenticateToken, (req, res) => {
 });
 
 app.get('/chat/:id', authenticateToken, async (req, res) => {
-    const com = await Company.findOne({ "members._id": req.params.id });
-    const Chatuser = com.members.find(mem => mem._id.toString() === req.params.id);
+    const com = await Company.findOne({ "members._id": req.params.id }) || await Company.findOne({ "supervisors._id": req.params.id });
+    let Chatuser = com.members.find(mem => mem._id.toString() === req.params.id) || com.supervisors.find(sup => sup._id.toString() === req.params.id);
     const UToken = req.cookies?.token;
 
     let user = null;
