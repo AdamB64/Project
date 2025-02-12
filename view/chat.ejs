@@ -5,7 +5,10 @@
     <link rel="icon" type="image/png" href="/images/icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Page</title>
+    <title>Chat with <%= chatter.level=="Supervisor" ? chatter.level:"" %>
+            <%= chatter.firstName %>
+                <%= chatter.lastName %>
+    </title>
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/Chat.css">
 </head>
@@ -17,15 +20,20 @@
             <div class="chat-container" id="chat-box">
                 <!-- Messages will go here -->
                 <% msg.forEach(function(message) { %>
-                    <div class="message <%= msg.sender == user._id ? 'sent' : 'received' %>">
-                        <p id="time/date">
+                    <div class="message-container <%= message.sender == user._id ? 'sent' : 'received' %>">
+                        <p class="message-time">
                             <%= message.timestamp %>
                         </p>
-                        <strong>
-                            <%= message.sender==user._id ? "You" : chatter.firstName %>:
-                        </strong>
-                        <%= message.sender %>
-                            <%= message.message %>
+                        <div class="message-content">
+                            <img src="<%= message.sender == user._id ? user.profile : chatter.profile %>"
+                                alt="Profile Picture" class="message-profile">
+                            <strong class="message-sender">
+                                <%= message.sender==user._id ? "You" : chatter.firstName %>:
+                            </strong>
+                            <span class="message-text">
+                                <%= message.message %>
+                            </span>
+                        </div>
                     </div>
                     <% }); %>
             </div>

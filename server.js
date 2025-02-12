@@ -135,6 +135,7 @@ app.get('/invite', authenticateToken, (req, res) => {
 app.get('/chat/:id', authenticateToken, async (req, res) => {
     const com = await Company.findOne({ "members._id": req.params.id }) || await Company.findOne({ "supervisors._id": req.params.id });
     let Chatuser = com.members.find(mem => mem._id.toString() === req.params.id) || com.supervisors.find(sup => sup._id.toString() === req.params.id);
+    //console.log("chatuser" + Chatuser);
     const UToken = req.cookies?.token;
 
     let user = null;
@@ -145,7 +146,8 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
         //console.log("ran1");
         user = u;
     });
-    let chatter
+    let chatter;
+    //console.log("user " + user.role);
     if (user.role === "supervisor") {
         const c = await Company.findOne({ "supervisors._id": req.user.id });
         chatter = c.supervisors.find(sup => sup._id.toString() === req.user.id);
@@ -158,9 +160,8 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
     let msg = m.flatMap(m => m.input);
 
     // Process timestamps
-    console.log(msg);
 
-    res.render('chat', { user: Chatuser, chatter: chatter, msg: msg });
+    res.render('chat', { user: chatter, chatter: Chatuser, msg: msg });
 });
 
 //middleware function to check token of users
@@ -402,7 +403,6 @@ app.post('/users', async (req, res) => {
 
             for (let i = 0; i < sup; i++) {
                 if (Umem.members[i]._id == user.id) {
-                    console.log("ran1");
                     let UM = Umem.members.find(sup => sup._id.toString() === user.id);
                     req.session.Info = UM;
                     return res.json({ member: UM });
