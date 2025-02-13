@@ -602,34 +602,20 @@ app.post('/addChat', async (req, res) => {
 
 app.post('/get-messages', async (req, res) => {
     try {
-        const { user, chatter, lastMessageId } = req.body;
-
-        if (!user || !chatter) {
-            return res.status(400).json({ error: "Both user IDs are required" });
+        const { user, chatter } = req.body;
+        //console.log("user " + user + " chatter " + chatter);
+        let existingChat = await Chat.findOne({ "users.id": user, "users.id": chatter });
+        if (existingChat) {
+            const messages = await Chat.findOne({ "users.id": user, "users.id": chatter });
+            res.json(messages.input);
+        } else {
+            res.json([]);
         }
-
-        console.log(`Fetching messages between ${user} and ${chatter} after ${lastMessageId || "start"}`);
-
-        let query = {
-            $or: [
-                { sender: user, receiver: chatter },
-                { sender: chatter, receiver: user }
-            ]
-        };
-
-        if (lastMessageId) {
-            query._id = { $gt: lastMessageId };
-        }
-
-        const messages = await Message.find(query).sort({ timestamp: 1 });
-
-        res.json(messages);
-    } catch (err) {
-        console.error("Error fetching messages:", err);
-        res.status(500).json({ error: "Failed to fetch messages" });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).send({ message: 'An error occurred while fetching the data', error });
     }
 });
-
 
 
 // Start the server

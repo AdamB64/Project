@@ -58,10 +58,12 @@ $(document).ready(function () {
                 lastMessageId: lastMessageId
             }),
             success: function (response) {
+                console.log(response);
                 let shouldScroll = isScrolledToBottom();
 
                 response.forEach(function (message) {
                     if (!document.getElementById(`msg-${message._id}`)) {
+                        console.log(message);
                         let messageClass = (message.sender === window.chatData.user._id) ? 'sent' : 'received';
                         let senderName = (message.sender === window.chatData.user._id) ? 'You' : window.chatData.chatter.firstName;
                         let profileImage = (message.sender === window.chatData.user._id) ? window.chatData.user.profile : window.chatData.chatter.profile;
