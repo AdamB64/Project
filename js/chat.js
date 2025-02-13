@@ -58,7 +58,6 @@ $(document).ready(function () {
                 lastMessageId: lastMessageId
             }),
             success: function (response) {
-                console.log(response);
                 let shouldScroll = isScrolledToBottom();
 
                 response.forEach(function (message) {
