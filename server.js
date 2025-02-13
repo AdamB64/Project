@@ -80,9 +80,50 @@ app.get('/home', authenticateToken, (req, res) => {
     res.render('home', { Code: code });  // Changed from 'view' to 'home'
 });
 
-app.get('/chats', authenticateToken, (req, res) => {
-    res.render('chats');  // Changed from 'view' to 'chats'
+app.get('/chats', authenticateToken, async (req, res) => {
+    try {
+        const UToken = req.cookies?.token;
+        let user = null;
+
+        jwt.verify(UToken, process.env.JWT_SECRET, async (err, u) => {
+            if (err) {
+                return res.status(403).json({ message: "Forbidden: Invalid token" });
+            }
+            user = u;
+
+            // Fetch user's chats
+            const chats = await Chat.find({ "users.id": user.id });
+
+            let Chatuser = [];
+
+            for (let i = 0; i < chats.length; i++) {
+                let matchedUserId = chats[i].users.find(u => u.id !== user.id)?.id;
+
+                if (matchedUserId) {
+                    const com = await Company.findOne({
+                        $or: [
+                            { "members._id": matchedUserId },
+                            { "supervisors._id": matchedUserId }
+                        ]
+                    });
+
+                    if (com) {
+                        Chatuser[i] = com.members.find(mem => mem._id.toString() === matchedUserId) ||
+                            com.supervisors.find(sup => sup._id.toString() === matchedUserId) || {};
+                    } else {
+                        Chatuser[i] = {}; // Fallback value to prevent undefined issues
+                    }
+                }
+            }
+
+            res.render('chats', { chats, Chatuser });
+        });
+    } catch (error) {
+        console.error("Error fetching chats:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 });
+
 
 app.get('/sprojects', authenticateToken, async (req, res) => {
     if (req.user.role === "supervisor") {
@@ -616,6 +657,7 @@ app.post('/get-messages', async (req, res) => {
         res.status(500).send({ message: 'An error occurred while fetching the data', error });
     }
 });
+
 
 
 // Start the server

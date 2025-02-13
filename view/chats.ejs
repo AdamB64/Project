@@ -7,10 +7,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chats Page</title>
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
-    <link rel="stylesheet" href="/CSS/Chas.css">
+    <link rel="stylesheet" href="/CSS/Chats.css">
 </head>
 
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
+
+        <div class="chat-wrapper">
+
+            <!-- 1-1 Chats -->
+            <div class="chat-section">
+                <h2>1-1 Chats</h2>
+                <div class="scrollable-container">
+                    <% chats.forEach((chat, index)=> { %>
+                        <div class="chat">
+                            <h3>Chat ID: <%= chat._id %>
+                            </h3>
+                            <p><strong>Chat Partner:</strong>
+                                <%= Chatuser[index]?.firstName || "Unknown" %>
+                                    <%= Chatuser[index]?.lastName || "" %>
+                            </p>
+                            <button class="chat-button"
+                                onclick="window.location.href='/chat/<%= Chatuser[index].id %>'">Open
+                                Chat</button>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+
+            <!-- Group Chats (Empty for Now) -->
+            <div class="chat-section">
+                <h2>Group Chats</h2>
+                <div class="scrollable-container">
+                    <!-- Reserved for Group Chats -->
+                </div>
+            </div>
+
+            <!-- Project Chats (Empty for Now) -->
+            <div class="chat-section">
+                <h2>Project Chats</h2>
+                <div class="scrollable-container">
+                    <!-- Reserved for Project Chats -->
+                </div>
+            </div>
+
+        </div>
 
 </body>
