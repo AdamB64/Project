@@ -11,6 +11,9 @@
     </title>
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/Chat.css">
+
+    <!-- jQuery  -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -18,25 +21,9 @@
         <div id="main">
             <!-- Chat Messages -->
             <div class="chat-container" id="chat-box">
-                <!-- Messages will go here -->
-                <% msg.forEach(function(message) { %>
-                    <div class="message-container <%= message.sender == user._id ? 'sent' : 'received' %>">
-                        <p class="message-time">
-                            <%= message.timestamp %>
-                        </p>
-                        <div class="message-content">
-                            <img src="<%= message.sender == user._id ? user.profile : chatter.profile %>"
-                                alt="Profile Picture" class="message-profile">
-                            <strong class="message-sender">
-                                <%= message.sender==user._id ? "You" : chatter.firstName %>:
-                            </strong>
-                            <span class="message-text">
-                                <%= message.message %>
-                            </span>
-                        </div>
-                    </div>
-                    <% }); %>
+                <!-- Messages will be loaded here dynamically -->
             </div>
+
 
             <!-- Chat Form -->
             <form id="form" class="chat-form">

@@ -42,3 +42,71 @@ document.getElementById("form").addEventListener("submit", function (event) {
         console.log(json);
     });
 });
+
+
+$(document).ready(function () {
+    let lastMessageId = null; // Store last message ID to avoid duplicate messages
+
+    function fetchMessages() {
+        $.ajax({
+            url: '/get-messages',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                user: window.chatData.user._id,
+                chatter: window.chatData.chatter._id,
+                lastMessageId: lastMessageId
+            }),
+            success: function (response) {
+                let shouldScroll = isScrolledToBottom();
+
+                response.forEach(function (message) {
+                    if (!document.getElementById(`msg-${message._id}`)) {
+                        let messageClass = (message.sender === window.chatData.user._id) ? 'sent' : 'received';
+                        let senderName = (message.sender === window.chatData.user._id) ? 'You' : window.chatData.chatter.firstName;
+                        let profileImage = (message.sender === window.chatData.user._id) ? window.chatData.user.profile : window.chatData.chatter.profile;
+
+                        let messageHtml = `
+                            <div class="message-container ${messageClass}" id="msg-${message._id}">
+                                <p class="message-time">${message.timestamp}</p>
+                                <div class="message-content">
+                                    <img src="${profileImage}" alt="Profile Picture" class="message-profile">
+                                    <strong class="message-sender">${senderName}:</strong>
+                                    <span class="message-text">${message.message}</span>
+                                </div>
+                            </div>`;
+
+                        $('#chat-box').append(messageHtml);
+                    }
+                });
+
+                if (shouldScroll) {
+                    scrollToBottom();
+                }
+
+                if (response.length > 0) {
+                    lastMessageId = response[response.length - 1]._id;
+                }
+            },
+            error: function (err) {
+                console.error("Error fetching messages:", err);
+            }
+        });
+    }
+
+    function isScrolledToBottom() {
+        let chatBox = document.getElementById("chat-box");
+        return chatBox.scrollHeight - chatBox.scrollTop <= chatBox.clientHeight + 50;
+    }
+
+    function scrollToBottom() {
+        let chatBox = document.getElementById("chat-box");
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Fetch messages every 3 seconds
+    setInterval(fetchMessages, 3000);
+
+    // Fetch messages on page load
+    fetchMessages();
+});

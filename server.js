@@ -156,20 +156,7 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
         chatter = c.members.find(mem => mem._id.toString() === req.user.id);
     }
 
-    let msg;
-
-    let existingChat = await Chat.findOne({ "users.id": chatter._id, "users.id": Chatuser._id });
-    if (existingChat) {
-
-        const m = await Chat.findOne({ "users.id": chatter._id, "users.id": Chatuser._id });
-        console.log(m);
-        msg = m.input;
-    } else {
-        console.log("no chat");
-        msg = [];
-    }
-
-    res.render('chat', { user: chatter, chatter: Chatuser, msg: msg });
+    res.render('chat', { user: chatter, chatter: Chatuser });
 });
 
 //middleware function to check token of users
@@ -613,6 +600,35 @@ app.post('/addChat', async (req, res) => {
 });
 
 
+app.post('/get-messages', async (req, res) => {
+    try {
+        const { user, chatter, lastMessageId } = req.body;
+
+        if (!user || !chatter) {
+            return res.status(400).json({ error: "Both user IDs are required" });
+        }
+
+        console.log(`Fetching messages between ${user} and ${chatter} after ${lastMessageId || "start"}`);
+
+        let query = {
+            $or: [
+                { sender: user, receiver: chatter },
+                { sender: chatter, receiver: user }
+            ]
+        };
+
+        if (lastMessageId) {
+            query._id = { $gt: lastMessageId };
+        }
+
+        const messages = await Message.find(query).sort({ timestamp: 1 });
+
+        res.json(messages);
+    } catch (err) {
+        console.error("Error fetching messages:", err);
+        res.status(500).json({ error: "Failed to fetch messages" });
+    }
+});
 
 
 
