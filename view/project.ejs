@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/png" href="/images/icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project</title>
+    <link rel="stylesheet" href="/CSS/project.css">
+    <link rel="stylesheet" href="/CSS/Header.css">
+    <script src="/js/project.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.min.js"></script>
+
+</head>
+
+<body>
+    <%- include('header') %>
+        <div class="content">
+            <h1>Project: <%= project.name %>
+            </h1>
+            <div class="gantt-container">
+                <svg id="gantt"></svg>
+            </div>
+        </div>
+
+
+        <script>
+            window.projectData = {
+                _id: "<%= project._id %>",
+                name: "<%= project.name %>",
+                description: "<%= project.description %>",
+                startDate: "<%= project.startDate.toISOString() %>",
+                endDate: "<%= project.endDate.toISOString() %>",
+                status: "<%= project.status %>",
+                companyEmail: "<%= project.companyEmail %>",
+                members: [],
+            };
+        </script>
+
+        <% project.members.forEach((member)=> { %>
+            <script>
+                window.projectData.members.push({
+                    level: "<%= member.level %>",
+                    email: "<%= member.email %>",
+                    firstName: "<%= member.firstName %>",
+                    lastName: "<%= member.lastName %>",
+                    profile: "<%= member.profile %>"
+                });
+            </script>
+            <% }) %>
+
+
+
+</body>
+
+</html>

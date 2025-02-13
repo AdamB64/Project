@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Page</title>
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
-    <link rel="stylesheet" href="/CSS/Project.css">
-    <script src="/JS/Project.js"></script>
+    <link rel="stylesheet" href="/CSS/SProject.css">
+    <script src="/JS/SProject.js"></script>
 </head>
 
 <body>
@@ -71,7 +71,13 @@
                         </div>
                         <div class="project-company">Company: <%= proj.companyEmail %>
                         </div>
-                        <button></button>
+                        <button onClick="project('<%= proj._id %>')">Open Project</button>
+                        <script>
+                            function project(id) {
+                                window.location.href = `/project/${id}`;
+                            }
+
+                        </script>
                     </div>
                     <% }) %>
             </div>

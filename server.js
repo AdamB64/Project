@@ -50,16 +50,15 @@ app.get('/about', (req, res) => {
     res.render('about');  // Changed from 'view' to 'about'
 });  // Add your about route here
 
-app.get('/settings', (req, res) => {
-    res.render('settings');  // Changed from 'view' to 'settings'
-});  // Add your settings route here
-
 app.get('/user', authenticateToken, (req, res) => {
     //console.log("session " + [req.session.Info]);
     const users = req.session.Info ? [req.session.Info] : [];
     res.render('user', { users: users });  // Changed from 'view' to 'user'
 });
 
+app.get('/projects', authenticateToken, async (req, res) => {
+    res.render('projects');  // Changed from 'view' to 'projects'
+});
 
 app.get('/create', (req, res) => {
     res.render('create');  // Changed from 'view' to 'create'
@@ -199,6 +198,15 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
 
     res.render('chat', { user: chatter, chatter: Chatuser });
 });
+
+app.get('/project/:id', authenticateToken, async (req, res) => {
+    const project = await Project.findById(req.params.id);
+    console.log(project);
+    res.render('project', { project });
+});
+
+
+
 
 //middleware function to check token of users
 // Middleware to protect routes
