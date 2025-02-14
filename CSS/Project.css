@@ -1,8 +1,40 @@
 .gantt-container {
-    width: 100%;
-    overflow-x: auto;
+    min-height: 200px;
+    /* Ensures visibility */
+    border: 1px solid #ddd;
+    /* Makes the container visible */
+    position: relative;
+}
+
+.no-tasks-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #888;
+    font-size: 16px;
 }
 
 svg {
     width: 100%;
+}
+
+.cover {
+    position: fixed;
+    /* Ensures it covers the screen and stays in place */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    /* Full viewport width */
+    height: 100vh;
+    /* Full viewport height */
+    background-color: rgb(33, 32, 32);
+    /* Dark background */
+    color: white;
+    /* Text color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    z-index: 9999;
 }

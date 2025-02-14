@@ -23,7 +23,6 @@ body {
     /* Use percentage-based padding for responsiveness */
     box-sizing: border-box;
     /* Include padding in the element's width */
-    z-index: 1000;
     margin-bottom: 20%;
 }
 

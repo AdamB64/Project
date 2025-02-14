@@ -21,7 +21,17 @@
             </h1>
             <div class="gantt-container">
                 <svg id="gantt"></svg>
+                <div id="no-tasks" class="no-tasks-message" style="display: none;">No tasks to display</div>
             </div>
+        </div>
+        <div>
+            <button class="button" onclick="showAddTaskModal()">Add Task</button>
+        </div>
+        <div id="cover">
+            <form>
+
+            </form>
+            <button style="display: none;" id="close" class="button" onclick="hideAddTaskModal()">Close</button>
         </div>
 
 
