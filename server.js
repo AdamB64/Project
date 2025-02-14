@@ -686,7 +686,7 @@ app.post('/get-messages', async (req, res) => {
 });
 
 app.post('/add-worker', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     const { role, firstName, lastName, email, password, type } = req.body;
     const UToken = req.cookies.token;
     let user = null;
