@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="/CSS/project.css">
     <link rel="stylesheet" href="/CSS/Header.css">
     <script src="/js/project.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.min.js"></script>
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.min.js"></script>-->
 
 </head>
 
@@ -28,9 +28,30 @@
             <button class="button" onclick="showAddTaskModal()">Add Task</button>
         </div>
         <div id="cover">
-            <form>
-
+            <form id="form" style="display: none;">
+                <h1>Create a task that will have a set start date and deadline and will have members assigned to the
+                    Task</h1>
+                <label for="taskName">Task Name:</label>
+                <input type="text" id="taskName" name="taskName" required><br>
+                <label for="taskDescription">Task Description:</label>
+                <input type="text" id="taskDescription" name="taskDescription" required><br>
+                <label for="taskStartDate">Task Start Date:</label>
+                <input type="date" id="taskStartDate" name="taskStartDate" required><br>
+                <label for="taskEndDate">Task End Date:</label>
+                <input type="date" id="taskEndDate" name="taskEndDate" required><br>
+                <label for="taskMembers">Task Members:</label>
+                <select id="taskMembers" name="taskMembers" required><br>
+                    <option value="" disabled selected>Select a member</option>
+                    <% project.members.forEach((member)=> { %>
+                        <option value="<%= member.email %>">
+                            <%= member.firstName %>
+                                <%= member.lastName %>
+                        </option>
+                        <% }) %>
+                </select>
+                <button class="button" onclick="addTask()">Add Task</button>
             </form>
+            <br>
             <button style="display: none;" id="close" class="button" onclick="hideAddTaskModal()">Close</button>
         </div>
 

@@ -30,17 +30,21 @@ document.addEventListener("DOMContentLoaded", function () {
 function showAddTaskModal() {
     //console.log("Showing add task modal");
     const close = document.getElementById("close");
+    const form = document.getElementById("form");
     const cover = document.getElementById("cover")
     //console.log(cover);
+    form.style.display = "block";
     close.style.display = "flex";
     cover.classList.add("cover");
 }
 
 function hideAddTaskModal() {
     //console.log("Hiding add task modal");
+    const form = document.getElementById("form");
     const close = document.getElementById("close");
     const cover = document.getElementById("cover")
     //console.log(cover);
+    form.style.display = "none";
     close.style.display = "none";
     cover.classList.remove("cover");
 }
