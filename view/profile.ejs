@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/png" href="/images/icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>profile of <%= worker.firstName %>
+    </title>
+    <link rel="stylesheet" href="/CSS/profile.css">
+    <link rel="stylesheet" href="/CSS/Header.css">
+</head>
+
+<body>
+    <%- include('header') %> <!-- This includes the header.html content -->
+        <div class="container">
+            <h1>Profile</h1>
+            <img src="<%= worker.profile %>" alt=" User Image" class="user-image" id="profileImage">
+            <p><strong>First Name:</strong>
+                <%= worker.firstName %>
+            </p>
+            <p><strong>Last Name:</strong>
+                <%= worker.lastName %>
+            </p>
+            <p><strong>Email:</strong>
+                <%= worker.email %>
+            </p>
+            <p><strong>Role:</strong>
+                <%= worker.role %>
+            </p>
+            <br>
+            <br>
+            <button onclick="chat('<%= worker._id %>')">Chat</button>
+            <script>
+                function chat(id) {
+                    window.location.href = `/chat/${id}`;
+                }
+            </script>
+        </div>
+
+
+</body>
+
+</html>

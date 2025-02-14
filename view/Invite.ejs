@@ -7,15 +7,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invite Page</title>
     <link rel="stylesheet" href="/CSS/Header.css">
+    <link rel="stylesheet" href="/CSS/Invite.css">
+    <script src="/js/invite.js"></script>
 </head>
 
 <body>
     <%- include('header') %>
 
-        <main>
-            <h1>Welcome to the Invite Page</h1>
-            <p>This is the Invite page content.</p>
-        </main>
+        <form id="form">
+            <div class="container">
+                <h1>Invite</h1>
+                <p>Enter the role,first, last name and email of the person you want to invite and set up an password for
+                    them that they can chnage at a latter date</p>
+                <hr>
+
+                <label for="role"><b>Role</b></label>
+                <input type="text" placeholder="Enter Role" name="role" required><br>
+                <label for="first"><b>First Name</b></label>
+                <input type="text" placeholder="Enter First Name" name="first" required><br>
+                <label for="last"><b>Last Name</b></label>
+                <input type="text" placeholder="Enter Last Name" name="last" required><br>
+                <label for="email"><b>Email</b></label>
+                <input type="text" placeholder="Enter Email" name="email" required><br>
+                <label for="password"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="password" required><br>
+                <label for="drop"><b>if they are a member or a supervisor</b></label>
+                <select name="drop" id="drop">
+                    <option value="member">Member</option>
+                    <option value="supervisor">Supervisor</option>
+                </select>
+
+                <br>
+                <br>
+                <button onclick="invite()" class="registerbtn">Invite</button>
+            </div>
+        </form>
 </body>
 
 </html>

@@ -1,5 +1,6 @@
 /* General Styles */
 html {
+    align-items: center;
     justify-content: center;
     text-align: center;
     height: 100vh;
@@ -155,7 +156,7 @@ h1 {
 
 /* The Scrollable Project Container */
 .project-container {
-    width: 100%;
+    width: 98%;
     height: 500px;
     /* Adjust height to fit your design */
     overflow-y: auto;

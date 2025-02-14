@@ -18,8 +18,10 @@
                 <div class="member-box">
                     <img src="<%= member.profile %>" alt="Profile Picture">
                     <h3>
-                        <%= member.firstName %>
-                            <%= member.lastName %>
+                        <a href="/profile/<%= member._id %>">
+                            <%= member.firstName %>
+                                <%= member.lastName %>
+                        </a>
                     </h3>
                     <p><strong>Email:</strong>
                         <%= member.email %>

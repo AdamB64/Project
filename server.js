@@ -56,6 +56,14 @@ app.get('/user', authenticateToken, (req, res) => {
     res.render('user', { users: users });  // Changed from 'view' to 'user'
 });
 
+app.get('/profile/:id', authenticateToken, async (req, res) => {
+    console.log(req.params.id);
+    const company = await Company.findOne({ "members._id": req.params.id }) || await Company.findOne({ "supervisors._id": req.params.id });
+    const worker = company.supervisors.find(sup => sup._id.toString() === req.params.id) || company.members.find(mem => mem._id.toString() === req.params.id);
+    console.log(worker);
+    res.render('profile', { worker });
+})
+
 app.get('/projects', authenticateToken, async (req, res) => {
     const UToken = req.cookies?.token;
     let user = null;
@@ -674,6 +682,58 @@ app.post('/get-messages', async (req, res) => {
     } catch (error) {
         console.error('Error fetching data:', error);
         res.status(500).send({ message: 'An error occurred while fetching the data', error });
+    }
+});
+
+app.post('/add-worker', async (req, res) => {
+    console.log(req.body);
+    const { role, firstName, lastName, email, password, type } = req.body;
+    const UToken = req.cookies.token;
+    let user = null;
+    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        user = u;
+    });
+    //console.log(user);
+    try {
+        const company = await Company.findOne({ email: user.Company_email });
+        if (company) {
+            const existingSupervisor = company.supervisors.find(sup => sup.email === email);
+            const existingMember = company.members.find(mem => mem.email === email);
+            if (existingSupervisor || existingMember) {
+                return res.status(400).json({ message: "Worker already exists" });
+            }
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            if (type === "supervisor") {
+                company.supervisors.push({
+                    role: role,
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    password: hashedPassword,
+                    profile: DEFAULT_PROFILE_IMAGE
+                });
+            } else if (type === "member") {
+                company.members.push({
+                    role: role,
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    password: hashedPassword,
+                    profile: DEFAULT_PROFILE_IMAGE
+                });
+            }
+            //console.log(company);
+            await company.save();
+            res.status(201).json({ success: true, message: "Worker successfully added!" });
+        } else {
+            res.status(404).json({ message: "Company not found" });
+        }
+    } catch (error) {
+        console.error('Error saving data:', error);
+        res.status(500).send({ message: 'An error occurred while saving the data', error });
     }
 });
 
