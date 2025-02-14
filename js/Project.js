@@ -34,7 +34,7 @@ function showAddTaskModal() {
     const cover = document.getElementById("cover")
     //console.log(cover);
     form.style.display = "block";
-    close.style.display = "flex";
+    close.style.display = "inline-block";
     cover.classList.add("cover");
 }
 
@@ -47,4 +47,8 @@ function hideAddTaskModal() {
     form.style.display = "none";
     close.style.display = "none";
     cover.classList.remove("cover");
-}
+};
+
+function addTask() {
+    console.log("Adding task");
+};
