@@ -13,7 +13,39 @@
 <body>
     <%- include('header') %>
         <div id="main">
+            <h1>Project Dashboard</h1>
+            <div class="project-container">
+                <% project.forEach(proj=> { %>
+                    <div class="project-box">
+                        <div class="member-badge">
+                            <%= proj.members.length %> Members
+                        </div> <!-- Badge at Top Right -->
+                        <div class="project-title">
+                            <%= proj.name %>
+                        </div>
+                        <div class="project-details">
+                            <%= proj.description %>
+                        </div>
+                        <div class="project-dates">
+                            <strong>Start:</strong>
+                            <%= new Date(proj.startDate).toDateString() %><br>
+                                <strong>End:</strong>
+                                <%= new Date(proj.endDate).toDateString() %>
+                        </div>
+                        <div class="project-status">Status: <%= proj.status %>
+                        </div>
+                        <div class="project-company">Company: <%= proj.companyEmail %>
+                        </div>
+                        <button onClick="project('<%= proj._id %>')">Open Project</button>
+                        <script>
+                            function project(id) {
+                                window.location.href = `/project/${id}`;
+                            }
 
+                        </script>
+                    </div>
+                    <% }) %>
+            </div>
         </div>
 </body>
 

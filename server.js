@@ -57,7 +57,18 @@ app.get('/user', authenticateToken, (req, res) => {
 });
 
 app.get('/projects', authenticateToken, async (req, res) => {
-    res.render('projects');  // Changed from 'view' to 'projects'
+    const UToken = req.cookies?.token;
+    let user = null;
+    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        user = u;
+    });
+    //console.log(user.email);
+    const project = await Project.find({ "members.email": user.email });
+    //console.log(project);
+    res.render('projects', { project });  // Changed from 'view' to 'projects'
 });
 
 app.get('/create', (req, res) => {
@@ -297,7 +308,7 @@ app.post('/add-company', async (req, res) => {
         //res.status(201).send({ message: 'Company data added successfully', newCompany });
         // Generate JWT Token
         const token = jwt.sign(
-            { id: newCompany.supervisors?.[0]?._id, role: "supervisor", Company_email: newCompany.email },  // Payload
+            { id: newCompany.supervisors?.[0]?._id, role: "supervisor", email: newCompany.supervisors?.[0]?.email, Company_email: newCompany.email },  // Payload
             process.env.JWT_SECRET,                      // Secret Key
             { expiresIn: "1h" }                          // Expiration Time
         );
@@ -341,7 +352,7 @@ app.post("/SLogin", async (req, res) => {
 
         // Generate JWT Token
         const token = jwt.sign(
-            { id: supervisor._id, role: "supervisor", Company_email: companyEmail },  // Payload
+            { id: supervisor._id, role: "supervisor", email: supervisor.email, Company_email: companyEmail },  // Payload
             process.env.JWT_SECRET,                      // Secret Key
             { expiresIn: "1h" }                          // Expiration Time
         );
@@ -385,7 +396,7 @@ app.post("/MLogin", async (req, res) => {
 
         // Generate JWT Token
         const Mtoken = jwt.sign(
-            { id: member._id, role: "member", Company_email: companyEmail },  // Payload
+            { id: member._id, role: "member", email: member.email, Company_email: companyEmail },  // Payload
             process.env.JWT_SECRET,                      // Secret Key
             { expiresIn: "1h" }                          // Expiration Time
         );

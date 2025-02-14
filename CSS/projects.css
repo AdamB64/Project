@@ -1,0 +1,226 @@
+/* General Styles */
+html {
+    justify-content: center;
+    text-align: center;
+    height: 100vh;
+    background-color: #43595f;
+    /* Ensures the body doesn't scroll */
+}
+
+/* Button Styling */
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#addProject {
+    margin-top: 50px;
+}
+
+.cover {
+    position: fixed;
+    /* Ensures it covers the entire viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 1000;
+    /* Lower z-index than #modalOverlay */
+}
+
+#modalOverlay {
+    position: fixed;
+    /* Ensures it stays in place above the cover */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 100%;
+    /* Centers the modal on the screen */
+    background-color: white;
+    /* Background color for the modal */
+    padding: 20px;
+    /* Adds some spacing inside the modal */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Adds a shadow for better visibility */
+    z-index: 1100;
+    /* Higher z-index than #cover */
+}
+
+.hidden {
+    display: none;
+    /* Hides the modal initially */
+}
+
+select,
+option {
+    color: black !important;
+    background-color: white !important;
+}
+
+/* General styling for all input fields */
+input[type="text"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for focus state */
+input[type="text"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* Styling for the select dropdown */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath fill='%23007BFF' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px 14px;
+    cursor: pointer;
+}
+
+/* Styling for textarea */
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Add a label spacing */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.memberList {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 100px;
+    /* Set a fixed height */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.memberList p {
+    margin: 0;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.memberList button {
+    margin: 5px;
+}
+
+.wrapper {
+    margin-top: 25px;
+    width: 60%;
+    margin-left: 20%;
+    margin-right: 20%;
+    max-width: 900px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* The Scrollable Project Container */
+.project-container {
+    width: 100%;
+    height: 500px;
+    /* Adjust height to fit your design */
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+/* Individual Project Boxes */
+.project-box {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    position: relative;
+    /* Allows absolute positioning for the badge */
+    transition: transform 0.2s ease-in-out;
+}
+
+.project-box:hover {
+    transform: scale(1.03);
+}
+
+.project-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.project-details {
+    font-size: 14px;
+    color: #555;
+    margin-top: 5px;
+}
+
+.project-dates {
+    font-size: 12px;
+    color: #777;
+    margin-top: 5px;
+}
+
+.project-status {
+    font-weight: bold;
+    margin-top: 10px;
+    color: green;
+}
+
+.project-company {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Member Count Badge */
+.member-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff5733;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: bold;
+}
