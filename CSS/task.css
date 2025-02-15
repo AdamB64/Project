@@ -95,3 +95,24 @@ input {
     }
 
 }
+
+.gantt-container {
+    min-height: 200px;
+    /* Ensures visibility */
+    border: 1px solid #ddd;
+    /* Makes the container visible */
+    position: relative;
+}
+
+.no-tasks-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #888;
+    font-size: 16px;
+}
+
+svg {
+    width: 100%;
+}

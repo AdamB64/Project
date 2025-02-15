@@ -8,7 +8,9 @@
     <title>task</title>
     <link rel="stylesheet" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/task.css">
-    <script src="/js/tasj.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.min.js"></script>
+    <script src="/js/task.js"></script>
 </head>
 
 <body>
@@ -24,7 +26,8 @@
                 </div>
 
                 <div id="ComInfo" class="tabcontent">
-
+                    <svg id="gantt"></svg>
+                    <div id="no-tasks" class="no-tasks-message" style="display: none;">No tasks to display</div>
                 </div>
 
                 <div id="Super" class="tabcontent">
@@ -36,6 +39,12 @@
                 </div>
                 <%= task %>
             </div>
+            <script>
+                window.taskData = {
+                    startDate: "<%= task.start %>",
+                    endDate: "<%= task.end %>",
+                }
+            </script>
 </body>
 
 </html>
