@@ -15,7 +15,7 @@ const cookieParser = require("cookie-parser");
 const e = require('express');
 
 //how many round should be used to generate the encrypted password
-const saltRounds = 10;
+const saltRounds = process.env.SALT;
 
 //---------------------set up app---------------------
 app.use(express.json({ limit: '16mb' }));
