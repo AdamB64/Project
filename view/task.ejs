@@ -8,13 +8,34 @@
     <title>task</title>
     <link rel="stylesheet" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/task.css">
+    <script src="/js/tasj.js"></script>
 </head>
 
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
         <div id="main">
+            <div id="content">
+                <h2 id="Help">click the tabs to see the dashboard of the task or the chats or the members in the task
+                </h2>
+                <div class="tab">
+                    <button class="tablinks" onclick="openTab(event, 'ComInfo')">Dashboard</button>
+                    <button class="tablinks" onclick="openTab(event, 'Super')">Task Chats</button>
+                    <button class="tablinks" onclick="openTab(event, 'TeamMem')">Team Memebers</button>
+                </div>
 
-        </div>
+                <div id="ComInfo" class="tabcontent">
+
+                </div>
+
+                <div id="Super" class="tabcontent">
+
+                </div>
+
+                <div id="TeamMem" class="tabcontent">
+
+                </div>
+                <%= task %>
+            </div>
 </body>
 
 </html>

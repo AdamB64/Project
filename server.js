@@ -237,10 +237,11 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
         }
         user = u;
     });
-    const tasks = await Task.find({ "members.email": user.email });
+    const tasks = await Task.find({ "projectID": req.params.id });
     //console.log(tasks);
     const renderedHTML = ejs.render(process.env.PROJECT_SUP, { project });
-    if (user.role === "supervisor") {
+    const sup = await Project.findOne({ _id: req.params.id, "members.email": user.email });
+    if (sup) {
         res.render('project', { project, tasks, HTML: renderedHTML });
     } else {
         res.render('project', { project, tasks });
@@ -793,7 +794,7 @@ app.post('/add-task', async (req, res) => {
         let memberList = [];
         for (let i = 0; i < members.length; i++) {
             let found = company.members.find(mem => mem.email === members[i]);
-            console.log("Found:", found);
+            //console.log("Found:", found);
             if (found) {
                 memberList.push(found);
             }
@@ -809,6 +810,7 @@ app.post('/add-task', async (req, res) => {
             start: taskStartDate,
             end: taskEndDate,
             projectID: url,
+            compantEmail: user.Company_email,
             members: memberList.map(member => ({
                 id: member._id,
                 level: member.level,
