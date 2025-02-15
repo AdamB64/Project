@@ -7,6 +7,7 @@ const PORT = 3000;
 const Company = require('./mongo/company.js');
 const Project = require('./mongo/project.js');
 const Chat = require('./mongo/chats.js');
+const Task = require('./mongo/task.js');
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
@@ -221,7 +222,19 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
 app.get('/project/:id', authenticateToken, async (req, res) => {
     const project = await Project.findById(req.params.id);
     //console.log(project);
-    res.render('project', { project });
+    const UToken = req.cookies?.token;
+    let user = null;
+    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        user = u;
+    });
+    if (user.role === "supervisor") {
+        res.render('project', { project, HTML: process.env.PROJECT_SUP });
+    } else {
+        res.render('project', { project });
+    }
 });
 
 
@@ -740,7 +753,7 @@ app.post('/add-worker', async (req, res) => {
 
 app.post('/add-task', async (req, res) => {
     try {
-        const { taskName, taskDescription, taskStartDate, taskEndDate, members } = req.body;
+        const { taskName, taskDescription, taskStartDate, taskEndDate, members, url } = req.body;
         const UToken = req.cookies.token;
 
         // Validate request body
@@ -767,18 +780,39 @@ app.post('/add-task', async (req, res) => {
         }
 
         // Validate Members
-        let memberList = []
+        let memberList = [];
         for (let i = 0; i < members.length; i++) {
-            console.log(members[i]);
-            memberList += company.members.find(mem => mem.email === members[i]);
+            let found = company.members.find(mem => mem.email === members[i]);
+            console.log("Found:", found);
+            if (found) {
+                memberList.push(found);
+            }
         }
-        let mmemberList = company.members.find(mem => mem.email === members[1]);
-        console.log(mmemberList);
 
-        console.log("Supervisor:", supervisor);
-        console.log("Assigned Members:", memberList);
 
-        // At this point, all checks are passed, and you can proceed with task creation.
+        memberList.push(supervisor);
+        //console.log("memberList: " + memberList);
+
+        const newTask = new Task({
+            task: taskName,
+            description: taskDescription,
+            start: taskStartDate,
+            end: taskEndDate,
+            projectID: url,
+            members: memberList.map(member => ({
+                id: member._id,
+                level: member.level,
+                firstName: member.firstName,
+                lastName: member.lastName,
+                email: member.email,
+                role: member.role,
+                profile: member.profile
+            }))
+        });
+
+        await newTask.save();
+
+        // all checks are passed so proceed with task creation.
         return res.status(200).json({ message: "Task validation successful", members: memberList });
 
     } catch (error) {

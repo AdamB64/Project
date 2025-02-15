@@ -24,66 +24,35 @@
                 <div id="no-tasks" class="no-tasks-message" style="display: none;">No tasks to display</div>
             </div>
         </div>
-        <div>
-            <button class="button" onclick="showAddTaskModal()">Add Task</button>
-        </div>
-        <div id="cover">
-            <form id="form" style="display: none;">
-                <h1>Create a task that will have a set start date and deadline and will have members assigned to the
-                    Task</h1>
-                <label for="taskName">Task Name:</label>
-                <input type="text" id="taskName" name="taskName" required><br>
-                <label for="taskDescription">Task Description:</label>
-                <input type="text" id="taskDescription" name="taskDescription" required><br>
-                <label for="taskStartDate">Task Start Date:</label>
-                <input type="date" id="taskStartDate" name="taskStartDate" required><br>
-                <label for="taskEndDate">Task End Date:</label>
-                <input type="date" id="taskEndDate" name="taskEndDate" required><br>
-                <label for="taskMembers">Task Members:</label>
-                <select id="taskMembers" name="taskMembers" required><br>
-                    <option value="" disabled selected>Select a member</option>
+        <% if (typeof HTML !=='undefined' && HTML !==null) { %>
+            <%- HTML %>
+                <% } %>
+
+
+                    <script>
+                        window.projectData = {
+                            _id: "<%= project._id %>",
+                            name: "<%= project.name %>",
+                            description: "<%= project.description %>",
+                            startDate: "<%= project.startDate.toISOString() %>",
+                            endDate: "<%= project.endDate.toISOString() %>",
+                            status: "<%= project.status %>",
+                            companyEmail: "<%= project.companyEmail %>",
+                            members: [],
+                        };
+                    </script>
+
                     <% project.members.forEach((member)=> { %>
-                        <% if (member.level !=="Supervisor" ) { %>
-                            <option value="<%= member.email %>">
-                                <%= member.firstName %>
-                                    <%= member.lastName %>
-                            </option>
-                            <% } %>
-                                <% }) %>
-                </select>
-                <button type="button" class="button" onclick="addMember()">Add selected member</button><br>
-                <list id="memberList"></list>
-                <button type="submit" class="button" type="submit">Add Task</button>
-            </form>
-            <br>
-            <button style="display: none;" id="close" class="button" onclick="hideAddTaskModal()">Close</button>
-        </div>
-
-
-        <script>
-            window.projectData = {
-                _id: "<%= project._id %>",
-                name: "<%= project.name %>",
-                description: "<%= project.description %>",
-                startDate: "<%= project.startDate.toISOString() %>",
-                endDate: "<%= project.endDate.toISOString() %>",
-                status: "<%= project.status %>",
-                companyEmail: "<%= project.companyEmail %>",
-                members: [],
-            };
-        </script>
-
-        <% project.members.forEach((member)=> { %>
-            <script>
-                window.projectData.members.push({
-                    level: "<%= member.level %>",
-                    email: "<%= member.email %>",
-                    firstName: "<%= member.firstName %>",
-                    lastName: "<%= member.lastName %>",
-                    profile: "<%= member.profile %>"
-                });
-            </script>
-            <% }) %>
+                        <script>
+                            window.projectData.members.push({
+                                level: "<%= member.level %>",
+                                email: "<%= member.email %>",
+                                firstName: "<%= member.firstName %>",
+                                lastName: "<%= member.lastName %>",
+                                profile: "<%= member.profile %>"
+                            });
+                        </script>
+                        <% }) %>
 
 
 

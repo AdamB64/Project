@@ -116,6 +116,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         task["members"] = mem;
         console.log("Task with members:", task);
+        u = window.location.href
+        const parts = u.split("/");
+        const url = parts[parts.length - 1];
+        task["url"] = url
 
         fetch('/add-task', {
             method: 'POST',
