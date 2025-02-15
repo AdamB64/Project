@@ -75,7 +75,7 @@ svg {
 }
 
 #form label {
-    font-size: 1.2rem;
+    font-size: 1rem;
     display: block;
     font-weight: bold;
     margin: 10px 0 5px;
@@ -111,6 +111,7 @@ svg {
 
 #form button {
     display: inline-block;
+    height: 40px;
     width: 100%;
     padding: 10px;
     background-color: #007bff;
@@ -119,6 +120,11 @@ svg {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+}
+
+#form li {
+    color: rgb(0, 0, 0);
+    font-size: 1rem;
 }
 
 @media (max-width: 480px) {

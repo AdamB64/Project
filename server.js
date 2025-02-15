@@ -57,10 +57,10 @@ app.get('/user', authenticateToken, (req, res) => {
 });
 
 app.get('/profile/:id', authenticateToken, async (req, res) => {
-    console.log(req.params.id);
+    //console.log(req.params.id);
     const company = await Company.findOne({ "members._id": req.params.id }) || await Company.findOne({ "supervisors._id": req.params.id });
     const worker = company.supervisors.find(sup => sup._id.toString() === req.params.id) || company.members.find(mem => mem._id.toString() === req.params.id);
-    console.log(worker);
+    //console.log(worker);
     res.render('profile', { worker });
 })
 
@@ -220,7 +220,7 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
 
 app.get('/project/:id', authenticateToken, async (req, res) => {
     const project = await Project.findById(req.params.id);
-    console.log(project);
+    //console.log(project);
     res.render('project', { project });
 });
 
@@ -736,6 +736,57 @@ app.post('/add-worker', async (req, res) => {
         res.status(500).send({ message: 'An error occurred while saving the data', error });
     }
 });
+
+
+app.post('/add-task', async (req, res) => {
+    try {
+        const { taskName, taskDescription, taskStartDate, taskEndDate, members } = req.body;
+        const UToken = req.cookies.token;
+
+        // Validate request body
+        if (!taskName || !taskDescription || !taskStartDate || !taskEndDate || !members || !Array.isArray(members)) {
+            return res.status(400).json({ message: "Invalid input data" });
+        }
+
+        // Verify JWT Token
+        let user;
+        try {
+            user = jwt.verify(UToken, process.env.JWT_SECRET);
+        } catch (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+
+        // Find the company
+        const company = await Company.findOne({ email: user.Company_email });
+
+
+        // Check if the user is a supervisor
+        const supervisor = company.supervisors.find(sup => sup._id.toString() === user.id);
+        if (!supervisor) {
+            return res.status(403).json({ message: "Unauthorized: Only supervisors can add tasks" });
+        }
+
+        // Validate Members
+        let memberList = []
+        for (let i = 0; i < members.length; i++) {
+            console.log(members[i]);
+            memberList += company.members.find(mem => mem.email === members[i]);
+        }
+        let mmemberList = company.members.find(mem => mem.email === members[1]);
+        console.log(mmemberList);
+
+        console.log("Supervisor:", supervisor);
+        console.log("Assigned Members:", memberList);
+
+        // At this point, all checks are passed, and you can proceed with task creation.
+        return res.status(200).json({ message: "Task validation successful", members: memberList });
+
+    } catch (error) {
+        console.error("Error adding task:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
 
 
 

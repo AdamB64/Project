@@ -43,13 +43,17 @@
                 <select id="taskMembers" name="taskMembers" required><br>
                     <option value="" disabled selected>Select a member</option>
                     <% project.members.forEach((member)=> { %>
-                        <option value="<%= member.email %>">
-                            <%= member.firstName %>
-                                <%= member.lastName %>
-                        </option>
-                        <% }) %>
+                        <% if (member.level !=="Supervisor" ) { %>
+                            <option value="<%= member.email %>">
+                                <%= member.firstName %>
+                                    <%= member.lastName %>
+                            </option>
+                            <% } %>
+                                <% }) %>
                 </select>
-                <button class="button" onclick="addTask()">Add Task</button>
+                <button type="button" class="button" onclick="addMember()">Add selected member</button><br>
+                <list id="memberList"></list>
+                <button type="submit" class="button" type="submit">Add Task</button>
             </form>
             <br>
             <button style="display: none;" id="close" class="button" onclick="hideAddTaskModal()">Close</button>
