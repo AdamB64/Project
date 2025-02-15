@@ -14,6 +14,7 @@ const cors = require("cors");
 const { AutoEncryptionLoggerLevel } = require('mongodb-legacy');
 const cookieParser = require("cookie-parser");
 const e = require('express');
+const ejs = require('ejs');
 
 //how many round should be used to generate the encrypted password
 const saltRounds = process.env.SALT;
@@ -55,6 +56,12 @@ app.get('/user', authenticateToken, (req, res) => {
     //console.log("session " + [req.session.Info]);
     const users = req.session.Info ? [req.session.Info] : [];
     res.render('user', { users: users });  // Changed from 'view' to 'user'
+});
+
+app.get('/task/:id', authenticateToken, async (req, res) => {
+    const task = await Task.findById(req.params.id);
+    //console.log(task);
+    res.render('task', { task });
 });
 
 app.get('/profile/:id', authenticateToken, async (req, res) => {
@@ -230,10 +237,13 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
         }
         user = u;
     });
+    const tasks = await Task.find({ "members.email": user.email });
+    //console.log(tasks);
+    const renderedHTML = ejs.render(process.env.PROJECT_SUP, { project });
     if (user.role === "supervisor") {
-        res.render('project', { project, HTML: process.env.PROJECT_SUP });
+        res.render('project', { project, tasks, HTML: renderedHTML });
     } else {
-        res.render('project', { project });
+        res.render('project', { project, tasks });
     }
 });
 

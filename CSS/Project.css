@@ -1,5 +1,7 @@
-html {
+html,
+body {
     align-items: center;
+    overflow: auto;
 }
 
 .gantt-container {
@@ -132,4 +134,86 @@ svg {
         max-width: 100%;
         padding: 15px;
     }
+}
+
+
+.container {
+    overflow: auto;
+    max-width: 900px;
+    margin: 30px auto;
+    max-height: 300px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.task-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.task-card h4 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.task-card p {
+    text-align: center;
+    margin: 5px 0;
+}
+
+.task-card strong {
+    font-weight: bold;
+}
+
+.task-card .status {
+    color: green;
+    font-weight: bold;
+    text-align: center;
+    font-size: 18px;
+}
+
+.task-card .member-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #e6613e;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.task-card button {
+    display: block;
+    width: 200px;
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #333;
+    background: white;
+    color: black;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.task-card button:hover {
+    background: black;
+    color: white;
 }

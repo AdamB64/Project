@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project</title>
-    <link rel="stylesheet" href="/CSS/project.css">
     <link rel="stylesheet" href="/CSS/Header.css">
+    <link rel="stylesheet" href="/CSS/project.css">
     <script src="/js/project.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.min.js"></script>
@@ -27,6 +27,43 @@
         <% if (typeof HTML !=='undefined' && HTML !==null) { %>
             <%- HTML %>
                 <% } %>
+                    <div class="container">
+                        <% if (Array.isArray(tasks) && tasks.length> 0) { %>
+                            <% tasks.forEach((task)=> { %>
+                                <div class="task-card position-relative">
+                                    <span class="member-badge">
+                                        <%= task.members && Array.isArray(task.members) ? task.members.length : 0 %>
+                                            Members
+                                    </span>
+                                    <h4>
+                                        <%= task.task %>
+                                    </h4>
+                                    <p>
+                                        <%= task.description %>
+                                    </p>
+                                    <p><strong>Start:</strong>
+                                        <%= task.start %>
+                                    </p>
+                                    <p><strong>End:</strong>
+                                        <%= task.end %>
+                                    </p>
+                                    <p><strong>Company:</strong>
+                                        <%= task.members && task.members.length> 0 ? task.members[0].email : "N/A" %>
+                                    </p>
+                                    <button class="btn btn-outline-dark" onclick="Task('<%= task._id %>')">Open
+                                        Task</button>
+                                </div>
+                                <script>
+                                    function Task(taskId) {
+                                        window.location.href = "/task/" + taskId;
+                                    }
+                                </script>
+                                <% }); %>
+                                    <% } else { %>
+                                        <p>No tasks available.</p>
+                                        <% } %>
+                    </div>
+
 
 
                     <script>
