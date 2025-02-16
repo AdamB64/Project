@@ -26,8 +26,6 @@ document.getElementById("form").addEventListener("submit", function (event) {
     const message = formData.get("msg");
     const time = getCurrentTime();
     const date = getCurrentDate();
-    console.log(selectedFiles);
-    console.log(user, message, time, profile, chatter, date);
     formData.append("user", user);
     formData.append("message", message)
     formData.append("time", time)
@@ -37,6 +35,11 @@ document.getElementById("form").addEventListener("submit", function (event) {
     for (let i = 0; i < selectedFiles.length; i++) {
         formData.append("files", selectedFiles[i]); // ✅ Name must match multer's "files"
     }
+
+    for (let pair of formData.entries()) {
+        console.log("loop " + pair[0] + ": " + pair[1]);
+    }
+
 
     const msg = document.getElementById("msg");
     msg.value = "";
@@ -80,16 +83,56 @@ $(document).ready(function () {
                         let senderName = (message.sender === window.chatData.user._id) ? 'You' : window.chatData.chatter.firstName;
                         let profileImage = (message.sender === window.chatData.user._id) ? window.chatData.user.profile : window.chatData.chatter.profile;
 
-                        let messageHtml = `
-                            <div class="message-container ${messageClass}" id="msg-${message._id}">
-                                <p class="message-time">${message.timestamp} <br>on the ${new Date(message.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
-                                <div class="message-content">
-                                    <img src="${profileImage}" alt="Profile Picture" class="message-profile">
-                                    <strong class="message-sender">${senderName}:</strong>
-                                    <span class="message-text">${message.message}</span>
-                                </div>
-                            </div>`;
+                        // 🔹 Check if the message has attached files
+                        let filesHtml = `<div class="message-files" id="msg-${message._id}-files"></div>`;
 
+                        if (message.file && message.file.length > 0) {
+                            // 🔹 Send POST request to get file details
+                            fetch("/getFiles", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ fileIds: message.file }),
+                            })
+                                .then(response => response.json())
+                                .then(files => {
+                                    let fileDisplayHtml = "";
+                                    files.forEach(file => {
+                                        let fileUrl = `/file/${file._id}`; // URL to fetch the file
+
+                                        if (file.contentType.startsWith("image")) {
+                                            // ✅ Display image preview
+                                            fileDisplayHtml += `<div class="file-preview">
+                                            <a href="${fileUrl}" target="_blank">
+                                                <img src="${fileUrl}" alt="Attached Image" class="chat-image">
+                                            </a>
+                                        </div>`;
+                                        } else {
+                                            // ✅ Display document download link
+                                            fileDisplayHtml += `<div class="file-download">
+                                            <a href="${fileUrl}" target="_blank" download>
+                                                📄 ${file.filename}
+                                            </a>
+                                        </div>`;
+                                        }
+                                    });
+
+                                    // 🔹 Inject files into the chat message
+                                    document.getElementById(`msg-${message._id}-files`).innerHTML = fileDisplayHtml;
+                                })
+                                .catch(err => console.error("Error fetching files:", err));
+                        }
+
+                        // 🔹 Message HTML
+                        let messageHtml = `
+        <div class="message-container ${messageClass}" id="msg-${message._id}">
+            <p class="message-time">${message.timestamp} <br>on the ${new Date(message.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+            <div class="message-content">
+                <img src="${profileImage}" alt="Profile Picture" class="message-profile">
+                <strong class="message-sender">${senderName}:</strong>
+                <span class="message-text">${message.message}</span>
+                ${filesHtml} <!-- 🔹 Placeholder for file attachments -->
+            </div>
+        </div>`;
                         $('#chat-box').append(messageHtml);
                     }
                 });

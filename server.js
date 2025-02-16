@@ -277,8 +277,9 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
     const tasks = await Task.find({ "projectID": req.params.id });
     //console.log(tasks);
     const renderedHTML = ejs.render(process.env.PROJECT_SUP, { project });
-    const sup = await Project.findOne({ _id: req.params.id, "members.email": user.email });
-    if (sup) {
+    const s = await Project.findOne({ _id: req.params.id });
+    const sup = s.members.find(mem => mem.email === user.email);
+    if (sup.level === "Supervisor") {
         res.render('project', { project, tasks, HTML: renderedHTML });
     } else {
         res.render('project', { project, tasks });
@@ -692,16 +693,13 @@ app.post('/addProject', async (req, res) => {
 });
 
 
-app.post('/addChat', async (req, res) => {
+app.post('/addChat', upload, async (req, res) => {
     try {
         const { user, message, time, profile, chatter, date } = req.body;
-        console.log("Received files:", req.files); // Debugging
-        console.log("Received body:", req.body);
+        const fileIds = req.files.map(file => file.id);
 
-        //const fileIds = req.files.map(file => file.filename); // Store filenames for retrieval
-        //console.log(fileIds);
-
-
+        // Convert to JSON string for proper display
+        //console.log(JSON.stringify(req.files, null, 2));
 
         //check if a chat already exists between the two users
         let existingChat = await Chat.findOne({ "users.id": user, "users.id": chatter });
@@ -717,6 +715,7 @@ app.post('/addChat', async (req, res) => {
                     sender: user,
                     message: message,
                     timestamp: time,
+                    file: fileIds,
                     date: date
                 }
             });
@@ -901,7 +900,33 @@ app.post('/update-task/:id', async (req, res) => {
         console.error("Error updating task:", error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
+
+
+app.post("/getFiles", async (req, res) => {
+    try {
+        const { fileIds } = req.body; // Get file IDs from request
+
+        if (!fileIds || !Array.isArray(fileIds)) {
+            return res.status(400).json({ error: "Invalid file IDs" });
+        }
+
+        // Retrieve files from GridFS
+        const files = await gfs.files.find({ _id: { $in: fileIds.map(id => new mongoose.Types.ObjectId(id)) } }).toArray();
+
+        if (!files || files.length === 0) {
+            return res.status(404).json({ error: "No files found" });
+        }
+
+        res.json(files); // Send file details back
+    } catch (error) {
+        console.error("Error retrieving files:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+
+
 
 
 // Start the server
