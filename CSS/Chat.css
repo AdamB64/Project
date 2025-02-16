@@ -7,6 +7,8 @@ body {
     font-family: Arial, sans-serif;
 }
 
+
+
 /* Main Chat Container */
 .chat-container {
     display: flex;
@@ -105,50 +107,90 @@ body {
     /* Ensures text starts at the left */
 }
 
-/* Chat Input Form */
+/* Chat Form */
 .chat-form {
     display: flex;
     align-items: center;
-    padding: 12px;
-    background: #ffffff;
-    border-top: 1px solid #ccc;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 99%;
-    height: 65px;
-    justify-content: space-between;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    height: 60px;
+    max-width: 99%;
 }
 
-/* Chat Input Field */
 #msg {
     flex-grow: 1;
-    padding: 12px;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
-    outline: none;
-    width: 100%;
-    background: #fff;
-    color: black;
 }
 
-/* Send Button */
-#send {
-    background: #0084ff;
+.file-box {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    width: 150px;
+    max-height: 80px;
+    overflow-y: auto;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+.file-box div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 5px;
+}
+
+.file-box span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}
+
+.remove-file {
+    color: red;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.file-label {
+    background-color: #007bff;
     color: white;
-    border: none;
-    padding: 12px 18px;
-    margin-left: 10px;
+    padding: 6px 10px;
     border-radius: 5px;
     cursor: pointer;
-    transition: 0.3s;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.file-label:hover {
+    background-color: #0056b3;
+}
+
+#file {
+    display: none;
+}
+
+#send {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     font-size: 16px;
 }
 
 #send:hover {
-    background: #006edc;
+    background-color: #0056b3;
 }
 
 /* Mobile Responsive */

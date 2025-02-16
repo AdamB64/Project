@@ -11,10 +11,13 @@ const Task = require('./mongo/task.js');
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
+const { GridFsStorage } = require("multer-gridfs-storage");
+const Grid = require("gridfs-stream");
 const { AutoEncryptionLoggerLevel } = require('mongodb-legacy');
 const cookieParser = require("cookie-parser");
 const e = require('express');
 const ejs = require('ejs');
+const multer = require("multer");
 
 //how many round should be used to generate the encrypted password
 const saltRounds = process.env.SALT;
@@ -35,6 +38,27 @@ app.use(session({
 // Set EJS as the templating engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'view'));  // Make sure this matches your actual directory name
+
+const conn = mongoose.connection;
+let gfs;
+
+conn.once("open", () => {
+    gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection("uploads"); // GridFS Bucket Name
+});
+
+// GridFS Storage
+const storage = new GridFsStorage({
+    url: process.env.MONGO_URL,
+    file: (req, file) => {
+        return {
+            filename: `${Date.now()}-${file.originalname}`,
+            bucketName: "uploads", // GridFS Collection
+        };
+    },
+});
+const upload = multer({ storage }).array("files", 5); // Accepts up to 5 files
+
 
 // Serve static files
 app.use('/CSS', express.static(path.join(__dirname, 'CSS')));
@@ -671,6 +695,12 @@ app.post('/addProject', async (req, res) => {
 app.post('/addChat', async (req, res) => {
     try {
         const { user, message, time, profile, chatter, date } = req.body;
+        console.log("Received files:", req.files); // Debugging
+        console.log("Received body:", req.body);
+
+        //const fileIds = req.files.map(file => file.filename); // Store filenames for retrieval
+        //console.log(fileIds);
+
 
 
         //check if a chat already exists between the two users

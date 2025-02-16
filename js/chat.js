@@ -26,16 +26,29 @@ document.getElementById("form").addEventListener("submit", function (event) {
     const message = formData.get("msg");
     const time = getCurrentTime();
     const date = getCurrentDate();
-    let data = { user, message, time, profile, chatter, date };
-    data = JSON.stringify(data);
+    console.log(selectedFiles);
+    console.log(user, message, time, profile, chatter, date);
+    formData.append("user", user);
+    formData.append("message", message)
+    formData.append("time", time)
+    formData.append("profile", profile)
+    formData.append("chatter", chatter)
+    formData.append("date", date);
+    for (let i = 0; i < selectedFiles.length; i++) {
+        formData.append("files", selectedFiles[i]); // ✅ Name must match multer's "files"
+    }
+
     const msg = document.getElementById("msg");
     msg.value = "";
+    // Reset everything after sending
+    selectedFiles = [];
+    fileInput.value = "";
+    updateFileDisplay();
+
+
     fetch("/addChat", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: data,
+        body: formData,
     }).then(function (response) {
         return response.json();
     }).then(function (json) {
@@ -62,7 +75,7 @@ $(document).ready(function () {
 
                 response.forEach(function (message) {
                     if (!document.getElementById(`msg-${message._id}`)) {
-                        console.log(message);
+                        //console.log(message);
                         let messageClass = (message.sender === window.chatData.user._id) ? 'sent' : 'received';
                         let senderName = (message.sender === window.chatData.user._id) ? 'You' : window.chatData.chatter.firstName;
                         let profileImage = (message.sender === window.chatData.user._id) ? window.chatData.user.profile : window.chatData.chatter.profile;

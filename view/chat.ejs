@@ -28,9 +28,64 @@
             <!-- Chat Form -->
             <form id="form" class="chat-form">
                 <input type="text" id="msg" name="msg" placeholder="Type your message here" required>
+
+                <div class="file-box" id="file-box">
+                    <span>No files chosen</span>
+                </div>
+
+                <label for="file" class="file-label">📎 Attach</label>
+                <input type="file" id="file" name="file" multiple>
+
                 <button type="submit" id="send">Send</button>
             </form>
         </div>
+        <script>
+            const fileInput = document.getElementById("file");
+            const fileBox = document.getElementById("file-box");
+            let selectedFiles = [];
+
+            fileInput.addEventListener("change", function () {
+                let newFiles = Array.from(this.files);
+
+                if (selectedFiles.length + newFiles.length > 5) {
+                    alert("You can only attach up to 5 files.");
+                    return;
+                }
+
+                selectedFiles = [...selectedFiles, ...newFiles].slice(0, 5); // Ensure max 5 files
+                updateFileDisplay();
+            });
+
+            function updateFileDisplay() {
+                fileBox.innerHTML = ""; // Clear previous file list
+
+                if (selectedFiles.length > 0) {
+                    selectedFiles.forEach((file, index) => {
+                        let fileDiv = document.createElement("div");
+                        let fileName = document.createElement("span");
+                        fileName.textContent = file.name;
+                        let removeBtn = document.createElement("span");
+                        removeBtn.textContent = "✖";
+                        removeBtn.classList.add("remove-file");
+                        removeBtn.onclick = function () {
+                            removeFile(index);
+                        };
+
+                        fileDiv.appendChild(fileName);
+                        fileDiv.appendChild(removeBtn);
+                        fileBox.appendChild(fileDiv);
+                    });
+                } else {
+                    fileBox.innerHTML = "<span>No files chosen</span>";
+                }
+            }
+
+            function removeFile(index) {
+                selectedFiles.splice(index, 1);
+                updateFileDisplay();
+            }
+
+        </script>
         <script>
             window.chatData = {
                 user: {
