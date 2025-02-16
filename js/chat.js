@@ -112,7 +112,7 @@ $(document).ready(function () {
                                             // ✅ Display document download link
                                             fileDisplayHtml += `<div class="file-download">
                                             <a href="${fileUrl}" target="_blank" download>
-                                                📄 ${file.filename}
+                                                📄 <strong>${file.filename}</strong>
                                             </a>
                                         </div>`;
                                         }

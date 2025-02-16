@@ -222,3 +222,22 @@ body {
         padding: 12px 15px;
     }
 }
+
+.message-files {
+    margin-top: 5px;
+}
+
+.file-preview img {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+.file-download a {
+    text-decoration: none;
+    color: blue;
+    font-weight: bold;
+    display: block;
+    margin-top: 5px;
+}
