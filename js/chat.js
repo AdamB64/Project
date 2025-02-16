@@ -32,12 +32,13 @@ document.getElementById("form").addEventListener("submit", function (event) {
     formData.append("profile", profile)
     formData.append("chatter", chatter)
     formData.append("date", date);
-    for (let i = 0; i < selectedFiles.length; i++) {
+    for (let i = 0; i < selectedFiles.length - 1; i++) {
         formData.append("files", selectedFiles[i]); // ✅ Name must match multer's "files"
     }
 
     for (let pair of formData.entries()) {
         console.log("loop " + pair[0] + ": " + pair[1]);
+        console.log(selectedFiles.length);
     }
 
 
@@ -95,6 +96,7 @@ $(document).ready(function () {
                             })
                                 .then(response => response.json())
                                 .then(files => {
+                                    console.log("Files:", files);
                                     let fileDisplayHtml = "";
                                     files.forEach(file => {
                                         let fileUrl = `/file/${file._id}`; // URL to fetch the file

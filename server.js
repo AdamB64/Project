@@ -697,6 +697,7 @@ app.post('/addChat', upload, async (req, res) => {
     try {
         const { user, message, time, profile, chatter, date } = req.body;
         const fileIds = req.files.map(file => file.id);
+        //console.log(fileIds)
 
         // Convert to JSON string for proper display
         //console.log(JSON.stringify(req.files, null, 2));
@@ -723,7 +724,7 @@ app.post('/addChat', upload, async (req, res) => {
         } else {
             await Chat.findOneAndUpdate(
                 { "users.id": user, "users.id": chatter },
-                { $push: { input: { profile: profile, sender: user, message: message, timestamp: time, date: date } } },
+                { $push: { input: { profile: profile, sender: user, message: message, timestamp: time, date: date, file: fileIds } } },
                 { new: true, runValidators: true }
             );
         }
