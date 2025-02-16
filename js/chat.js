@@ -69,7 +69,7 @@ $(document).ready(function () {
 
                         let messageHtml = `
                             <div class="message-container ${messageClass}" id="msg-${message._id}">
-                                <p class="message-time">${message.timestamp}</p>
+                                <p class="message-time">${message.timestamp} <br>on the ${new Date(message.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
                                 <div class="message-content">
                                     <img src="${profileImage}" alt="Profile Picture" class="message-profile">
                                     <strong class="message-sender">${senderName}:</strong>
