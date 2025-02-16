@@ -1,5 +1,5 @@
-
 document.addEventListener("DOMContentLoaded", function () {
+
     let startDate = new Date(window.projectData.startDate);
     let endDate = new Date(window.projectData.endDate);
 
@@ -10,12 +10,17 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    console.log("Project Start Date:", startDate);
-    console.log("Project End Date:", endDate);
+    //console.log("Project Start Date:", startDate);
+    //console.log("Project End Date:", endDate);
 
-    let tasks = [];
 
-    if (tasks.length === 0) {
+    ///console.log("Tasks:", tasks);
+
+    let tasks = window.projectData.tasks;
+    console.log("Tasks:", tasks);
+    console.log("window: " + window.projectData.tasks)
+
+    if (!tasks || tasks.length === 0) {
         console.log("No tasks found");
         document.getElementById("no-tasks").style.display = "block";
     }
@@ -24,7 +29,15 @@ document.addEventListener("DOMContentLoaded", function () {
         view_mode: "Day",
         date_format: "YYYY-MM-DD",
         start: startDate,
-        end: endDate
+        end: endDate,
+        custom_popup_html: function (task) {
+            return `
+                <div class="custom-tooltip">
+                    <p>Start: ${task.start}</p><p>End: ${task.end}</p>
+                    <p>Description: <em>${task.description}</em></p>
+                </div>
+            `;
+        }
     });
 });
 

@@ -65,11 +65,14 @@ app.get('/task/:id', authenticateToken, async (req, res) => {
 });
 
 app.get('/profile/:id', authenticateToken, async (req, res) => {
+    //console.log("projectID " + projectID);
+    const tasks = await Task.find({ projectID: req.query.id });
+    //console.log("tasks " + tasks);
     //console.log(req.params.id);
     const company = await Company.findOne({ "members._id": req.params.id }) || await Company.findOne({ "supervisors._id": req.params.id });
     const worker = company.supervisors.find(sup => sup._id.toString() === req.params.id) || company.members.find(mem => mem._id.toString() === req.params.id);
     //console.log(worker);
-    res.render('profile', { worker });
+    res.render('profile', { worker, tasks });
 })
 
 app.get('/projects', authenticateToken, async (req, res) => {
@@ -832,7 +835,6 @@ app.post('/add-task', async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 });
-
 
 
 

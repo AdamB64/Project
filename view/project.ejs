@@ -8,7 +8,6 @@
     <title>Project</title>
     <link rel="stylesheet" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/project.css">
-    <script src="/js/project.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.min.js"></script>
 
@@ -92,7 +91,32 @@
                         <% }) %>
 
 
+                            <% if (typeof tasks !=='undefined' && tasks !==null) { %>
+                                <% tasks.forEach((task)=> { %>
+                                    <script>
+                                        // Ensure window.projectData exists
+                                        if (!window.projectData) {
+                                            window.projectData = {};
+                                        }
 
+                                        // Ensure tasks array exists
+                                        if (!window.projectData.tasks) {
+                                            window.projectData.tasks = [];
+                                        }
+                                        window.projectData.tasks.push({
+                                            _id: "<%= task._id %>",
+                                            name: "<%= task.task %>",
+                                            description: "<%= task.description %>",
+                                            start: new Date("<%= task.start %>").toISOString(),
+                                            end: new Date("<%= task.end %>").toISOString(),
+                                        });
+                                        console.log(window.projectData.tasks);
+                                    </script>
+                                    <% }) %>
+                                        <% } %>
+
+
+                                            <script src="/js/project.js"></script>
 </body>
 
 </html>
