@@ -28,6 +28,11 @@
                 <div id="ComInfo" class="tabcontent">
                     <svg id="gantt"></svg>
                     <div id="no-tasks" class="no-tasks-message" style="display: none;">No tasks to display</div>
+                    <label for="progress">Overall Task Progress:</label>
+                    <input type="range" id="progress" name="progress" min="0" max="100" value="50">
+                    <span id="progress-value">50%</span>
+                    <button type="button" id="submit" onclick="progress()">Submit</button>
+
                 </div>
 
                 <div id="Super" class="tabcontent">
@@ -44,6 +49,17 @@
                     startDate: "<%= task.start %>",
                     endDate: "<%= task.end %>",
                 }
+            </script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    let progressSlider = document.getElementById("progress");
+                    let progressValue = document.getElementById("progress-value");
+
+                    // Update the label when the slider moves
+                    progressSlider.addEventListener("input", function () {
+                        progressValue.textContent = progressSlider.value + "%";
+                    });
+                });
             </script>
 </body>
 

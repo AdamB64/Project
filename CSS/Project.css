@@ -4,6 +4,7 @@ body {
     overflow: auto;
 }
 
+
 .gantt-container {
     min-height: 200px;
     /* Ensures visibility */

@@ -65,14 +65,11 @@ app.get('/task/:id', authenticateToken, async (req, res) => {
 });
 
 app.get('/profile/:id', authenticateToken, async (req, res) => {
-    //console.log("projectID " + projectID);
-    const tasks = await Task.find({ projectID: req.query.id });
-    //console.log("tasks " + tasks);
     //console.log(req.params.id);
     const company = await Company.findOne({ "members._id": req.params.id }) || await Company.findOne({ "supervisors._id": req.params.id });
     const worker = company.supervisors.find(sup => sup._id.toString() === req.params.id) || company.members.find(mem => mem._id.toString() === req.params.id);
     //console.log(worker);
-    res.render('profile', { worker, tasks });
+    res.render('profile', { worker });
 })
 
 app.get('/projects', authenticateToken, async (req, res) => {
@@ -836,6 +833,31 @@ app.post('/add-task', async (req, res) => {
     }
 });
 
+app.post('/update-task/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { progress } = req.body;
+
+        //console.log("Progress:", progress);
+        //console.log("Task ID:", id);
+
+        // Find the task
+        const existingTask = await Task.findById(id);
+        if (!existingTask) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        // Update task progress
+        existingTask.progress = progress;
+
+        await existingTask.save();
+
+        return res.status(200).json({ message: "Task updated successfully", task: existingTask });
+    } catch (error) {
+        console.error("Error updating task:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+})
 
 
 // Start the server

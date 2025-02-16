@@ -7,6 +7,7 @@ const taskSchema = new mongoose.Schema({
     end: { type: String, required: true },
     projectID: { type: String, required: true },
     compantEmail: { type: String, required: true },
+    progress: { type: String, required: true, default: "0" },
     members: [{
         firstName: { type: String, required: true },
         lastName: { type: String, required: true },

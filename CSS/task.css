@@ -116,3 +116,15 @@ input {
 svg {
     width: 100%;
 }
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#progress-value {
+    font-size: 18px;
+    font-weight: bold;
+    min-width: 40px;
+}

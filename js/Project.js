@@ -17,13 +17,15 @@ document.addEventListener("DOMContentLoaded", function () {
     ///console.log("Tasks:", tasks);
 
     let tasks = window.projectData.tasks;
-    console.log("Tasks:", tasks);
-    console.log("window: " + window.projectData.tasks)
+    //console.log("Tasks:", tasks);
+    //console.log("window: " + window.projectData.tasks)
 
     if (!tasks || tasks.length === 0) {
-        console.log("No tasks found");
+        //console.log("No tasks found");
         document.getElementById("no-tasks").style.display = "block";
     }
+
+
 
     let gantt = new Gantt("#gantt", tasks, {
         view_mode: "Day",
@@ -33,12 +35,14 @@ document.addEventListener("DOMContentLoaded", function () {
         custom_popup_html: function (task) {
             return `
                 <div class="custom-tooltip">
-                    <p>Start: ${task.start}</p><p>End: ${task.end}</p>
+                    <p>Start: ${new Date(task.start).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p><p>End: ${new Date(task.end).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
                     <p>Description: <em>${task.description}</em></p>
                 </div>
             `;
         }
     });
+
+    gantt.render();
 });
 
 function showAddTaskModal() {
@@ -115,7 +119,7 @@ function addMember() {
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("form").addEventListener("submit", function (event) {
         event.preventDefault();
-        console.log("Form submitted");
+        //console.log("Form submitted");
 
         const formData = new FormData(this);
         let task = {};
@@ -127,8 +131,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 task[key] = value;
             }
         }
+        const taskStart = document.getElementById("taskStartDate").value;
+        const taskEnd = document.getElementById("taskEndDate").value;
+        const projectStart = new Date(window.projectData.startDate);
+        const projectEnd = new Date(window.projectData.endDate);
+
+        if (taskStart > taskEnd) {
+            alert("End date should be after the start date");
+            return;
+        } else if (taskStart < projectStart || taskEnd > projectEnd) {
+            alert("Task dates should be within the project timeline");
+            return;
+        }
+
         task["members"] = mem;
-        console.log("Task with members:", task);
+        //console.log("Task with members:", task);
         u = window.location.href
         const parts = u.split("/");
         const url = parts[parts.length - 1];

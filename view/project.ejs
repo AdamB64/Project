@@ -19,7 +19,7 @@
             <h1>Project: <%= project.name %>
             </h1>
             <div class="gantt-container">
-                <svg id="gantt"></svg>
+                <svg id="gantt" class="gantt"></svg>
                 <div id="no-tasks" class="no-tasks-message" style="display: none;">No tasks to display</div>
             </div>
         </div>
@@ -107,10 +107,10 @@
                                             _id: "<%= task._id %>",
                                             name: "<%= task.task %>",
                                             description: "<%= task.description %>",
+                                            progress: "<%= task.progress %>",
                                             start: new Date("<%= task.start %>").toISOString(),
                                             end: new Date("<%= task.end %>").toISOString(),
                                         });
-                                        console.log(window.projectData.tasks);
                                     </script>
                                     <% }) %>
                                         <% } %>

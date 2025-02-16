@@ -46,3 +46,29 @@ document.addEventListener("DOMContentLoaded", function () {
         end: endDate
     });
 });
+
+function progress() {
+    const u = window.location.href
+    const parts = u.split("/");
+    const url = parts[parts.length - 1];
+    var x = document.getElementById("progress");
+    fetch(`/update-task/${url}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            progress: x.value
+        })
+    }).then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Request failed.');
+    }).then(data => {
+        console.log("Success:", data);
+    }).catch(error => {
+        console.error("Error:", error);
+    });
+
+}
