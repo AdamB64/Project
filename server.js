@@ -69,7 +69,20 @@ app.get('/profile/:id', authenticateToken, async (req, res) => {
     const company = await Company.findOne({ "members._id": req.params.id }) || await Company.findOne({ "supervisors._id": req.params.id });
     const worker = company.supervisors.find(sup => sup._id.toString() === req.params.id) || company.members.find(mem => mem._id.toString() === req.params.id);
     //console.log(worker);
-    res.render('profile', { worker });
+    const UToken = req.cookies?.token;
+    let user = null;
+    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        user = u;
+    });
+    if (user.id === req.params.id) {
+        //console.log("user");
+        res.redirect('/user');
+    } else {
+        res.render('profile', { worker });
+    }
 })
 
 app.get('/projects', authenticateToken, async (req, res) => {
@@ -625,7 +638,8 @@ app.post('/addProject', async (req, res) => {
             firstName: supervisor.firstName,
             lastName: supervisor.lastName,
             email: supervisor.email,
-            profile: supervisor.profile
+            profile: supervisor.profile,
+            id: supervisor._id
         };
 
         // Push supervisor into the array

@@ -67,6 +67,18 @@
                                 <strong>End:</strong>
                                 <%= new Date(proj.endDate).toDateString() %>
                         </div>
+                        <div><strong>Supervisor:</strong>
+                            <% proj.members.forEach(member=> { %>
+                                <% if (member.level==="Supervisor" ) { %>
+                                    <p>
+                                        <a href="/profile/<%= member.id %>">
+                                            <%= member.firstName %>
+                                                <%= member.lastName %>
+                                        </a>
+                                    </p>
+                                    <% } %>
+                                        <% }); %>
+                        </div>
                         <div class="project-status">Status: <%= proj.status %>
                         </div>
                         <div class="project-company">Company: <%= proj.companyEmail %>
