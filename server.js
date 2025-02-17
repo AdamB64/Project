@@ -737,6 +737,7 @@ app.post('/addChat', upload, async (req, res) => {
 
 
         // Extract file IDs properly
+        //console.log(req.files);
         const fileIds = req.files ? req.files.map(file => file.id) : [];
 
         //console.log("Uploaded File IDs:", fileIds);
@@ -760,7 +761,7 @@ app.post('/addChat', upload, async (req, res) => {
                 }
             });
             await newChat.save();
-            console.log("New Chat Created!");
+            //console.log("New Chat Created!");
         } else {
             await Chat.findOneAndUpdate(
                 { "users.id": user, "users.id": chatter },
@@ -778,7 +779,7 @@ app.post('/addChat', upload, async (req, res) => {
                 },
                 { new: true, runValidators: true }
             );
-            console.log("Chat Updated!");
+            //sconsole.log("Chat Updated!");
         }
 
         res.status(200).json({ message: "Chat saved successfully", files: fileIds });
