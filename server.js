@@ -45,12 +45,13 @@ let gfs;
 
 conn.once("open", () => {
     gridFSBucket = new GridFSBucket(conn.db, { bucketName: "uploads" });
-    //gfs.collection("uploads"); // GridFS Bucket Name
+    gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection("uploads"); // GridFS Bucket Name
 });
 
 // GridFS Storage
-const storage = new multer.memoryStorage();
-/*const storage = new GridFsStorage({
+//const storage = new multer.memoryStorage();
+const storage = new GridFsStorage({
     url: process.env.MONGO_URL,
     file: (req, file) => {
         return {
@@ -58,7 +59,7 @@ const storage = new multer.memoryStorage();
             bucketName: "uploads", // GridFS Collection
         };
     },
-});*/
+});
 const upload = multer({ storage }).array("files", 5); // Accepts up to 5 files
 
 
@@ -293,7 +294,7 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
 
 app.get("/file/:id", async (req, res) => {
     try {
-        console.log("Processing file request...");
+        //console.log("Processing file request...");
         const fileId = new ObjectId(req.params.id);
 
         // Get file metadata
@@ -732,16 +733,18 @@ app.post('/addProject', async (req, res) => {
 app.post('/addChat', upload, async (req, res) => {
     try {
         const { user, message, time, profile, chatter, date } = req.body;
-        const fileIds = req.files.map(file => file.id);
-        //console.log(fileIds)
+        console.log("Uploaded Files:", req.files);
 
-        // Convert to JSON string for proper display
-        //console.log(JSON.stringify(req.files, null, 2));
 
-        //check if a chat already exists between the two users
+        // Extract file IDs properly
+        const fileIds = req.files ? req.files.map(file => file.id) : [];
+
+        console.log("Uploaded File IDs:", fileIds);
+
+        // Check if a chat already exists between the two users
         let existingChat = await Chat.findOne({ "users.id": user, "users.id": chatter });
-        if (!existingChat) {
 
+        if (!existingChat) {
             const newChat = new Chat({
                 users: [
                     { id: chatter },
@@ -752,24 +755,40 @@ app.post('/addChat', upload, async (req, res) => {
                     sender: user,
                     message: message,
                     timestamp: time,
-                    file: fileIds,
+                    file: fileIds, // Store file IDs
                     date: date
                 }
             });
             await newChat.save();
+            console.log("New Chat Created!");
         } else {
             await Chat.findOneAndUpdate(
                 { "users.id": user, "users.id": chatter },
-                { $push: { input: { profile: profile, sender: user, message: message, timestamp: time, date: date, file: fileIds } } },
+                {
+                    $push: {
+                        input: {
+                            profile: profile,
+                            sender: user,
+                            message: message,
+                            timestamp: time,
+                            date: date,
+                            file: fileIds
+                        }
+                    }
+                },
                 { new: true, runValidators: true }
             );
+            console.log("Chat Updated!");
         }
-    }
-    catch (error) {
+
+        res.status(200).json({ message: "Chat saved successfully", files: fileIds });
+
+    } catch (error) {
         console.error('Error saving data:', error);
-        res.status(500).send({ message: 'An error occurred while saving the data', error });
+        res.status(500).json({ message: 'An error occurred while saving the data', error });
     }
 });
+
 
 
 app.post('/get-messages', async (req, res) => {
@@ -953,7 +972,7 @@ app.post("/getFiles", async (req, res) => {
 
         // Retrieve files from GridFS
         const files = await conn.db.collection("uploads.files").find({ _id: { $in: objectIds } }).toArray();
-        console.log(files);
+        //console.log(files);
 
         if (!files || files.length === 0) {
             return res.status(404).json({ error: "No files found" });
