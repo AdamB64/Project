@@ -733,13 +733,13 @@ app.post('/addProject', async (req, res) => {
 app.post('/addChat', upload, async (req, res) => {
     try {
         const { user, message, time, profile, chatter, date } = req.body;
-        console.log("Uploaded Files:", req.files);
+        //console.log("Uploaded Files:", req.files);
 
 
         // Extract file IDs properly
         const fileIds = req.files ? req.files.map(file => file.id) : [];
 
-        console.log("Uploaded File IDs:", fileIds);
+        //console.log("Uploaded File IDs:", fileIds);
 
         // Check if a chat already exists between the two users
         let existingChat = await Chat.findOne({ "users.id": user, "users.id": chatter });
