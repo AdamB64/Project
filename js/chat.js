@@ -92,36 +92,40 @@ $(document).ready(function () {
                             fetch("/getFiles", {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ fileIds: message.file }),
+                                body: JSON.stringify({ fileIds: message.file }), // Sending an array of file IDs
                             })
                                 .then(response => response.json())
                                 .then(files => {
-                                    console.log("Files:", files);
+                                    console.log("Files Received:", files);
                                     let fileDisplayHtml = "";
+
                                     files.forEach(file => {
                                         let fileUrl = `/file/${file._id}`; // URL to fetch the file
 
                                         if (file.contentType.startsWith("image")) {
-                                            // ✅ Display image preview
-                                            fileDisplayHtml += `<div class="file-preview">
-                                            <a href="${fileUrl}" target="_blank">
-                                                <img src="${fileUrl}" alt="Attached Image" class="chat-image">
-                                            </a>
-                                        </div>`;
+                                            // ✅ Display images as previews
+                                            fileDisplayHtml += `
+                                                <div class="file-preview">
+                                                    <a href="${fileUrl}" target="_blank">
+                                                        <img src="${fileUrl}" alt="Attached Image" class="chat-image">
+                                                    </a>
+                                                </div>`;
                                         } else {
-                                            // ✅ Display document download link
-                                            fileDisplayHtml += `<div class="file-download">
-                                            <a href="${fileUrl}" target="_blank" download>
-                                                📄 <strong>${file.filename}</strong>
-                                            </a>
-                                        </div>`;
+                                            // ✅ Provide a download link for documents, scripts, and other files
+                                            fileDisplayHtml += `
+                                                <div class="file-download">
+                                                    <a href="${fileUrl}" download="${file.filename}">
+                                                        📄 <strong>${file.filename}</strong>
+                                                    </a>
+                                                </div>`;
                                         }
                                     });
 
-                                    // 🔹 Inject files into the chat message
+                                    // Insert into a div with id="fileContainer"
                                     document.getElementById(`msg-${message._id}-files`).innerHTML = fileDisplayHtml;
                                 })
-                                .catch(err => console.error("Error fetching files:", err));
+                                .catch(error => console.error("Error fetching files:", error));
+
                         }
 
                         // 🔹 Message HTML

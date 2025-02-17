@@ -8,6 +8,7 @@ const Company = require('./mongo/company.js');
 const Project = require('./mongo/project.js');
 const Chat = require('./mongo/chats.js');
 const Task = require('./mongo/task.js');
+const { ObjectId, GridFSBucket } = require("mongodb");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
@@ -43,12 +44,13 @@ const conn = mongoose.connection;
 let gfs;
 
 conn.once("open", () => {
-    gfs = Grid(conn.db, mongoose.mongo);
-    gfs.collection("uploads"); // GridFS Bucket Name
+    gridFSBucket = new GridFSBucket(conn.db, { bucketName: "uploads" });
+    //gfs.collection("uploads"); // GridFS Bucket Name
 });
 
 // GridFS Storage
-const storage = new GridFsStorage({
+const storage = new multer.memoryStorage();
+/*const storage = new GridFsStorage({
     url: process.env.MONGO_URL,
     file: (req, file) => {
         return {
@@ -56,7 +58,7 @@ const storage = new GridFsStorage({
             bucketName: "uploads", // GridFS Collection
         };
     },
-});
+});*/
 const upload = multer({ storage }).array("files", 5); // Accepts up to 5 files
 
 
@@ -286,6 +288,40 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
     }
 });
 
+
+
+
+app.get("/file/:id", async (req, res) => {
+    try {
+        console.log("Processing file request...");
+        const fileId = new ObjectId(req.params.id);
+
+        // Get file metadata
+        const files = await conn.db.collection("uploads.files").findOne({ _id: fileId });
+        if (!files) {
+            return res.status(404).json({ error: "File not found" });
+        }
+
+        res.set("Content-Type", files.contentType);
+
+        // Force download for non-image files
+        if (!files.contentType.startsWith("image")) {
+            res.set("Content-Disposition", `attachment; filename="${files.filename}"`);
+        }
+
+        // Create readable stream
+        const readstream = gridFSBucket.openDownloadStream(fileId);
+        readstream.on("error", (err) => {
+            console.error("Stream error:", err);
+            res.status(500).json({ error: "File stream error" });
+        });
+
+        readstream.pipe(res);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 
 
@@ -912,8 +948,12 @@ app.post("/getFiles", async (req, res) => {
             return res.status(400).json({ error: "Invalid file IDs" });
         }
 
+        // Convert string IDs to MongoDB ObjectIds
+        const objectIds = fileIds.map(id => new ObjectId(id));
+
         // Retrieve files from GridFS
-        const files = await gfs.files.find({ _id: { $in: fileIds.map(id => new mongoose.Types.ObjectId(id)) } }).toArray();
+        const files = await conn.db.collection("uploads.files").find({ _id: { $in: objectIds } }).toArray();
+        console.log(files);
 
         if (!files || files.length === 0) {
             return res.status(404).json({ error: "No files found" });
@@ -925,6 +965,9 @@ app.post("/getFiles", async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
+
+
+
 
 
 
