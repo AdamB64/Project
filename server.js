@@ -371,6 +371,18 @@ function authenticateToken(req, res, next) {
     }
 }
 
+function getUser(Token){
+    let user = null;
+        jwt.verify(Token, process.env.JWT_SECRET, (err, u) => {
+            if (err) {
+                return res.status(403).json({ message: "Forbidden: Invalid token" });
+            }
+            //console.log("ran1");
+            user = u;
+        });
+        return user;
+}
+
 //---------------------POST routes---------------------
 // Add your routes here
 
@@ -560,14 +572,7 @@ app.post('/users', async (req, res) => {
         }
         //console.log(UToken);
 
-        let user = null;
-        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-            if (err) {
-                return res.status(403).json({ message: "Forbidden: Invalid token" });
-            }
-            //console.log("ran1");
-            user = u;
-        });
+        let user = getUser(UToken);
         //console.log(user);
         if (user.role === "supervisor") {
             const USuper = await Company.findOne({ "supervisors._id": user.id })
@@ -699,14 +704,7 @@ app.post('/addProject', async (req, res) => {
 
 
         const UToken = req.cookies?.token;
-        let user = null;
-        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-            if (err) {
-                return res.status(403).json({ message: "Forbidden: Invalid token" });
-            }
-            //console.log("ran1");
-            user = u;
-        });
+        let user = getUser(UTokens)
         //console.log(user);
         const company = await Company.findOne({ email: user.Company_email }).lean();
         //console.log(company)
@@ -839,13 +837,7 @@ app.post('/add-worker', async (req, res) => {
     //console.log(req.body);
     const { role, firstName, lastName, email, password, type } = req.body;
     const UToken = req.cookies.token;
-    let user = null;
-    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-        if (err) {
-            return res.status(403).json({ message: "Forbidden: Invalid token" });
-        }
-        user = u;
-    });
+    let user = getUser(UToken)
     //console.log(user);
     try {
         const company = await Company.findOne({ email: user.Company_email });
@@ -899,13 +891,8 @@ app.post('/add-task', async (req, res) => {
         }
 
         // Verify JWT Token
-        let user;
-        try {
-            user = jwt.verify(UToken, process.env.JWT_SECRET);
-        } catch (err) {
-            return res.status(403).json({ message: "Forbidden: Invalid token" });
-        }
-
+        let user=getUser(UToken);
+        
         // Find the company
         const company = await Company.findOne({ email: user.Company_email });
 
@@ -1018,13 +1005,7 @@ app.post('/delete/:email', async (req, res) => {
 
 
         UToken = req.cookies.token;
-        let user = null;
-        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-            if (err) {
-                return res.status(403).json({ message: "Forbidden: Invalid token" });
-            }
-            user = u;
-        });
+        let user =getUser(UToken)
         const Mcompany = await Company.findOne({ email: user.Company_email });
 
 
