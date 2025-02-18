@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/png" href="/images/icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Members</title>
+    <link rel="stylesheet" href="/CSS/PMembers.css">
+    <link rel="stylesheet" href="/CSS/Header.css">
+</head>
+
+<body>
+    <%- include('header') %> <!-- This includes the header.html content -->
+        <div id="main">
+            <div class="container">
+                <% members.forEach(member=> { %>
+                    <div class="member-box">
+                        <img src="<%= member.profile %>" alt="Profile Picture">
+                        <h3>
+                            <a href="/profile/<%= member._id %>">
+                                <%= member.firstName %>
+                                    <%= member.lastName %>
+                            </a>
+                        </h3>
+                        <p><strong>Email:</strong>
+                            <%= member.email %>
+                        </p>
+                        <p><strong>Username:</strong>
+                            <%= member.email.split('@')[0] %>
+                        </p>
+                        <button class="button" onClick="ChatUser('<%= member._id %>')">chat with user</button>
+                        <button class="button" onclick="deleteMem('<%= member.email %>')">Delete</button>
+                        <script>
+                            function deleteMem(users) {
+                                console.log(users);
+                                fetch(`/delete/${users}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                }).then(res => res.json()).then(data => {
+                                    console.log(data);
+                                }).catch(err => {
+                                    console.log(err);
+                                });
+                            }
+                        </script>
+                        <script>
+                            function ChatUser(users) {
+                                window.location.href = `/chat/${users}`;
+                            }
+
+                        </script>
+                    </div>
+                    <% }) %>
+            </div>
+        </div>
+</body>
+
+</html>

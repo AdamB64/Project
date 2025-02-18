@@ -16,7 +16,7 @@
 <body>
     <%- include('header') %>
         <div class="content">
-            <h1>Project: <%= project.name %>
+            <h1>Project: <%= project.name %> <br>Members page: <a href="/project/members/<%= project._id %>">Members</a>
             </h1>
             <div class="gantt-container">
                 <svg id="gantt" class="gantt"></svg>

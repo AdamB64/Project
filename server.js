@@ -290,6 +290,27 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
 });
 
 
+app.get('/project/members/:id', authenticateToken, async (req, res) => {
+    const project = await Project.findById(req.params.id);
+    const members = project.members;
+    const UToken = req.cookies?.token;
+    let user = null;
+    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        user = u;
+    });
+
+    const renderedHTML = ejs.render(process.env.PROJECT_MEM, { project });
+    const s = await Project.findOne({ _id: req.params.id });
+    const mem = s.members.find(mem => mem.email === user.email);
+    if (mem.level === "Member") {
+        res.render('member', { members, HTML: renderedHTML });
+    } else {
+        res.render('member', { members });
+    }
+})
 
 
 app.get("/file/:id", async (req, res) => {
@@ -689,8 +710,13 @@ app.post('/addProject', async (req, res) => {
         //console.log(user);
         const company = await Company.findOne({ email: user.Company_email }).lean();
         //console.log(company)
-        const supervisor = company.supervisors.find(sup => sup._id.toString() === user.id);
-        //console.log(supervisor)
+        const id = new ObjectId(user.id);
+        const supervisor = company.supervisors.find(sup => sup._id.equals(id));
+        console.log(typeof company.supervisors[0]._id, company.supervisors[0]._id);
+        console.log(typeof id, id);
+
+        console.log(supervisor);
+        console.log(company.supervisors);
         // Ensure members is an array
         const membersArray = Array.isArray(member) ? [...member] : [];
 
@@ -986,8 +1012,46 @@ app.post("/getFiles", async (req, res) => {
     }
 });
 
+app.post('/delete/:email', async (req, res) => {
+    try {
+        const { email } = req.params.email;
 
 
+        UToken = req.cookies.token;
+        let user = null;
+        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+            if (err) {
+                return res.status(403).json({ message: "Forbidden: Invalid token" });
+            }
+            user = u;
+        });
+        const Mcompany = await Company.findOne({ email: user.Company_email });
+
+
+        //console.log(Mcompany);
+        const member = Mcompany.members.find(mem => mem.email === email);
+        //const supervisor = Mcompany.supervisors.find(sup => sup.email === req.params.email);
+        console.log(Mcompany.supervisors);
+        //console.log(supervisor);
+
+        /*if (supervisor) {
+            await Company.updateOne(
+                { _id: Mcompany._id },
+                { $pull: { supervisors: { email: req.params.email } } }
+            );
+        } else*/ if (member) {
+            console.log("member");
+            await Company.updateOne(
+                { _id: Mcompany._id },
+                { $pull: { members: { email: email } } }
+            );
+        }
+        res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
 
 
