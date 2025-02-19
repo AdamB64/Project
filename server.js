@@ -21,7 +21,7 @@ const ejs = require('ejs');
 const multer = require("multer");
 
 //how many round should be used to generate the encrypted password
-const saltRounds = process.env.SALT;
+const saltRounds = 10;
 
 //---------------------set up app---------------------
 app.use(express.json({ limit: '16mb' }));
@@ -97,7 +97,13 @@ app.get('/profile/:id', authenticateToken, async (req, res) => {
     const worker = company.supervisors.find(sup => sup._id.toString() === req.params.id) || company.members.find(mem => mem._id.toString() === req.params.id);
     //console.log(worker);
     const UToken = req.cookies?.token;
-    let user = getUser(UToken);
+    let user = null;
+    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        user = u;
+    });
     if (user.id === req.params.id) {
         //console.log("user");
         res.redirect('/user');
@@ -108,7 +114,13 @@ app.get('/profile/:id', authenticateToken, async (req, res) => {
 
 app.get('/projects', authenticateToken, async (req, res) => {
     const UToken = req.cookies?.token;
-    let user = getUser(UToken);
+    let user = null;
+    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        user = u;
+    });
     //console.log(user.email);
     const project = await Project.find({ "members.email": user.email });
     //console.log(project);
@@ -137,7 +149,14 @@ app.get('/home', authenticateToken, (req, res) => {
 app.get('/chats', authenticateToken, async (req, res) => {
     try {
         const UToken = req.cookies?.token;
-        let user = getUser(UToken)
+        let user = null;
+
+        jwt.verify(UToken, process.env.JWT_SECRET, async (err, u) => {
+            if (err) {
+                return res.status(403).json({ message: "Forbidden: Invalid token" });
+            }
+            user = u;
+
             // Fetch user's chats
             const chats = await Chat.find({ "users.id": user.id });
 
@@ -164,7 +183,7 @@ app.get('/chats', authenticateToken, async (req, res) => {
             }
 
             res.render('chats', { chats, Chatuser });
-
+        });
     } catch (error) {
         console.error("Error fetching chats:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -174,13 +193,18 @@ app.get('/chats', authenticateToken, async (req, res) => {
 
 app.get('/sprojects', authenticateToken, async (req, res) => {
     if (req.user.role === "supervisor") {
+        let user
         const UToken = req.cookies?.token;
         if (!UToken) {
             return res.status(401).json({ message: "Unauthorized: No token provided" });
         }
 
-        let user=getUser(UToken);
-        
+        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+            if (err) {
+                return res.status(403).json({ message: "Forbidden: Invalid token" });
+            }
+            user = u;
+        });
         const projects = await Project.find({ "companyEmail": user.Company_email });
         //console.log(projects);
 
@@ -221,7 +245,14 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
     //console.log("chatuser" + Chatuser);
     const UToken = req.cookies?.token;
 
-    let user =getUser(UToken);
+    let user = null;
+    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        //console.log("ran1");
+        user = u;
+    });
     let chatter;
     //console.log("user " + user.role);
     if (user.role === "supervisor") {
@@ -239,7 +270,13 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
     const project = await Project.findById(req.params.id);
     //console.log(project);
     const UToken = req.cookies?.token;
-    let user = getUser(UToken);
+    let user = null;
+    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        user = u;
+    });
     const tasks = await Task.find({ "projectID": req.params.id });
     //console.log(tasks);
     const renderedHTML = ejs.render(process.env.PROJECT_SUP, { project });
@@ -253,21 +290,6 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
 });
 
 
-app.get('/project/members/:id', authenticateToken, async (req, res) => {
-    const project = await Project.findById(req.params.id);
-    const members = project.members;
-    const UToken = req.cookies?.token;
-    let user = getUser(UToken);
-
-    const renderedHTML = ejs.render(process.env.PROJECT_MEM, { project });
-    const s = await Project.findOne({ _id: req.params.id });
-    const mem = s.members.find(mem => mem.email === user.email);
-    if (mem.level === "Member") {
-        res.render('member', { members, HTML: renderedHTML });
-    } else {
-        res.render('member', { members });
-    }
-})
 
 
 app.get("/file/:id", async (req, res) => {
@@ -326,18 +348,6 @@ function authenticateToken(req, res, next) {
         console.error("Token verification failed:", err.message);
         return res.redirect("/login"); // Redirect on token failure
     }
-}
-
-function getUser(Token){
-    let user = null;
-        jwt.verify(Token, process.env.JWT_SECRET, (err, u) => {
-            if (err) {
-                return res.status(403).json({ message: "Forbidden: Invalid token" });
-            }
-            //console.log("ran1");
-            user = u;
-        });
-        return user;
 }
 
 //---------------------POST routes---------------------
@@ -529,7 +539,14 @@ app.post('/users', async (req, res) => {
         }
         //console.log(UToken);
 
-        let user = getUser(UToken);
+        let user = null;
+        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+            if (err) {
+                return res.status(403).json({ message: "Forbidden: Invalid token" });
+            }
+            //console.log("ran1");
+            user = u;
+        });
         //console.log(user);
         if (user.role === "supervisor") {
             const USuper = await Company.findOne({ "supervisors._id": user.id })
@@ -561,15 +578,19 @@ app.post('/users', async (req, res) => {
 
 app.post('/change-password/:userId', async (req, res) => {
     try {
+        console.log(`${JSON.stringify(req.body)} ${req.params.userId}`);
+
         const { userId } = req.params;
         const { password } = req.body;
+        console.log("password " + password);
         //console.log("password " + password + " userId " + userId);
 
         if (!password) {
             return res.status(400).json({ message: "Password is required" });
         }
-
+        console.log("password")
         const hashedPassword = await bcrypt.hash(password, saltRounds);
+        console.log("hashedPassword " + hashedPassword);
 
         const updatedUser = await Company.findOneAndUpdate(
             { "supervisors._id": userId },
@@ -591,7 +612,8 @@ app.post('/change-password/:userId', async (req, res) => {
 
         res.json({ message: "Password updated successfully", updatedUser });
     } catch (error) {
-        res.status(500).json({ message: "Internal Server Error" });
+        console.error("Password update error:", error);
+        res.status(500).json({ message: "", error: error.message });
     }
 });
 
@@ -661,17 +683,19 @@ app.post('/addProject', async (req, res) => {
 
 
         const UToken = req.cookies?.token;
-        let user = getUser(UTokens)
+        let user = null;
+        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+            if (err) {
+                return res.status(403).json({ message: "Forbidden: Invalid token" });
+            }
+            //console.log("ran1");
+            user = u;
+        });
         //console.log(user);
         const company = await Company.findOne({ email: user.Company_email }).lean();
         //console.log(company)
-        const id = new ObjectId(user.id);
-        const supervisor = company.supervisors.find(sup => sup._id.equals(id));
-        console.log(typeof company.supervisors[0]._id, company.supervisors[0]._id);
-        console.log(typeof id, id);
-
-        console.log(supervisor);
-        console.log(company.supervisors);
+        const supervisor = company.supervisors.find(sup => sup._id.toString() === user.id);
+        //console.log(supervisor)
         // Ensure members is an array
         const membersArray = Array.isArray(member) ? [...member] : [];
 
@@ -794,7 +818,13 @@ app.post('/add-worker', async (req, res) => {
     //console.log(req.body);
     const { role, firstName, lastName, email, password, type } = req.body;
     const UToken = req.cookies.token;
-    let user = getUser(UToken)
+    let user = null;
+    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        user = u;
+    });
     //console.log(user);
     try {
         const company = await Company.findOne({ email: user.Company_email });
@@ -848,8 +878,13 @@ app.post('/add-task', async (req, res) => {
         }
 
         // Verify JWT Token
-        let user=getUser(UToken);
-        
+        let user;
+        try {
+            user = jwt.verify(UToken, process.env.JWT_SECRET);
+        } catch (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+
         // Find the company
         const company = await Company.findOne({ email: user.Company_email });
 
@@ -956,40 +991,8 @@ app.post("/getFiles", async (req, res) => {
     }
 });
 
-app.post('/delete/:email', async (req, res) => {
-    try {
-        const { email } = req.params.email;
 
 
-        UToken = req.cookies.token;
-        let user =getUser(UToken)
-        const Mcompany = await Company.findOne({ email: user.Company_email });
-
-
-        //console.log(Mcompany);
-        const member = Mcompany.members.find(mem => mem.email === email);
-        //const supervisor = Mcompany.supervisors.find(sup => sup.email === req.params.email);
-        console.log(Mcompany.supervisors);
-        //console.log(supervisor);
-
-        /*if (supervisor) {
-            await Company.updateOne(
-                { _id: Mcompany._id },
-                { $pull: { supervisors: { email: req.params.email } } }
-            );
-        } else*/ if (member) {
-            console.log("member");
-            await Company.updateOne(
-                { _id: Mcompany._id },
-                { $pull: { members: { email: email } } }
-            );
-        }
-        res.status(200).json({ message: "User deleted successfully" });
-    } catch (error) {
-        console.error("Error deleting user:", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-});
 
 
 
