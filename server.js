@@ -280,10 +280,14 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
     const tasks = await Task.find({ "projectID": req.params.id });
     //console.log(tasks);
     const renderedHTML = ejs.render(process.env.PROJECT_SUP, { project });
-    const s = await Project.findOne({ _id: req.params.id });
-    const sup = s.members.find(mem => mem.email === user.email);
-    if (sup.level === "Supervisor") {
-        res.render('project', { project, tasks, HTML: renderedHTML });
+    if (user.level === "Supervisor") {
+        const s = await Project.findOne({ _id: req.params.id });
+        const sup = s.members.find(mem => mem.email === user.email);
+        if (sup) {
+            res.render('project', { project, tasks, HTML: renderedHTML });
+        } else {
+            res.render('project', { project, tasks });
+        }
     } else {
         res.render('project', { project, tasks });
     }
