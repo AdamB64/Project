@@ -694,7 +694,7 @@ app.post('/addProject', async (req, res) => {
         //console.log(supervisor)
         // Ensure members is an array
         const membersArray = Array.isArray(member) ? [...member] : [];
-        console.log("Members:", membersArray);
+        //console.log("Members:", membersArray);
 
         // Add supervisor as a new entry, not overwriting existing members
         const superMember = {
