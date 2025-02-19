@@ -19,6 +19,7 @@ const cookieParser = require("cookie-parser");
 const e = require('express');
 const ejs = require('ejs');
 const multer = require("multer");
+const { get } = require('http');
 
 //how many round should be used to generate the encrypted password
 const saltRounds = 10;
@@ -97,13 +98,7 @@ app.get('/profile/:id', authenticateToken, async (req, res) => {
     const worker = company.supervisors.find(sup => sup._id.toString() === req.params.id) || company.members.find(mem => mem._id.toString() === req.params.id);
     //console.log(worker);
     const UToken = req.cookies?.token;
-    let user = null;
-    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-        if (err) {
-            return res.status(403).json({ message: "Forbidden: Invalid token" });
-        }
-        user = u;
-    });
+    let user = getUser(UToken);
     if (user.id === req.params.id) {
         //console.log("user");
         res.redirect('/user');
@@ -114,13 +109,7 @@ app.get('/profile/:id', authenticateToken, async (req, res) => {
 
 app.get('/projects', authenticateToken, async (req, res) => {
     const UToken = req.cookies?.token;
-    let user = null;
-    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-        if (err) {
-            return res.status(403).json({ message: "Forbidden: Invalid token" });
-        }
-        user = u;
-    });
+    let user = getUser(UToken);
     //console.log(user.email);
     const project = await Project.find({ "members.email": user.email });
     //console.log(project);
@@ -149,41 +138,37 @@ app.get('/home', authenticateToken, (req, res) => {
 app.get('/chats', authenticateToken, async (req, res) => {
     try {
         const UToken = req.cookies?.token;
-        let user = null;
+        if (!UToken) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        let user = getUser(UToken);
 
-        jwt.verify(UToken, process.env.JWT_SECRET, async (err, u) => {
-            if (err) {
-                return res.status(403).json({ message: "Forbidden: Invalid token" });
-            }
-            user = u;
+        // Fetch user's chats
+        const chats = await Chat.find({ "users.id": user.id });
 
-            // Fetch user's chats
-            const chats = await Chat.find({ "users.id": user.id });
+        let Chatuser = [];
 
-            let Chatuser = [];
+        for (let i = 0; i < chats.length; i++) {
+            let matchedUserId = chats[i].users.find(u => u.id !== user.id)?.id;
 
-            for (let i = 0; i < chats.length; i++) {
-                let matchedUserId = chats[i].users.find(u => u.id !== user.id)?.id;
+            if (matchedUserId) {
+                const com = await Company.findOne({
+                    $or: [
+                        { "members._id": matchedUserId },
+                        { "supervisors._id": matchedUserId }
+                    ]
+                });
 
-                if (matchedUserId) {
-                    const com = await Company.findOne({
-                        $or: [
-                            { "members._id": matchedUserId },
-                            { "supervisors._id": matchedUserId }
-                        ]
-                    });
-
-                    if (com) {
-                        Chatuser[i] = com.members.find(mem => mem._id.toString() === matchedUserId) ||
-                            com.supervisors.find(sup => sup._id.toString() === matchedUserId) || {};
-                    } else {
-                        Chatuser[i] = {}; // Fallback value to prevent undefined issues
-                    }
+                if (com) {
+                    Chatuser[i] = com.members.find(mem => mem._id.toString() === matchedUserId) ||
+                        com.supervisors.find(sup => sup._id.toString() === matchedUserId) || {};
+                } else {
+                    Chatuser[i] = {}; // Fallback value to prevent undefined issues
                 }
             }
+        }
 
-            res.render('chats', { chats, Chatuser });
-        });
+        res.render('chats', { chats, Chatuser });
     } catch (error) {
         console.error("Error fetching chats:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -193,18 +178,13 @@ app.get('/chats', authenticateToken, async (req, res) => {
 
 app.get('/sprojects', authenticateToken, async (req, res) => {
     if (req.user.role === "supervisor") {
-        let user
+
         const UToken = req.cookies?.token;
         if (!UToken) {
             return res.status(401).json({ message: "Unauthorized: No token provided" });
         }
 
-        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-            if (err) {
-                return res.status(403).json({ message: "Forbidden: Invalid token" });
-            }
-            user = u;
-        });
+        let user = getUser(UToken);
         const projects = await Project.find({ "companyEmail": user.Company_email });
         //console.log(projects);
 
@@ -245,14 +225,7 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
     //console.log("chatuser" + Chatuser);
     const UToken = req.cookies?.token;
 
-    let user = null;
-    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-        if (err) {
-            return res.status(403).json({ message: "Forbidden: Invalid token" });
-        }
-        //console.log("ran1");
-        user = u;
-    });
+    let user = getUser(UToken);
     let chatter;
     //console.log("user " + user.role);
     if (user.role === "supervisor") {
@@ -270,13 +243,8 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
     const project = await Project.findById(req.params.id);
     //console.log(project);
     const UToken = req.cookies?.token;
-    let user = null;
-    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-        if (err) {
-            return res.status(403).json({ message: "Forbidden: Invalid token" });
-        }
-        user = u;
-    });
+    let user = getUser(UToken);
+
     const tasks = await Task.find({ "projectID": req.params.id });
     //console.log(tasks);
     const renderedHTML = ejs.render(process.env.PROJECT_SUP, { project });
@@ -353,6 +321,20 @@ function authenticateToken(req, res, next) {
         return res.redirect("/login"); // Redirect on token failure
     }
 }
+
+
+function getUser(Token) {
+    let user = null;
+    jwt.verify(Token, process.env.JWT_SECRET, (err, u) => {
+        if (err) {
+            return res.status(403).json({ message: "Forbidden: Invalid token" });
+        }
+        //console.log("ran1");
+        user = u;
+    });
+    return user;
+}
+
 
 //---------------------POST routes---------------------
 // Add your routes here
@@ -543,14 +525,7 @@ app.post('/users', async (req, res) => {
         }
         //console.log(UToken);
 
-        let user = null;
-        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-            if (err) {
-                return res.status(403).json({ message: "Forbidden: Invalid token" });
-            }
-            //console.log("ran1");
-            user = u;
-        });
+        let user = getUser(UToken);
         //console.log(user);
         if (user.role === "supervisor") {
             const USuper = await Company.findOne({ "supervisors._id": user.id })
@@ -687,14 +662,7 @@ app.post('/addProject', async (req, res) => {
 
 
         const UToken = req.cookies?.token;
-        let user = null;
-        jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-            if (err) {
-                return res.status(403).json({ message: "Forbidden: Invalid token" });
-            }
-            //console.log("ran1");
-            user = u;
-        });
+        let user = getUser(UToken);
         //console.log(user);
         const company = await Company.findOne({ email: user.Company_email }).lean();
         //console.log(company)
@@ -822,13 +790,7 @@ app.post('/add-worker', async (req, res) => {
     //console.log(req.body);
     const { role, firstName, lastName, email, password, type } = req.body;
     const UToken = req.cookies.token;
-    let user = null;
-    jwt.verify(UToken, process.env.JWT_SECRET, (err, u) => {
-        if (err) {
-            return res.status(403).json({ message: "Forbidden: Invalid token" });
-        }
-        user = u;
-    });
+    let user = getUser(UToken);
     //console.log(user);
     try {
         const company = await Company.findOne({ email: user.Company_email });
@@ -882,12 +844,7 @@ app.post('/add-task', async (req, res) => {
         }
 
         // Verify JWT Token
-        let user;
-        try {
-            user = jwt.verify(UToken, process.env.JWT_SECRET);
-        } catch (err) {
-            return res.status(403).json({ message: "Forbidden: Invalid token" });
-        }
+        let user = getUser(UToken); s
 
         // Find the company
         const company = await Company.findOne({ email: user.Company_email });
