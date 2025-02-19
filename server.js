@@ -220,7 +220,6 @@ app.get('/invite', authenticateToken, (req, res) => {
 });
 
 app.get('/chat/:id', authenticateToken, async (req, res) => {
-    console.log(req.params.id);
     const com = await Company.findOne({ "members._id": req.params.id }) || await Company.findOne({ "supervisors._id": req.params.id });
     let Chatuser = com.members.find(mem => mem._id.toString() === req.params.id) || com.supervisors.find(sup => sup._id.toString() === req.params.id);
     //console.log("chatuser" + Chatuser);
@@ -581,19 +580,17 @@ app.post('/users', async (req, res) => {
 
 app.post('/change-password/:userId', async (req, res) => {
     try {
-        console.log(`${JSON.stringify(req.body)} ${req.params.userId}`);
 
         const { userId } = req.params;
         const { password } = req.body;
-        console.log("password " + password);
         //console.log("password " + password + " userId " + userId);
 
         if (!password) {
             return res.status(400).json({ message: "Password is required" });
         }
-        console.log("password")
+        //console.log("password")
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        console.log("hashedPassword " + hashedPassword);
+        //console.log("hashedPassword " + hashedPassword);
 
         const updatedUser = await Company.findOneAndUpdate(
             { "supervisors._id": userId },
@@ -984,21 +981,21 @@ app.post('/delete/:email/:id', async (req, res) => {
         const UToken = req.cookies?.token;
         let user = getUser(UToken);
         const { email, id } = req.params;
-        console.log("email " + email + " id " + id);
+        //console.log("email " + email + " id " + id);
 
         const Mcompany = await Project.findOne({ _id: id });
 
         const member = Mcompany.members.find(mem => mem.email === email);
 
         if (member.level === "Supervisor" && user.level === "Supervisor") {
-            console.log("supervisor");
+            //console.log("supervisor");
             await Company.updateOne(
                 { _id: Mcompany._id },
                 { $pull: { supervisors: { email: req.params.email } } }
             );
             res.status(201).json({ message: "User deleted successfully", status: 201 });
         } else {
-            console.log("member");
+            //console.log("member");
             await Project.updateOne(
                 { _id: Mcompany._id },
                 { $pull: { members: { email: email } } }
