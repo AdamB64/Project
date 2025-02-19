@@ -18,7 +18,8 @@
                 <h1>User Details</h1>
                 <img src="<%=users[0].profile %>" alt=" User Image" class="user-image" id="profileImage">
                 <div class="button-container">
-                    <button onclick="changeProfile('<%= users[0]._id %>')">Change Profile</button>
+                    <button onclick="changeProfile('<%= users[0]._id %>')">Change Profile<br>(must be under
+                        16MBs)</button>
                     <input type="file" id="fileInput" style="display: none;" accept="image/*"
                         onchange="uploadImage(event, '<%= users[0]._id %>')">
                 </div>
