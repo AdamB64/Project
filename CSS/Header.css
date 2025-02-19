@@ -105,7 +105,9 @@ body {
     }
 
     #HDList {
-        font-size: 1em;
+        display: flex;
+        flex-direction: column;
+        font-size: 0.6em;
         /* Reduce font size for better scaling */
     }
 

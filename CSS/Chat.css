@@ -195,31 +195,84 @@ body {
 
 /* Mobile Responsive */
 @media screen and (max-width: 768px) {
+
+    /* Main Chat Container */
     .chat-container {
         height: 80vh;
         max-width: 100%;
+        padding: 10px;
     }
 
+    /* Individual Message */
     .message-container {
         max-width: 100%;
+        min-width: unset;
+        padding: 6px 8px;
     }
 
+    /* Profile Picture */
     .message-profile {
         width: 30px;
         height: 30px;
     }
 
+    /* Message Content */
+    .message-content {
+        max-width: 100%;
+    }
+
+    /* Sender Name */
+    .message-sender {
+        font-size: 13px;
+    }
+
+    /* Timestamp */
+    .message-time {
+        font-size: 11px;
+    }
+
+    /* Message Text */
+    .message-text {
+        font-size: 13px;
+    }
+
+    /* Chat Form */
     .chat-form {
         height: 70px;
         padding: 10px 15px;
+        flex-wrap: wrap;
     }
 
+    /* Input Field */
     #msg {
         font-size: 14px;
+        flex-grow: 1;
+        width: 100%;
+        margin-bottom: 5px;
     }
 
+    /* Send Button */
     #send {
         padding: 12px 15px;
+        width: 100%;
+    }
+
+    /* File Box */
+    .file-box {
+        width: 100%;
+        max-height: 100px;
+        font-size: 13px;
+    }
+
+    /* File Preview */
+    .file-preview img {
+        max-width: 100%;
+        max-height: 120px;
+    }
+
+    /* File Download Link */
+    .file-download a {
+        font-size: 13px;
     }
 }
 
