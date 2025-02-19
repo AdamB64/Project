@@ -220,6 +220,7 @@ app.get('/invite', authenticateToken, (req, res) => {
 });
 
 app.get('/chat/:id', authenticateToken, async (req, res) => {
+    console.log(req.params.id);
     const com = await Company.findOne({ "members._id": req.params.id }) || await Company.findOne({ "supervisors._id": req.params.id });
     let Chatuser = com.members.find(mem => mem._id.toString() === req.params.id) || com.supervisors.find(sup => sup._id.toString() === req.params.id);
     //console.log("chatuser" + Chatuser);
@@ -244,11 +245,13 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
     //console.log(project);
     const UToken = req.cookies?.token;
     let user = getUser(UToken);
+    //console.log(user);
 
     const tasks = await Task.find({ "projectID": req.params.id });
     //console.log(tasks);
     const renderedHTML = ejs.render(process.env.PROJECT_SUP, { project });
-    if (user.level === "Supervisor") {
+    //console.log(user.role);
+    if (user.role === "supervisor") {
         const s = await Project.findOne({ _id: req.params.id });
         const sup = s.members.find(mem => mem.email === user.email);
         if (sup) {
@@ -261,6 +264,27 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
     }
 });
 
+app.get('/project/members/:id', authenticateToken, async (req, res) => {
+    const project = await Project.findById(req.params.id);
+    const members = project.members;
+    const UToken = req.cookies?.token;
+    let user = getUser(UToken);
+
+
+    const renderedHTML = ejs.render(process.env.PROJECT_DEL, { members });
+    const s = await Project.findOne({ _id: req.params.id });
+    const mem = s.members.find(mem => mem.email === user.email);
+    //console.log(mem);
+    if (mem) {
+        if (mem.level === "Supervisor") {
+            res.render('member', { members, HTML: renderedHTML });
+        } else {
+            res.render('member', { members });
+        }
+    } else {
+        res.render('member', { members });
+    }
+})
 
 
 
@@ -657,7 +681,7 @@ app.post('/addProject', async (req, res) => {
 
 
         const me = mem.flatMap(m => m.members);
-        let member = me.map(({ level, firstName, lastName, email, profile }) => ({ level, firstName, lastName, email, profile }));
+        let member = me.map(({ level, firstName, lastName, email, profile, _id }) => ({ level, firstName, lastName, email, profile, _id }));
         const com = await Company.findOne({ "members.email": member[0].email });
 
 
@@ -670,6 +694,7 @@ app.post('/addProject', async (req, res) => {
         //console.log(supervisor)
         // Ensure members is an array
         const membersArray = Array.isArray(member) ? [...member] : [];
+        console.log("Members:", membersArray);
 
         // Add supervisor as a new entry, not overwriting existing members
         const superMember = {
@@ -699,7 +724,7 @@ app.post('/addProject', async (req, res) => {
         //console.log("project" + newProject);
 
         await newProject.save();
-        res.status(201).send({ message: 'Project data added successfully', newProject });
+        res.status(201).send({ message: 'Project data added successfully' });
     } catch (error) {
         console.error('Error saving data:', error);
         res.status(500).send({ message: 'An error occurred while saving the data', error });
@@ -953,7 +978,38 @@ app.post("/getFiles", async (req, res) => {
 });
 
 
+app.post('/delete/:email/:id', async (req, res) => {
+    try {
 
+        const UToken = req.cookies?.token;
+        let user = getUser(UToken);
+        const { email, id } = req.params;
+        console.log("email " + email + " id " + id);
+
+        const Mcompany = await Project.findOne({ _id: id });
+
+        const member = Mcompany.members.find(mem => mem.email === email);
+
+        if (member.level === "Supervisor" && user.level === "Supervisor") {
+            console.log("supervisor");
+            await Company.updateOne(
+                { _id: Mcompany._id },
+                { $pull: { supervisors: { email: req.params.email } } }
+            );
+            res.status(201).json({ message: "User deleted successfully", status: 201 });
+        } else {
+            console.log("member");
+            await Project.updateOne(
+                { _id: Mcompany._id },
+                { $pull: { members: { email: email } } }
+            );
+            res.status(200).json({ message: "User deleted successfully", status: 200 });
+        }
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
 
 

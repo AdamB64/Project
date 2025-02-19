@@ -15,45 +15,34 @@
         <div id="main">
             <div class="container">
                 <% members.forEach(member=> { %>
-                    <div class="member-box">
-                        <img src="<%= member.profile %>" alt="Profile Picture">
-                        <h3>
-                            <a href="/profile/<%= member._id %>">
-                                <%= member.firstName %>
-                                    <%= member.lastName %>
-                            </a>
-                        </h3>
-                        <p><strong>Email:</strong>
-                            <%= member.email %>
-                        </p>
-                        <p><strong>Username:</strong>
-                            <%= member.email.split('@')[0] %>
-                        </p>
-                        <button class="button" onClick="ChatUser('<%= member._id %>')">chat with user</button>
-                        <button class="button" onclick="deleteMem('<%= member.email %>')">Delete</button>
-                        <script>
-                            function deleteMem(users) {
-                                console.log(users);
-                                fetch(`/delete/${users}`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    }
-                                }).then(res => res.json()).then(data => {
-                                    console.log(data);
-                                }).catch(err => {
-                                    console.log(err);
-                                });
-                            }
-                        </script>
-                        <script>
-                            function ChatUser(users) {
-                                window.location.href = `/chat/${users}`;
-                            }
+                    <% if (member.level==="Member" ) { %>
+                        <div class="member-box">
+                            <img src="<%= member.profile %>" alt="Profile Picture">
+                            <h3>
+                                <a href="/profile/<%= member._id %>">
+                                    <%= member.firstName %>
+                                        <%= member.lastName %>
+                                </a>
+                            </h3>
+                            <p><strong>Email:</strong>
+                                <%= member.email %>
+                            </p>
+                            <button class="button" onClick="ChatUser('<%= member._id %>')">Chat with User</button>
 
-                        </script>
-                    </div>
-                    <% }) %>
+                            <% if (typeof HTML !=='undefined' && HTML !==null) { %>
+                                <%- HTML %>
+                                    <% } %>
+                        </div>
+                        <% } %>
+                            <% }); %>
+
+                                <script>
+                                    function ChatUser(userId) {
+                                        window.location.href = `/chat/${userId}`;
+                                    }
+                                </script>
+
+
             </div>
         </div>
 </body>
