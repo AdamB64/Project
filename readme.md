@@ -80,7 +80,7 @@ This application serves as a platform for project management, offering functiona
    cd Project
 
 2. install dependencies:
-    npm ci
+    npm run install-modules
 
 3. Configure environment variables: Create a .env file in the root directory with the following:
     secret=YOUR_SESSION_SECRET
