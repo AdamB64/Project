@@ -432,6 +432,7 @@ app.post('/add-company', async (req, res) => {
         //console.log(token);
 
         //test to see if token is working
+        res.clearCookie("token");
         res.cookie("token", token, {
             httpOnly: true, // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production", // Use HTTPS in production
@@ -477,6 +478,7 @@ app.post("/SLogin", async (req, res) => {
 
         //test to see if token is working
         //res.json({ token, role: "supervisor", message: "Login Successful" });
+        res.clearCookie("token");
         res.cookie("token", token, {
             httpOnly: true, // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production", // Use HTTPS in production
@@ -521,6 +523,7 @@ app.post("/MLogin", async (req, res) => {
 
         //test to see if token is working
         //res.json({ token, role: "supervisor", message: "Login Successful" });
+        res.clearCookie("token");
         res.cookie("token", Mtoken, {
             httpOnly: true, // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production", // Use HTTPS in production
