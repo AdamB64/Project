@@ -413,6 +413,7 @@ app.post('/add-company', async (req, res) => {
             name: company.name,
             address: company.address,
             email: company.email,
+            password: company.password,
             industry: company.industry,
             supervisors: updatedSupervisors,
             members: updatedMembers,

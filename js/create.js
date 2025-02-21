@@ -96,9 +96,10 @@ function validateInputs() {
     const companyName = document.getElementById('name').value.trim();
     const companyAddress = document.getElementById('address').value.trim();
     const companyEmail = document.getElementById('email').value.trim();
+    const companyPassword = document.getElementById('password').value.trim();
     const companyIndustry = document.getElementById('industry').value.trim();
 
-    if (!companyName || !companyAddress || !validateEmail(companyEmail) || !companyIndustry) {
+    if (!companyName || !companyAddress || !validateEmail(companyEmail) || !companyIndustry || !companyPassword) {
         alert("Please fill out all company information fields with valid data.");
         return false;
     }
@@ -156,6 +157,7 @@ document.getElementById('CreateCompany').addEventListener('click', async (e) => 
             name: document.getElementById('name').value.trim(),
             address: document.getElementById('address').value.trim(),
             email: document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value.trim(),
             industry: document.getElementById('industry').value.trim()
         };
 
