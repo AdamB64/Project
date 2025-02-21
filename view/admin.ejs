@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
-    <link rel="stylesheet" href="/CSS/about.css">
     <link rel="stylesheet" href="/CSS/Header.css">
+    <link rel="stylesheet" href="/CSS/admin.css">
 </head>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -46,12 +46,16 @@
                 window.location.href = '/';
             });
     });
+    const container = document.getElementById('container');
+    container.style.display = 'display';
 </script>
 
 <body>
-    <%- include('header') %> <!-- This includes the header.html content -->
-        <div class="content">
-        </div>
+    <div id="container">
+        <%- include('header') %> <!-- This includes the header.html content -->
+            <div class="content">
+            </div>
+    </div>
 </body>
 
 </html>
