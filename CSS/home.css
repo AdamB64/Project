@@ -6,6 +6,14 @@ body {
     flex: auto;
 }
 
+#HDTitle {
+    max-width: 30%;
+}
+
+.HDLitemLink {
+    font-size: 2rem;
+}
+
 p {
     font-size: 20px;
     display: flex;

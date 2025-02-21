@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/png" href="/images/icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="/CSS/about.css">
+    <link rel="stylesheet" href="/CSS/Header.css">
+</head>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const password = prompt("Enter the company password:");
+
+        if (password === null) {
+            // User canceled the prompt
+            alert("Access denied.");
+            window.location.href = '/';
+            return;
+        }
+
+        fetch('/admin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ password: password })
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    window.location.href = '/';
+                    throw new Error("Invalid password");
+                }
+            })
+            .then(data => {
+                if (!data.accessGranted) {
+                    window.location.href = '/';
+                    alert("Access denied. Incorrect password.");
+                }
+            })
+            .catch(error => {
+                alert(error.message);
+                window.location.href = '/';
+            });
+    });
+</script>
+
+<body>
+    <%- include('header') %> <!-- This includes the header.html content -->
+        <div class="content">
+        </div>
+</body>
+
+</html>

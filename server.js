@@ -86,6 +86,17 @@ app.get('/user', authenticateToken, (req, res) => {
     res.render('user', { users: users });  // Changed from 'view' to 'user'
 });
 
+app.get('/admin', authenticateToken, (req, res) => {
+    const UToken = req.cookies?.token;
+    let user = getUser(UToken);
+    if (user.role === "supervisor") {
+        res.render('admin');
+    } else {
+        res.redirect("/home");
+    }
+
+});
+
 app.get('/task/:id', authenticateToken, async (req, res) => {
     const task = await Task.findById(req.params.id);
     //console.log(task);
