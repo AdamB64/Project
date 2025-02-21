@@ -95,7 +95,8 @@ app.get('/admin', authenticateToken, async (req, res) => {
         //console.log(company.supervisors);
         res.render('admin', { supervisors: company.supervisors });
     } else {
-        res.redirect("/home");
+        const referer = req.get('Referer') || "/home";
+        res.redirect(referer);
     }
 
 });
@@ -206,7 +207,8 @@ app.get('/sprojects', authenticateToken, async (req, res) => {
         const members = company.map(c => c.members).flat();
         res.render('sproject', { members, project: projects });  // Changed from 'view' to 'projects'
     } else {
-        res.redirect("/");
+        const referer = req.get('Referer') || "/";
+        res.redirect(referer);
     }
 });
 
@@ -220,7 +222,8 @@ app.get('/Members', authenticateToken, async (req, res) => {
         res.render('Members', { members: members });
     }
     else {
-        res.redirect("/");
+        const referer = req.get('Referer') || "/";
+        res.redirect(referer);
     }
 });
 
@@ -361,7 +364,8 @@ function authenticateToken(req, res, next) {
         next(); // Proceed to the next middleware or route handler
     } catch (err) {
         console.error("Token verification failed:", err.message);
-        return res.redirect("/login"); // Redirect on token failure
+        const referer = req.get('Referer') || "/";
+        res.redirect(referer);
     }
 }
 
