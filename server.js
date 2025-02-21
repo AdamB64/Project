@@ -243,7 +243,8 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
 
 
     if (user.email === Chatuser.email) {
-        return res.redirect("/home");
+        const referer = req.get('Referer') || "/home";
+        return res.redirect(referer);
     }
     let chatter;
     //console.log("user " + user.role);
@@ -1054,17 +1055,16 @@ app.post('/admin', async (req, res) => {
 
 app.post('/delete/:id', async (req, res) => {
     try {
-        console.log("ran");
-        console.log(req.params);
+        //console.log(req.params);
         const { id } = req.params;
-        console.log("id " + id);
+        //console.log("id " + id);
 
         const UToken = req.cookies?.token;
         let user = getUser(UToken);
-        console.log(user.id);
+        //console.log(user.id);
 
         if (user.id == id) {
-            console.log("You cannot delete yourself");
+            //console.log("You cannot delete yourself");
             return res.status(200).json({ message: "You cannot delete yourself" });
         }
 
