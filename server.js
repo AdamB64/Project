@@ -365,7 +365,7 @@ function authenticateToken(req, res, next) {
 }
 
 
-function getUser(Token) {
+function getUser(Token, res) {
     let user = null;
     jwt.verify(Token, process.env.JWT_SECRET, (err, u) => {
         if (err) {
@@ -1052,7 +1052,36 @@ app.post('/admin', async (req, res) => {
     }
 })
 
+app.post('/delete/:id', async (req, res) => {
+    try {
+        console.log("ran");
+        console.log(req.params);
+        const { id } = req.params;
+        console.log("id " + id);
 
+        const UToken = req.cookies?.token;
+        let user = getUser(UToken);
+        console.log(user.id);
+
+        if (user.id == id) {
+            console.log("You cannot delete yourself");
+            return res.status(200).json({ message: "You cannot delete yourself" });
+        }
+
+        const company = await Company.findOne({
+            "supervisors._id": id
+        });
+
+        await Company.updateOne(
+            { _id: company._id },
+            { $pull: { supervisors: { _id: id } } }
+        );
+        return res.status(200).json({ message: "User Deleted", status: 200 });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
 
 // Start the server
