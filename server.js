@@ -389,6 +389,8 @@ app.post('/add-company', async (req, res) => {
         if (supervisorExists) { return res.status(201).send({ message: 'Supervisor already exists' }); }
         const memberExists = await Company.findOne({ "members.email": members[0].email });
         if (memberExists) { return res.status(201).send({ message: 'Member already exists' }); }
+        console.log(company.password);
+        const hashPassword = await bcrypt.hash(company.password, saltRounds);
 
         // Encrypt passwords for supervisors
         const encryptedSupervisors = await Promise.all(supervisors.map(async (supervisor) => {
@@ -424,7 +426,7 @@ app.post('/add-company', async (req, res) => {
             name: company.name,
             address: company.address,
             email: company.email,
-            password: company.password,
+            password: hashPassword,
             industry: company.industry,
             supervisors: updatedSupervisors,
             members: updatedMembers,
@@ -1023,6 +1025,25 @@ app.post('/delete/:email/:id', async (req, res) => {
     }
 });
 
+
+app.post('/admin', async (req, res) => {
+    console.log(req.body);
+    const password = req.body.password;
+    console.log(password);
+    const UToken = req.cookies?.token;
+    let user = getUser(UToken);
+    const company = await Company.findOne({ email: user.Company_email });
+    console.log(company.password);
+    const isMatch = await bcrypt.compare(password, company.password);
+    console.log(isMatch);
+    if (isMatch == false) {
+        //console.log("Invalid password");
+        return res.status(400).json({ message: "Invalid password" });
+    } else {
+        //console.log("Password Matched");
+        return res.status(200).json({ message: "Password Matched" });
+    }
+})
 
 
 

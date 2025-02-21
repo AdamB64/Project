@@ -31,17 +31,19 @@
                 if (response.ok) {
                     return response.json();
                 } else {
-                    window.location.href = '/';
+                    window.location.href = '/home';
                     throw new Error("Invalid password");
                 }
             })
             .then(data => {
-                if (!data.accessGranted) {
-                    window.location.href = '/';
+                if (data.message == "Invalid Password") {
+                    window.location.href = '/home';
                     alert("Access denied. Incorrect password.");
-                } else if (data.status == 200) {
+                } else if (data.message == "Password Matched") {
+                    alert("Access granted.");
                     const container = document.getElementById('container');
-                    container.style.display = 'display';
+                    container.style.display = 'block';
+
                 }
             })
             .catch(error => {
