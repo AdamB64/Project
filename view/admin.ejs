@@ -39,6 +39,9 @@
                 if (!data.accessGranted) {
                     window.location.href = '/';
                     alert("Access denied. Incorrect password.");
+                } else if (data.status == 200) {
+                    const container = document.getElementById('container');
+                    container.style.display = 'display';
                 }
             })
             .catch(error => {
@@ -46,8 +49,6 @@
                 window.location.href = '/';
             });
     });
-    const container = document.getElementById('container');
-    container.style.display = 'display';
 </script>
 
 <body>
