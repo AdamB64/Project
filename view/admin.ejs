@@ -57,8 +57,32 @@
     <div id="container">
         <%- include('header') %> <!-- This includes the header.html content -->
             <div class="content">
+                <% supervisors.forEach(supervisors=> { %>
+                    <div class="supervisors-box">
+                        <img src="<%= supervisors.profile %>" alt="Profile Picture">
+                        <h3>
+                            <a href="/profile/<%= supervisors._id %>">
+                                <%= supervisors.firstName %>
+                                    <%= supervisors.lastName %>
+                            </a>
+                        </h3>
+                        <p><strong>Email:</strong>
+                            <%= supervisors.email %>
+                        </p>
+                        <p><strong>ID:</strong>
+                            <%= supervisors.id %>
+                        </p>
+                        <button class="button" onClick="ChatUser('<%= supervisors._id %>')">Chat with
+                            User</button>
+                    </div>
+                    <% }); %>
+                        <script>
+                            function ChatUser(users) {
+                                window.location.href = `/chat/${users}`;
+                            }
+
+                        </script>
             </div>
-    </div>
 </body>
 
 </html>

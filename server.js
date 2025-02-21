@@ -86,11 +86,14 @@ app.get('/user', authenticateToken, (req, res) => {
     res.render('user', { users: users });  // Changed from 'view' to 'user'
 });
 
-app.get('/admin', authenticateToken, (req, res) => {
+app.get('/admin', authenticateToken, async (req, res) => {
     const UToken = req.cookies?.token;
     let user = getUser(UToken);
+    const company = await Company.findOne({ email: user.Company_email });
+    //console.log(company);
     if (user.role === "supervisor") {
-        res.render('admin');
+        //console.log(company.supervisors);
+        res.render('admin', { supervisors: company.supervisors });
     } else {
         res.redirect("/home");
     }
@@ -237,6 +240,11 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
     const UToken = req.cookies?.token;
 
     let user = getUser(UToken);
+
+
+    if (user.email === Chatuser.email) {
+        return res.redirect("/home");
+    }
     let chatter;
     //console.log("user " + user.role);
     if (user.role === "supervisor") {
