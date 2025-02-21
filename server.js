@@ -1027,15 +1027,14 @@ app.post('/delete/:email/:id', async (req, res) => {
 
 
 app.post('/admin', async (req, res) => {
-    console.log(req.body);
     const password = req.body.password;
-    console.log(password);
+
     const UToken = req.cookies?.token;
     let user = getUser(UToken);
+
     const company = await Company.findOne({ email: user.Company_email });
-    console.log(company.password);
+
     const isMatch = await bcrypt.compare(password, company.password);
-    console.log(isMatch);
     if (isMatch == false) {
         //console.log("Invalid password");
         return res.status(400).json({ message: "Invalid password" });
