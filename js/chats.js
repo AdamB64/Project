@@ -2,8 +2,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     document.getElementById('make-button').addEventListener('click', function () {
+        const name = document.getElementById('chatName').value;
+        const hidden = document.getElementById('membersList').value;
+        console.log(name + hidden);
+        if (!name || !hidden) {
+            alert('Please fill out all fields!');
+            return;
+        }
         const form = document.getElementById('form');
         form.submit();
+        //window.location.reload();
     });
 
 });

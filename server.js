@@ -8,6 +8,7 @@ const Company = require('./mongo/company.js');
 const Project = require('./mongo/project.js');
 const Chat = require('./mongo/chats.js');
 const Task = require('./mongo/task.js');
+const GChat = require('./mongo/group_chats.js');
 const { ObjectId, GridFSBucket } = require("mongodb");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
@@ -20,6 +21,7 @@ const e = require('express');
 const ejs = require('ejs');
 const multer = require("multer");
 const { get } = require('http');
+const { profile } = require('console');
 
 //how many round should be used to generate the encrypted password
 const saltRounds = 10;
@@ -189,8 +191,9 @@ app.get('/chats', authenticateToken, async (req, res) => {
             }
         }
         //console.log(users)
+        const us = user.id;
 
-        res.render('chats', { chats, Chatuser, users });
+        res.render('chats', { chats, Chatuser, users, us });
     } catch (error) {
         console.error("Error fetching chats:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -381,7 +384,7 @@ function getUser(Token, res) {
     let user = null;
     jwt.verify(Token, process.env.JWT_SECRET, (err, u) => {
         if (err) {
-            return res.status(403).json({ message: "Forbidden: Invalid token" });
+            return res.redirect("/login");
         }
         //console.log("ran1");
         user = u;
@@ -1095,21 +1098,35 @@ app.post('/delete/:id', async (req, res) => {
 });
 
 app.post('/makeChat', async (req, res) => {
-    console.log("ran");
-    console.log(req.body);
-    /*try {
-        const { user, chatter } = req.body;
-        //console.log("user " + user + " chatter " + chatter);
-        let existingChat = await Chat.findOne({ "users.id": user, "users.id": chatter });
-        if (existingChat) {
-            return res.status(200).json({ message: "Chat already exists" });
-        } else {
-            return res.status(404).json({ message: "Chat does not exist" });
+    const chatName = req.body.chatName;
+    let Members = req.body.membersList;
+    const UToken = req.cookies?.token;
+    let user = getUser(UToken);
+    Members += user.id;
+    try {
+        const c = await Company.find({ "email": user.Company_email })
+
+        Members = Members.split(',');
+        //console.log(Members.length);
+        //console.log(Members);
+        let memb = [];
+        for (let i = 0; i < Members.length; i++) {
+            //console.log("count " + Members[i]);
+            const com = c[0].members.find(mem => mem._id.toString() === Members[i]) || c[0].supervisors.find(sup => sup._id.toString() === Members[i]);
+            memb += com;
         }
+
+        const newGChat = new GChat({
+            name: chatName,
+            members: memb,
+        });
+
+        await newGChat.save();
+
     } catch (error) {
-        console.error('Error fetching data:', error);
-        res.status(500).send({ message: 'An error occurred while fetching the data', error });
-    }*/
+        console.error("Error making chat:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 });
 
 

@@ -66,12 +66,17 @@
                         <option value="" disabled selected>Select members</option>
                         <% users.forEach(function(userArray) { %>
                             <% userArray.forEach(function(user) { %>
-                                <option value="<%= user._id.toString() %>">
-                                    <%= user.firstName %>
-                                        <%= user.lastName %>
-                                </option>
-                                <% }); %>
-                                    <% }); %>
+                                <% if (us==user._id.toString()) { %>
+                                    <!-- If the IDs don't match, no option is rendered -->
+                                    <% } else { %>
+                                        <option value="<%= user._id.toString() %>">
+                                            <%= user.firstName %>
+                                                <%= user.lastName %>
+                                        </option>
+                                        <% } %>
+                                            <% }); %>
+                                                <% }); %>
+
                     </select>
                     <button class="button" type="button" id="add-button" onclick="addMem()">add</button>
                     <list id="mem-list"></list>
