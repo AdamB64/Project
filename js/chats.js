@@ -57,3 +57,9 @@ function removeMem(buttonElem, h) {
     // Remove the entire list item containing the member and button.
     buttonElem.parentElement.remove();
 }
+
+function closeCover() {
+    console.log('close');
+    const cover = document.getElementById('cover');
+    cover.style.display = 'none';
+}
