@@ -168,3 +168,17 @@ $(document).ready(function () {
     // Fetch messages on page load
     fetchMessages();
 });
+
+const headerList = document.getElementById('HDList');
+
+const li = document.createElement('li');
+li.className = "HDLitem";
+headerList.appendChild(li);
+
+const url = window.location.pathname.split("/")[2];
+const a = document.createElement('a');
+a.href = "/GInvite/" + url;
+a.textContent = "Invite";  // Sets the visible text of the link
+a.className = "HDLitemLink";  // Sets the class attribute of the link
+li.appendChild(a);
+

@@ -363,6 +363,36 @@ app.get('/GChats/:id', authenticateToken, async (req, res) => {
     res.render('group_chat', { chat, id });
 })
 
+app.get('/GInvite/:id', authenticateToken, async (req, res) => {
+    const UToken = req.cookies?.token;
+    let user = getUser(UToken);
+    const c = await Company.findOne({ email: user.Company_email });
+    const chat = await GChat.findById(req.params.id);
+
+    const missingUsers = [];
+
+    // Ensure c.members and c.supervisors are arrays
+    const membersArray = Array.isArray(c.members) ? c.members : (c.members ? [c.members] : []);
+    const supervisorsArray = Array.isArray(c.supervisors)
+        ? c.supervisors
+        : (c.supervisors ? [c.supervisors] : []);
+
+    // Combine both arrays into one list for checking
+    const usersToCheck = [...membersArray, ...supervisorsArray];
+
+    // For each user in usersToCheck, check if a user with the same email exists in chat.members.
+    usersToCheck.forEach(user => {
+        const exists = chat.members.some(chatUser => chatUser.email === user.email);
+        if (!exists) {
+            missingUsers.push(user);
+        }
+    });
+
+    const id = req.params.id;
+
+    res.render('GInvite', { missingUsers, id });
+});
+
 
 //middleware function to check token of users
 // Middleware to protect routes

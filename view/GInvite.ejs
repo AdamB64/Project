@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/png" href="/images/icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invite to group chat
+    </title>
+    <link rel="stylesheet" href="/CSS/Header.css">
+    <link rel="stylesheet" href="/CSS/GInvite.css">
+    <script src="/js/GInvite.js"></script>
+</head>
+
+<body>
+    <%- include('header') %> <!-- This includes the header.html content -->
+        <div id="main">
+            <button class="back-button" onclick="window.location.href='/GChats/<%= id %>'">Back</button>
+            <div id="form-container">
+                <% if(missingUsers=="undefinded" || missingUsers.length==0){ %>
+                    <h1>Everyone is already in the group</h1>
+                    <% } else { %>
+                        <h1>Invite users to the group</h1>
+                        <form action="/group-invite" method="POST">
+                            <select name="users" id="users" required>
+                                <option value="" disabled selected>Select users to invite</option>
+                                <% missingUsers.forEach(user=>{ %>
+                                    <option value="<%=user._id %>">
+                                        <%=user.firstName %>
+                                            <%=user.lastName %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                            <button class="button" id="BtnInv" type="button">Invite</button>
+                        </form>
+                        <% } %>
+            </div>
+        </div>
+</body>
+
+</html>
