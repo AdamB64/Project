@@ -8,6 +8,7 @@
     <title>Chats Page</title>
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/Chats.css">
+    <script src="/js/chats.js"></script>
 </head>
 
 <body>
@@ -38,6 +39,8 @@
             <!-- Group Chats (Empty for Now) -->
             <div class="chat-section">
                 <h2>Group Chats</h2>
+                <button class="button" id="class-button" onclick="makeGroup()">Create Group
+                    Chat</button>
                 <div class="scrollable-container">
                     <!-- Reserved for Group Chats -->
                 </div>
@@ -51,6 +54,31 @@
                 </div>
             </div>
 
+        </div>
+        <div id="cover">
+            <div id="form-pop-up">
+                <h2>Enter Chat Name</h2>
+                <form action="/makeChat" method="POST" id="form">
+                    <label for="chatName">chat name</label>
+                    <input type="text" name="chatName" id="chatName" placeholder="chat name" required>
+                    <label for="members">members</label>
+                    <select name="members" id="members" required>
+                        <option value="" disabled selected>Select members</option>
+                        <% users.forEach(function(userArray) { %>
+                            <% userArray.forEach(function(user) { %>
+                                <option value="<%= user._id.toString() %>">
+                                    <%= user.firstName %>
+                                        <%= user.lastName %>
+                                </option>
+                                <% }); %>
+                                    <% }); %>
+                    </select>
+                    <button class="button" type="button" id="add-button" onclick="addMem()">add</button>
+                    <list id="mem-list"></list>
+                    <input type="hidden" name="membersList" id="membersList">
+                    <button class="button" type="button" id="make-button">submit</button>
+                </form>
+            </div>
         </div>
 
 </body>

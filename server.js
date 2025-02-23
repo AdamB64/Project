@@ -162,6 +162,12 @@ app.get('/chats', authenticateToken, async (req, res) => {
         const chats = await Chat.find({ "users.id": user.id });
 
         let Chatuser = [];
+        let u = await Company.findOne({ email: user.Company_email });
+        const users = [];
+        //console.log("u mems " + u.members);
+        //console.log("u sups " + u.supervisors);
+        users.push(u.members);
+        users.push(u.supervisors);
 
         for (let i = 0; i < chats.length; i++) {
             let matchedUserId = chats[i].users.find(u => u.id !== user.id)?.id;
@@ -182,8 +188,9 @@ app.get('/chats', authenticateToken, async (req, res) => {
                 }
             }
         }
+        //console.log(users)
 
-        res.render('chats', { chats, Chatuser });
+        res.render('chats', { chats, Chatuser, users });
     } catch (error) {
         console.error("Error fetching chats:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -1085,6 +1092,24 @@ app.post('/delete/:id', async (req, res) => {
         console.error("Error deleting user:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
+});
+
+app.post('/makeChat', async (req, res) => {
+    console.log("ran");
+    console.log(req.body);
+    /*try {
+        const { user, chatter } = req.body;
+        //console.log("user " + user + " chatter " + chatter);
+        let existingChat = await Chat.findOne({ "users.id": user, "users.id": chatter });
+        if (existingChat) {
+            return res.status(200).json({ message: "Chat already exists" });
+        } else {
+            return res.status(404).json({ message: "Chat does not exist" });
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).send({ message: 'An error occurred while fetching the data', error });
+    }*/
 });
 
 

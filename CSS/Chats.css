@@ -88,3 +88,140 @@ body {
 .scrollable-container::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
+
+/* Reset some default browser styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Full-screen overlay for the modal */
+#cover {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal container for the form */
+#form-pop-up {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Heading styling */
+#form-pop-up h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    text-align: center;
+    color: #333;
+}
+
+/* Form container styling */
+#form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Label styling */
+#form label {
+    margin-top: 1rem;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Input and select field styling */
+#form input[type="text"],
+#form select {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+/* Button styling */
+.button {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+/* List styling for the members list */
+#mem-list {
+    margin-top: 1rem;
+    list-style: none;
+    padding: 0;
+}
+
+/* Hidden field styling (remains hidden) */
+#membersList {
+    display: none;
+}
+
+/* Focus styles for better accessibility */
+#form input:focus,
+#form select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Styling for individual member list items */
+#mem-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    background-color: #f9f9f9;
+}
+
+/* Styling for the remove button within list items */
+#mem-list li button {
+    background-color: #dc3545;
+    border: none;
+    color: #fff;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#mem-list li button:hover {
+    background-color: #c82333;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 480px) {
+    #form-pop-up {
+        padding: 1rem;
+    }
+
+    .button {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+}
