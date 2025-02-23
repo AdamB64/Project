@@ -357,7 +357,10 @@ app.get("/file/:id", async (req, res) => {
 
 app.get('/GChats/:id', authenticateToken, async (req, res) => {
     const chat = await GChat.findById(req.params.id);
-    res.render('group_chat', { chat });
+    const UToken = req.cookies?.token;
+    let user = getUser(UToken);
+    const id = user.id;
+    res.render('group_chat', { chat, id });
 })
 
 
@@ -855,6 +858,22 @@ app.post('/get-messages', async (req, res) => {
     }
 });
 
+app.post('/get-Gmessages/:id', async (req, res) => {
+    try {
+        // For simplicity, fetch the first available group chat.
+        // You can adjust this to use a group chat ID from req.body if needed.
+        const groupChat = await GChat.findOne(req.query.id);
+        if (!groupChat) {
+            return res.status(404).json({ error: 'Group chat not found.' });
+        }
+        // Return the messages stored in the "input" array
+        res.json(groupChat.input);
+    } catch (error) {
+        console.error("Error fetching group messages:", error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+})
+
 app.post('/add-worker', async (req, res) => {
     //console.log(req.body);
     const { role, firstName, lastName, email, password, type } = req.body;
@@ -1142,6 +1161,26 @@ app.post('/makeChat', async (req, res) => {
     }
 });
 
+
+app.post('/addGChat/:id', upload, async (req, res) => {
+    try {
+        const fileIds = req.files ? req.files.map(file => file.id) : [];
+        const { message, time, date, } = req.body;
+        const UToken = req.cookies?.token;
+
+        let user = getUser(UToken);
+
+        const id = req.params.id;
+
+        const sender = await Company.findOne({ "members._id": user.id }) || await Company.findOne({ "supervisors._id": user.id });
+        const profile = sender.members.find(mem => mem._id.toString() === user.id) || sender.supervisors.find(sup => sup._id.toString() === user.id);
+        await GChat.findByIdAndUpdate(id, { $push: { input: { profile: profile.profile, firstName: profile.firstName, lastName: profile.lastName, id: user.id, file: fileIds, message: message, timestamp: time, date: date } } }, { new: true, runValidators: true });
+        res.status(200).json({ message: "Chat saved successfully" });
+
+    } catch {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
 // Start the server
 app.listen(PORT, '0.0.0.0', () => {

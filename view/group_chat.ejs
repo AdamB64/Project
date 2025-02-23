@@ -9,6 +9,8 @@
     </title>
     <link rel="stylesheet" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/GChats.css">
+    <!-- jQuery  -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -81,6 +83,12 @@
             }
 
         </script>
+        <script>
+            window.chatData = {
+                chatId: "<%= id %>",
+            };
+        </script>
+        <script src="/JS/GChat.js"></script>
 </body>
 
 </html>
