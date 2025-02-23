@@ -2,6 +2,7 @@ const mongoose = require('./mongo.js');
 
 const groupChatSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    email: { type: String, required: true },
     members: [
         {
             level: { type: String, required: true },
@@ -13,12 +14,12 @@ const groupChatSchema = new mongoose.Schema({
     ],
     input: [
         {
-            profile: { type: String, required: true },
-            sender: { type: String, required: true },
-            message: { type: String, required: true },
-            timestamp: { type: String, required: true },
-            file: { type: [String], required: false },
-            date: { type: String, required: true }
+            profile: { type: String },
+            sender: { type: String },
+            message: { type: String },
+            timestamp: { type: String },
+            file: { type: [String] },
+            date: { type: String }
         }
     ]
 });

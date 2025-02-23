@@ -42,14 +42,30 @@
                 <button class="button" id="class-button" onclick="makeGroup()">Create Group
                     Chat</button>
                 <div class="scrollable-container">
-                    <!-- Reserved for Group Chats -->
+                    <% GChats.forEach((chat)=> { %>
+                        <div class="chat">
+                            <h3>Chat Name: <%= chat.name %>
+                            </h3>
+                            <p><strong>Members:</strong><br>
+                                <% chat.members.forEach((member)=> { %>
+                                    <%= member.firstName %>
+                                        <%= member.lastName %><br>
+                                            <% }) %>
+                            </p>
+                            <button class="chat-button" onclick="window.location.href='/GChats/<%= chat._id %>'">
+                                Open Chat
+                            </button>
+                        </div>
+                        <% }); %>
+                            <!-- Reserved for Group Chats -->
                 </div>
             </div>
 
             <!-- Project Chats (Empty for Now) -->
-            <div class="chat-section">
+            <div class=" chat-section">
                 <h2>Project Chats</h2>
                 <div class="scrollable-container">
+
                     <!-- Reserved for Project Chats -->
                 </div>
             </div>

@@ -193,7 +193,9 @@ app.get('/chats', authenticateToken, async (req, res) => {
         //console.log(users)
         const us = user.id;
 
-        res.render('chats', { chats, Chatuser, users, us });
+        const GChats = await GChat.find({ "members._id": user.id });
+
+        res.render('chats', { chats, Chatuser, users, us, GChats });
     } catch (error) {
         console.error("Error fetching chats:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -352,6 +354,11 @@ app.get("/file/:id", async (req, res) => {
     }
 });
 
+
+app.get('/GChats/:id', authenticateToken, async (req, res) => {
+    const chat = await GChat.findById(req.params.id);
+    res.render('group_chat', { chat });
+})
 
 
 //middleware function to check token of users
@@ -1104,24 +1111,30 @@ app.post('/makeChat', async (req, res) => {
     let user = getUser(UToken);
     Members += user.id;
     try {
-        const c = await Company.find({ "email": user.Company_email })
+        const c = await Company.find({ "email": user.Company_email });
 
         Members = Members.split(',');
-        //console.log(Members.length);
-        //console.log(Members);
+        // console.log(Members.length);
+        // console.log(Members);
         let memb = [];
         for (let i = 0; i < Members.length; i++) {
-            //console.log("count " + Members[i]);
-            const com = c[0].members.find(mem => mem._id.toString() === Members[i]) || c[0].supervisors.find(sup => sup._id.toString() === Members[i]);
-            memb += com;
+            // Find the member in either members or supervisors array
+            const com = c[0].members.find(mem => mem._id.toString() === Members[i]) ||
+                c[0].supervisors.find(sup => sup._id.toString() === Members[i]);
+            if (com) {
+                memb.push(com);
+            }
         }
 
         const newGChat = new GChat({
             name: chatName,
+            email: user.Company_email,
             members: memb,
         });
 
         await newGChat.save();
+        res.redirect('/GChats/' + newGChat._id);
+
 
     } catch (error) {
         console.error("Error making chat:", error);
