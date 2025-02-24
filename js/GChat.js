@@ -66,9 +66,10 @@ $(document).ready(function () {
         console.log(url);
         let lastMessageId = null;
         $.ajax({
-            url: '/get-Gmessages/' + url,
+            url: '/get-Gmessages/',
             method: 'POST',
             contentType: 'application/json',
+            body: JSON.stringify({ id: url }),
             success: function (response) {
                 console.log(response);
                 let shouldScroll = isScrolledToBottom();

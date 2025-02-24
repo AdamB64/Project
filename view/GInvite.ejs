@@ -15,7 +15,7 @@
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
         <div id="main">
-            <button class="back-button" onclick="window.location.href='/GChats/<%= id %>'">Back</button>
+            <button class="back-button" id="back" onclick="window.location.href='/GChats/<%= id %>'">Back</button>
             <div id="form-container">
                 <% if(missingUsers=="undefinded" || missingUsers.length==0){ %>
                     <h1>Everyone is already in the group</h1>
@@ -23,7 +23,7 @@
                         <h1>Invite users to the group</h1>
                         <form action="/group-invite" method="POST">
                             <select name="users" id="users" required>
-                                <option value="" disabled selected>Select users to invite</option>
+                                <option value="Select User" disabled selected>Select users to invite</option>
                                 <% missingUsers.forEach(user=>{ %>
                                     <option value="<%=user._id %>">
                                         <%=user.firstName %>
