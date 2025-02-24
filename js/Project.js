@@ -26,21 +26,30 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-
+    console.log("Tasks:", tasks);
     let gantt = new Gantt("#gantt", tasks, {
-        view_mode: "Day",
+        view_mode: "Month",
         date_format: "YYYY-MM-DD",
-        start: startDate,
-        end: endDate,
+        lines: true,
         custom_popup_html: function (task) {
             return `
                 <div class="custom-tooltip">
-                    <p>Start: ${new Date(task.start).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p><p>End: ${new Date(task.end).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                    <h3>Progress: ${task.progress}%<h3>
+                    <p>Start:<br> ${new Date(task.start).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p><p>End:<br> ${new Date(task.end).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
                     <p>Description: <em>${task.description}</em></p>
                 </div>
             `;
         }
     });
+    gantt.gantt_end = endDate;
+    gantt.gantt_start = startDate;
+    console.log(gantt.tasks);
+
+    // Call the overridden setup_dates method to recalculate the dates array
+    gantt.setup_dates();
+
+
+    console.log("Gantt:", gantt);
 
     gantt.render();
 });

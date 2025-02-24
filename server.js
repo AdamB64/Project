@@ -965,7 +965,7 @@ app.post('/add-task', async (req, res) => {
         }
 
         // Verify JWT Token
-        let user = getUser(UToken); s
+        let user = getUser(UToken);
 
         // Find the company
         const company = await Company.findOne({ email: user.Company_email });
