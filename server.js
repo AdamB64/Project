@@ -357,7 +357,7 @@ app.get("/file/:id", async (req, res) => {
 
 app.get('/GChats/:id', authenticateToken, async (req, res) => {
     const chat = await GChat.findById(req.params.id);
-    console.log(chat);
+    //console.log(chat);
     const UToken = req.cookies?.token;
     let user = getUser(UToken);
     const id = user.id;
@@ -859,7 +859,7 @@ app.post('/addChat', upload, async (req, res) => {
                 },
                 { new: true, runValidators: true }
             );
-            //sconsole.log("Chat Updated!");
+            //console.log("Chat Updated!");
         }
 
         res.status(200).json({ message: "Chat saved successfully", files: fileIds });
@@ -1185,7 +1185,7 @@ app.post('/makeChat', async (req, res) => {
         });
 
         await newGChat.save();
-        console.log(newGChat.id);
+        //console.log(newGChat.id);
         res.redirect('/GChats/' + newGChat._id);
 
 
@@ -1219,15 +1219,15 @@ app.post('/addGChat/:id', upload, async (req, res) => {
 app.post('/addGInvite/:id', async (req, res) => {
     const id = req.params.id;
     const members = req.body.userId;
-    console.log(members);
+    //console.log(members);
 
     try {
         const UToken = req.cookies?.token;
         let user = getUser(UToken);
         const company = await Company.findOne({ email: user.Company_email }) || await Company.findOne({ email: user.Company_email });
-        console.log(company);
+        //console.log(company);
         const mem = company.members.find(mem => mem._id.toString() === members) || company.supervisors.find(sup => sup._id.toString() === members);
-        console.log(mem);
+        //console.log(mem);
         await GChat.findByIdAndUpdate(id, { $push: { members: mem } }, { new: true, runValidators: true });
         res.status(200).json({ message: "User added successfully" });
     } catch {
