@@ -25,12 +25,13 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("no-tasks").style.display = "block";
     }
 
-
     console.log("Tasks:", tasks);
     let gantt = new Gantt("#gantt", tasks, {
         view_mode: "Month",
         date_format: "YYYY-MM-DD",
-        lines: true,
+        lines: "both",
+        start: startDate,
+        end: endDate,
         custom_popup_html: function (task) {
             return `
                 <div class="custom-tooltip">
@@ -41,12 +42,62 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
         }
     });
-    gantt.gantt_end = endDate;
-    gantt.gantt_start = startDate;
     console.log(gantt.tasks);
 
+    // Override the dates function to generate a timeline that spans the whole period
+    gantt.dates = function () {
+        let dates = [];
+        let startDate = new Date(this.options.start);
+
+        // Add the month before the start date
+        let prevDate = new Date(startDate);
+        prevDate.setMonth(prevDate.getMonth() - 1);
+        dates.push(new Date(prevDate));
+
+        // Now add one month at a time starting from the start date
+        let currentDate = new Date(startDate);
+        while (currentDate <= this.options.end) {
+            dates.push(new Date(currentDate));
+            currentDate.setMonth(currentDate.getMonth() + 1);
+        }
+
+        // If the last date is before the end date, ensure the end date is included
+        if (dates.length && dates[dates.length - 1] < this.options.end) {
+            dates.push(new Date(this.options.end));
+        }
+
+        // Set the dates array so the Gantt chart uses it for rendering the timeline
+        this.dates = dates;
+    };
+
+    // Custom function to generate a timeline covering the full period.
+    // It increments by one month starting from the defined start date.
+    /*gantt.generateTimeline = function () {
+        let dates = [];
+        let currentDate = new Date(this.options.start);
+        dates.push(new Date(currentDate)); // Ensure the timeline starts at the exact start date
+
+        while (currentDate < this.options.end) {
+            currentDate = new Date(currentDate);
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            if (currentDate > this.options.end) {
+                dates.push(new Date(this.options.end));
+                break;
+            } else {
+                dates.push(new Date(currentDate));
+            }
+        }
+        return dates;
+    };*/
+
+
+
+    //gantt.setup_dates();
+    gantt.dates();
+
+    console.log("Gantt dates:", gantt.dates);
     // Call the overridden setup_dates method to recalculate the dates array
-    gantt.setup_dates();
+
 
 
     console.log("Gantt:", gantt);

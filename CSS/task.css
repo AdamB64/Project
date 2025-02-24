@@ -97,6 +97,7 @@ input {
 }
 
 .gantt-container {
+    width: 100%;
     min-height: 200px;
     /* Ensures visibility */
     border: 1px solid #ddd;

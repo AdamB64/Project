@@ -504,7 +504,7 @@ app.post('/add-company', async (req, res) => {
         const token = jwt.sign(
             { id: newCompany.supervisors?.[0]?._id, role: "supervisor", email: newCompany.supervisors?.[0]?.email, Company_email: newCompany.email },  // Payload
             process.env.JWT_SECRET,                      // Secret Key
-            { expiresIn: "1h" }                          // Expiration Time
+            { expiresIn: "7h" }                          // Expiration Time
         );
         //comfirm token
         //console.log(token);
@@ -515,7 +515,7 @@ app.post('/add-company', async (req, res) => {
             httpOnly: true, // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production", // Use HTTPS in production
             sameSite: "strict", // Helps prevent CSRF attacks
-            maxAge: 60 * 60 * 1000 // 1 hour expiration
+            maxAge: 60 * 60 * 7000 // 1 hour expiration
         });
         //console.log("home");
         res.json({ message: "Login Successful" });
@@ -549,7 +549,7 @@ app.post("/SLogin", async (req, res) => {
         const token = jwt.sign(
             { id: supervisor._id, role: "supervisor", email: supervisor.email, Company_email: companyEmail },  // Payload
             process.env.JWT_SECRET,                      // Secret Key
-            { expiresIn: "1h" }                          // Expiration Time
+            { expiresIn: "7h" }                          // Expiration Time
         );
         //comfirm token
         //console.log(token);
@@ -561,7 +561,7 @@ app.post("/SLogin", async (req, res) => {
             httpOnly: true, // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production", // Use HTTPS in production
             sameSite: "strict", // Helps prevent CSRF attacks
-            maxAge: 60 * 60 * 1000 // 1 hour expiration
+            maxAge: 60 * 60 * 7000 // 1 hour expiration
         });
         res.redirect(`/home`);
     } catch (error) {
@@ -594,7 +594,7 @@ app.post("/MLogin", async (req, res) => {
         const Mtoken = jwt.sign(
             { id: member._id, role: "member", email: member.email, Company_email: companyEmail },  // Payload
             process.env.JWT_SECRET,                      // Secret Key
-            { expiresIn: "1h" }                          // Expiration Time
+            { expiresIn: "7h" }                          // Expiration Time
         );
         //comfirm token
         //console.log(Mtoken);
@@ -606,7 +606,7 @@ app.post("/MLogin", async (req, res) => {
             httpOnly: true, // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production", // Use HTTPS in production
             sameSite: "strict", // Helps prevent CSRF attacks
-            maxAge: 60 * 60 * 1000 // 1 hour expiration
+            maxAge: 60 * 60 * 7000 // 1 hour expiration
         });
         res.redirect(`/home`);
     } catch (error) {

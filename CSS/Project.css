@@ -4,15 +4,19 @@ body {
     overflow: auto;
 }
 
+.content {
+    margin-top: 10px;
+}
 
-.gantt-container {
-    align-items: center;
-    min-height: 350px;
-    /* Ensures visibility */
-    border: 1px solid #ddd;
-    /* Makes the container visible */
-    position: relative;
-    width: 100%;
+#Bbutton {
+    display: block;
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    margin-bottom: 20px;
+    max-width: 200px;
+    text-align: center;
+    font-size: 18px;
+    align-self: flex-start;
 }
 
 .no-tasks-message {
@@ -24,9 +28,6 @@ body {
     font-size: 16px;
 }
 
-svg {
-    max-width: 100%;
-}
 
 .cover {
     position: fixed;
@@ -156,7 +157,6 @@ h2 {
     text-align: center;
     font-size: 32px;
     font-weight: bold;
-    margin-bottom: 20px;
 }
 
 .task-card {
