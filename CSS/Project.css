@@ -40,10 +40,7 @@ body {
     /* Re-enable click events for popups */
 }
 
-.handle {
-    display: none !important;
-    /* Completely hide the resize handles */
-}
+
 
 
 .popup-wrapper {

@@ -136,33 +136,24 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-let gantt = new Gantt("#gantt", tasks, {
-    view_mode: "Month",
-    date_format: "YYYY-MM-DD",
-    lines: "both",
-    start: startDate,
-    end: endDate,
-    custom_popup_html: function (task) {
-        return `
-            <div class="custom-tooltip">
-                <h3>Progress: ${task.progress}%<h3>
-                <p>Start: ${new Date(task.start).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
-                <p>End: ${new Date(task.end).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
-                <p>Description: <em>${task.description}</em></p>
-            </div>
-        `;
-    }
-});
 
 setTimeout(() => {
-    document.querySelectorAll('.bar').forEach(el => {
-        el.style.pointerEvents = 'auto'; // Keep click events working
+    // Prevent dragging
+    document.querySelectorAll('.bar-wrapper').forEach(el => {
+        el.style.pointerEvents = 'none'; // Disable drag movement
     });
 
+    // Allow clicking inside the task bars for popups
+    document.querySelectorAll('.bar').forEach(el => {
+        el.style.pointerEvents = 'auto';
+    });
+
+    // Hide resize handles to prevent resizing
     document.querySelectorAll('.handle').forEach(el => {
-        el.style.display = 'none'; // Hide resize handles completely
+        el.style.display = 'none';
     });
 }, 500);
+
 
 
 
