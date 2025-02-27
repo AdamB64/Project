@@ -92,7 +92,6 @@ app.get('/admin', authenticateToken, async (req, res) => {
     const UToken = req.cookies?.token;
     let user = getUser(UToken);
     const company = await Company.findOne({ email: user.Company_email });
-    //console.log(company);
     if (user.role === "supervisor") {
         //console.log(company.supervisors);
         res.render('admin', { supervisors: company.supervisors });
