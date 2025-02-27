@@ -79,8 +79,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/about', (req, res) => {
-    res.render('about');  // Changed from 'view' to 'about'
-});  // Add your about route here
+    res.render('about');
+});
 
 app.get('/user', authenticateToken, (req, res) => {
     //console.log("session " + [req.session.Info]);
