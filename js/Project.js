@@ -1,3 +1,14 @@
+window.addEventListener("DOMContentLoaded", function () {
+    const navigationEntries = performance.getEntriesByType("navigation");
+
+    if (navigationEntries.length > 0 && navigationEntries[0].type === "back_forward") {
+        console.log("Page loaded via back or forward navigation.");
+        // Reload the page if needed
+        location.reload();
+    }
+});
+
+
 document.addEventListener("DOMContentLoaded", function () {
 
     let startDate = new Date(window.projectData.startDate);
