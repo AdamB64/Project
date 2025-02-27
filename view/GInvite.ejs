@@ -26,8 +26,9 @@
                                 <option value="Select User" disabled selected>Select users to invite</option>
                                 <% missingUsers.forEach(user=>{ %>
                                     <option value="<%=user._id %>">
-                                        <%=user.firstName %>
-                                            <%=user.lastName %>
+                                        <%= user.level %>
+                                            <%=user.firstName %>
+                                                <%=user.lastName %>
                                     </option>
                                     <% }) %>
                             </select>

@@ -94,8 +94,9 @@
                                     <!-- If the IDs don't match, no option is rendered -->
                                     <% } else { %>
                                         <option value="<%= user._id.toString() %>">
-                                            <%= user.firstName %>
-                                                <%= user.lastName %>
+                                            <%= user.level %>
+                                                <%= user.firstName %>
+                                                    <%= user.lastName %>
                                         </option>
                                         <% } %>
                                             <% }); %>
