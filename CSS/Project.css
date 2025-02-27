@@ -28,6 +28,23 @@ body {
     font-size: 16px;
 }
 
+/* Prevent dragging and resizing tasks */
+.bar-wrapper {
+    pointer-events: none;
+    /* Disables drag interactions */
+}
+
+/* Allow clicking inside the task bars to show popups */
+.bar {
+    pointer-events: auto;
+    /* Re-enable click events for popups */
+}
+
+.handle {
+    display: none !important;
+    /* Completely hide the resize handles */
+}
+
 
 .popup-wrapper {
     width: 200px;
