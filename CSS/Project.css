@@ -29,6 +29,14 @@ body {
 }
 
 
+.popup-wrapper {
+    width: 200px;
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+
 .cover {
     position: fixed;
     /* Ensures it covers the screen and stays in place */

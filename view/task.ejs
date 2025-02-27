@@ -31,7 +31,7 @@
                     <div id="no-tasks" class="no-tasks-message" style="display: none;">No tasks to display</div>
                     <label for="progress">Overall Task Progress:</label>
                     <input type="range" id="progress" name="progress" min="0" max="100" value="50">
-                    <span id="progress-value">50%</span>
+                    <span id="progress-value"></span>
                     <button type="button" id="submit" onclick="progress()">Submit</button>
 
                 </div>
@@ -43,7 +43,7 @@
                 <div id="TeamMem" class="tabcontent">
 
                 </div>
-                <%= task %>
+
             </div>
             <script>
                 window.taskData = {

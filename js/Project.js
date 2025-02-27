@@ -36,7 +36,13 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("no-tasks").style.display = "block";
     }
 
-    console.log("Tasks:", tasks);
+    for (let i = 0; i < tasks.length; i++) {
+        if (tasks[i].progress == 100) {
+            console.log("Task is completed");
+        }
+    }
+
+    //console.log("Tasks:", tasks);
     let gantt = new Gantt("#gantt", tasks, {
         view_mode: "Month",
         date_format: "YYYY-MM-DD",
@@ -47,13 +53,13 @@ document.addEventListener("DOMContentLoaded", function () {
             return `
                 <div class="custom-tooltip">
                     <h3>Progress: ${task.progress}%<h3>
-                    <p>Start:<br> ${new Date(task.start).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p><p>End:<br> ${new Date(task.end).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                    <p>Start: ${new Date(task.start).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p><p>End: ${new Date(task.end).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
                     <p>Description: <em>${task.description}</em></p>
                 </div>
             `;
         }
     });
-    console.log(gantt.tasks);
+    //console.log(gantt.tasks);
 
     // Override the dates function to generate a timeline that spans the whole period
     gantt.dates = function () {
@@ -73,9 +79,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // If the last date is before the end date, ensure the end date is included
-        if (dates.length && dates[dates.length - 1] < this.options.end) {
-            dates.push(new Date(this.options.end));
+        if (dates.length) {
+            let lastDate = dates[dates.length - 1];
+            let endDate = new Date(this.options.end);
+
+            if (lastDate.getFullYear() === endDate.getFullYear() && lastDate.getMonth() === endDate.getMonth()) {
+                // Replace last date if in the same month
+                dates[dates.length - 1] = endDate;
+            } else if (
+                lastDate.getFullYear() < endDate.getFullYear() ||
+                (lastDate.getFullYear() === endDate.getFullYear() && lastDate.getMonth() < endDate.getMonth())
+            ) {
+                // Add end date if the last date is before it
+                dates.push(endDate);
+            }
         }
+
 
         // Set the dates array so the Gantt chart uses it for rendering the timeline
         this.dates = dates;
@@ -106,12 +125,12 @@ document.addEventListener("DOMContentLoaded", function () {
     //gantt.setup_dates();
     gantt.dates();
 
-    console.log("Gantt dates:", gantt.dates);
+    //console.log("Gantt dates:", gantt.dates);
     // Call the overridden setup_dates method to recalculate the dates array
 
 
 
-    console.log("Gantt:", gantt);
+    //console.log("Gantt:", gantt);
 
     gantt.render();
 });
