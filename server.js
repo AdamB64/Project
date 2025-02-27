@@ -85,7 +85,7 @@ app.get('/about', (req, res) => {
 app.get('/user', authenticateToken, (req, res) => {
     //console.log("session " + [req.session.Info]);
     const users = req.session.Info ? [req.session.Info] : [];
-    res.render('user', { users: users });  // Changed from 'view' to 'user'
+    res.render('user', { users: users });
 });
 
 app.get('/admin', authenticateToken, async (req, res) => {
@@ -129,16 +129,16 @@ app.get('/projects', authenticateToken, async (req, res) => {
     //console.log(user.email);
     const project = await Project.find({ "members.email": user.email });
     //console.log(project);
-    res.render('projects', { project });  // Changed from 'view' to 'projects'
+    res.render('projects', { project });
 });
 
 app.get('/create', (req, res) => {
-    res.render('create');  // Changed from 'view' to 'create'
-});  // Add your create route here
+    res.render('create');
+});
 
 app.get('/login', (req, res) => {
-    res.render('login');  // Changed from 'view' to 'login'
-});  // Add your login route here
+    res.render('login');
+});
 
 app.get('/home', authenticateToken, (req, res) => {
     //console.log(req.user.role);
@@ -148,7 +148,7 @@ app.get('/home', authenticateToken, (req, res) => {
     } else if (req.user.role === "member") {
         code = process.env.MEM_ROLE
     }
-    res.render('home', { Code: code });  // Changed from 'view' to 'home'
+    res.render('home', { Code: code });
 });
 
 app.get('/chats', authenticateToken, async (req, res) => {
@@ -216,7 +216,7 @@ app.get('/sprojects', authenticateToken, async (req, res) => {
 
         const company = await Company.find({ "members.level": "Member", email: req.user.Company_email });
         const members = company.map(c => c.members).flat();
-        res.render('sproject', { members, project: projects });  // Changed from 'view' to 'projects'
+        res.render('sproject', { members, project: projects });
     } else {
         const referer = req.get('Referer') || "/";
         res.redirect(referer);
