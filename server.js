@@ -106,8 +106,9 @@ app.get('/admin', authenticateToken, async (req, res) => {
 
 app.get('/task/:id', authenticateToken, async (req, res) => {
     const task = await Task.findById(req.params.id);
+    const sub_task = await STask.find({ "TaskID": req.params.id });
     //console.log(task);
-    res.render('task', { task });
+    res.render('task', { task, sub_task });
 });
 
 app.get('/profile/:id', authenticateToken, async (req, res) => {

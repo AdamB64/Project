@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="/CSS/task.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.min.js"></script>
-    <link rel="stylesheet" href="/jKanban/jKanban.min.css">
-    <script src="/jKanban/jKanban.min.js"></script>
 </head>
 
 <body>
@@ -86,17 +84,6 @@
                     endDate: "<%= task.end %>",
                     id: "<%= task.id %>",
                 }
-            </script>
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    let progressSlider = document.getElementById("progress");
-                    let progressValue = document.getElementById("progress-value");
-
-                    // Update the label when the slider moves
-                    progressSlider.addEventListener("input", function () {
-                        progressValue.textContent = progressSlider.value + "%";
-                    });
-                });
             </script>
             <script src="/js/task.js"></script>
 </body>
