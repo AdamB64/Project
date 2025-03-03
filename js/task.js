@@ -15,10 +15,9 @@ function openTab(evt, cityName) {
 
 
 document.addEventListener("DOMContentLoaded", function () {
+
     let startDate = new Date(window.taskData.startDate);
     let endDate = new Date(window.taskData.endDate);
-    console.log("Task Start Date:", startDate);
-    console.log("Task End Date:", endDate);
 
     if (!startDate || isNaN(startDate.getTime()) || !endDate || isNaN(endDate.getTime())) {
         console.error("Invalid project start or end date", window.projectData.startDate, window.projectData.endDate);
@@ -27,8 +26,8 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    console.log("Project Start Date:", startDate);
-    console.log("Project End Date:", endDate);
+    //console.log("Project Start Date:", startDate);
+    //console.log("Project End Date:", endDate);
 
     let tasks = [];
 
@@ -72,14 +71,20 @@ function progress() {
 
 }
 
-function addMem() {
+document.getElementById('addMem').addEventListener('click', function () {
+    //console.log("Add member button clicked");
     const dropdown = document.getElementById('members');
+    //console.log("Dropdown:", dropdown);
     const selectedValue = dropdown.options[dropdown.selectedIndex].value;
+    if (selectedValue === "0") {
+        alert("Please select a member");
+        return;
+    }
     const selectedText = dropdown.options[dropdown.selectedIndex].text;
     const list = document.getElementById('memList');
     const listItem = document.createElement('li');
     if (selectedValue) {
-        console.log("Selected value:", selectedValue);
+        //console.log("Selected value:", selectedValue);
 
         // Check if the member is already in the list
         var existingItems = list.getElementsByTagName("li");
@@ -100,23 +105,72 @@ function addMem() {
     hiddenInput.name = "members"; // Allow multiple selections
     hiddenInput.value = selectedValue;
     listItem.appendChild(hiddenInput);
-    console.log("List item:", listItem);
-    console.log("Hidden input:", hiddenInput);
-}
+    //console.log("List item:", listItem);
+    //console.log("Hidden input:", hiddenInput);
+});
 
-
-document.getElementById('submit').addEventListener('click', function () {
-    console.log("Submit button clicked");
+document.getElementById('FSubmit').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent default form submission behavior
 
     let form = document.getElementById('form');
     let formData = new FormData(form);
     let formObject = {};
 
+    let isValid = true;
+    let errorMessage = "";
+
+    // Convert form data to an object
     formData.forEach((value, key) => {
-        formObject[key] = value;
+        formObject[key] = value.trim(); // Trim to remove accidental spaces
+
+        // Check if any field is empty
+        if (!formObject[key]) {
+            isValid = false;
+            errorMessage += `The field "${key}" is required.\n`;
+        }
     });
 
-    console.log("Form Data:", formObject); // Log the entire form as an object
-});
+    // Ensure 'members' is greater than '0'
+    if (parseInt(formObject.members, 10) <= 0) {
+        isValid = false;
+        errorMessage += 'Members must be greater than 0.\n';
+    }
 
-addMem();
+    // Validate start date and end date
+    let startDate = new Date(formObject.startDate);
+    let endDate = new Date(formObject.endDate);
+
+    if (isNaN(startDate) || isNaN(endDate)) {
+        isValid = false;
+        errorMessage += "Invalid date format. Please select valid dates.\n";
+    } else if (startDate >= endDate) {
+        isValid = false;
+        errorMessage += "Start date must be before the end date.\n";
+    }
+
+    if (!isValid) {
+        alert(errorMessage); // Show validation error
+        return; // Stop submission if validation fails
+    }
+
+    // If validation passes, proceed with form submission
+    fetch(`/add-Sub_task/${window.taskData.id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formObject)
+    }).then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Request failed.');
+    }).then(data => {
+        console.log("Success:", data);
+        alert("Sub Task Added Successfully");
+        form.reset(); // Clear the form after successful submission
+    }).catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while submitting the form.");
+    });
+});

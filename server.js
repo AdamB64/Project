@@ -1235,6 +1235,14 @@ app.post('/addGInvite/:id', async (req, res) => {
     }
 });
 
+app.post('/add-Sub_Task/:id', async (req, res) => {
+    console.log(req.body);
+    const taskId = req.params.id;
+    const { TaskName, Description, StartDate, EndDate, Members } = req.body;
+
+    res.status(200).json({ message: "Sub-task added successfully" });
+});
+
 // Start the server
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);

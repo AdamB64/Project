@@ -8,7 +8,6 @@
     <title>task</title>
     <link rel="stylesheet" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/task.css">
-    <script src="/js/task.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.min.js"></script>
 </head>
@@ -63,10 +62,10 @@
                                 </option>
                                 <% }) %>
                         </select>
-                        <button type="button" id="addMem" onclick="addMem()">Add</button>
+                        <button type="button" id="addMem">Add</button>
                         <list id="memList"></list>
                         <br>
-                        <button type="button" id="submit" class="button">Submit</button>
+                        <button type="button" id="FSubmit" class="button">Submit</button>
                     </form>
                 </div>
 
@@ -83,6 +82,7 @@
                 window.taskData = {
                     startDate: "<%= task.start %>",
                     endDate: "<%= task.end %>",
+                    id: "<%= task.id %>",
                 }
             </script>
             <script>
@@ -96,6 +96,7 @@
                     });
                 });
             </script>
+            <script src="/js/task.js"></script>
 </body>
 
 </html>
