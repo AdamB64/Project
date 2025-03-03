@@ -15,6 +15,7 @@ function openTab(evt, cityName) {
 
 
 document.addEventListener("DOMContentLoaded", function () {
+    var kanban = new jKanban(options)
 
     let startDate = new Date(window.taskData.startDate);
     let endDate = new Date(window.taskData.endDate);

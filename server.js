@@ -71,6 +71,7 @@ const upload = multer({ storage }).array("files", 5); // Accepts up to 5 files
 app.use('/CSS', express.static(path.join(__dirname, 'CSS')));
 app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/jKanban', express.static(path.join(__dirname, 'jKanban')));
 
 
 //---------------------GET routes---------------------
@@ -1238,33 +1239,55 @@ app.post('/addGInvite/:id', async (req, res) => {
 app.post('/add-Sub_Task/:id', async (req, res) => {
     console.log(req.body);
     const taskId = req.params.id;
-    const { TaskName, Description, StartDate, EndDate } = req.body;
-    let Members = req.body.Members;
+    const { taskName, description, startDate, endDate } = req.body;
+    let Members = req.body.members; // Ensure 'members' is lowercase
 
     // Confirm that Members is an array; if it's a string, convert it to an array
     if (!Array.isArray(Members)) {
         Members = [Members];
     }
-    console.log(Members.length);
+
+    //console.log("Members Count:", Members.length);
+
     try {
+        const user = await Task.findOne({ _id: taskId });
 
-        for (let i = 0; i < Members.length; i++) {
-            console.log(i);
-            const member = Members[i];
+        if (!user) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+        let foundMembers = [];
 
-            // Search for a task where 'members' array contains an object with the matching 'id'
-            const user = await Task.findOne({ _id: taskId });
+        for (let i = 0; i < Members.length; i++) {  // Fixed loop condition
+            let member = Members[i];
+            //console.log(`Processing member: ${member}`);
 
-            if (user) {
-                // Get the matching member from the members array
-                const mem = user.members.find(mem => mem.id === member);
-                console.log(mem);
+            let matchedMember = user.members.find(mem => mem.id === member);
+            console.log("Matched user member:", matchedMember ? matchedMember.id : "Not Found");
+
+
+
+            if (matchedMember) {
+                foundMembers.push(matchedMember);
+                console.log("Matched user member:", matchedMember.id);
             } else {
-                console.log(`No task found for member: ${member}`);
+                console.log(`No matching member found for: ${member}`);
             }
         }
 
-        //console.log(JSON.stringify(Members));
+        const UToken = req.cookies?.token;
+        let user1 = getUser(UToken);
+
+        Sub_Task = new STask({
+            task: taskName,
+            description: description,
+            start: startDate,
+            end: endDate,
+            TaskID: taskId,
+            companyEmail: user1.Company_email,
+            members: foundMembers
+        });
+
+        await Sub_Task.save();
 
         res.status(200).json({ message: "Sub-task added successfully" });
     } catch (error) {
@@ -1272,6 +1295,7 @@ app.post('/add-Sub_Task/:id', async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
 
 // Start the server
 app.listen(PORT, '0.0.0.0', () => {
