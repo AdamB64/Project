@@ -52,7 +52,7 @@
                         <input type="date" id="endDate" name="endDate" required>
                         <br>
                         <label for="members">Members:</label>
-                        <select id="members" name="members" required>
+                        <select id="members" required>
                             <option value="0">Select Members</option>
                             <% task.members.forEach(member=> { %>
                                 <option value="<%= member.id %>">

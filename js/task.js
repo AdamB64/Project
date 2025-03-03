@@ -83,35 +83,50 @@ document.getElementById('addMem').addEventListener('click', function () {
     const selectedText = dropdown.options[dropdown.selectedIndex].text;
     const list = document.getElementById('memList');
     const listItem = document.createElement('li');
+    console.log("List:", list);
     if (selectedValue) {
-        //console.log("Selected value:", selectedValue);
+        console.log("Selected value:", selectedValue);
 
         // Check if the member is already in the list
         var existingItems = list.getElementsByTagName("li");
         for (var i = 0; i < existingItems.length; i++) {
-            console.log("Existing item:", existingItems)
-            if (existingItems[i].innerText === selectedText) {
+            /*console.log("Existing item:", existingItems)
+            console.log("Selected text:", selectedText);*/
+            if (existingItems[i].getAttribute("data-value") === selectedValue) {
                 alert("Member is already added!");
                 return;
             }
         }
     }
-    listItem.appendChild(document.createTextNode(selectedText));
-    list.appendChild(listItem);
+    listItem.setAttribute("data-value", selectedValue);
+    listItem.textContent = selectedText;
 
     // Create a hidden input field to submit the value
     var hiddenInput = document.createElement("input");
     hiddenInput.type = "hidden";
+    hiddenInput.id = "HMember";
     hiddenInput.name = "members"; // Allow multiple selections
     hiddenInput.value = selectedValue;
     listItem.appendChild(hiddenInput);
     //console.log("List item:", listItem);
     //console.log("Hidden input:", hiddenInput);
+
+    // Add a remove button
+    var removeButton = document.createElement("button");
+    removeButton.textContent = "Remove";
+    removeButton.onclick = function () {
+        list.removeChild(listItem);
+    };
+
+    listItem.appendChild(removeButton);
+    list.appendChild(listItem);
 });
 
 document.getElementById('FSubmit').addEventListener('click', function (event) {
     event.preventDefault(); // Prevent default form submission behavior
 
+    const hiddenInput = document.getElementById('HMember');
+    console.log(hiddenInput);
     let form = document.getElementById('form');
     let formData = new FormData(form);
     let formObject = {};
@@ -121,12 +136,20 @@ document.getElementById('FSubmit').addEventListener('click', function (event) {
 
     // Convert form data to an object
     formData.forEach((value, key) => {
-        formObject[key] = value.trim(); // Trim to remove accidental spaces
+        if (key === "members") {
+            if (!Array.isArray(formObject[key])) {
+                formObject[key] = []; // Initialize as an array if it doesn't exist
+            }
+            formObject[key].push(value.trim()); // Add value to the array
+        } else {
+            formObject[key] = value.trim(); // Directly assign other values
+        }
+        console.log("Key:", key, "Value:", value);
 
         // Check if any field is empty
         if (!formObject[key]) {
             isValid = false;
-            errorMessage += `The field "${key}" is required.\n`;
+            errorMessage += `The field ${key} is required.\n`;
         }
     });
 
@@ -168,7 +191,7 @@ document.getElementById('FSubmit').addEventListener('click', function (event) {
     }).then(data => {
         console.log("Success:", data);
         alert("Sub Task Added Successfully");
-        form.reset(); // Clear the form after successful submission
+        window.location.reload();
     }).catch(error => {
         console.error("Error:", error);
         alert("An error occurred while submitting the form.");

@@ -1238,9 +1238,39 @@ app.post('/addGInvite/:id', async (req, res) => {
 app.post('/add-Sub_Task/:id', async (req, res) => {
     console.log(req.body);
     const taskId = req.params.id;
-    const { TaskName, Description, StartDate, EndDate, Members } = req.body;
+    const { TaskName, Description, StartDate, EndDate } = req.body;
+    let Members = req.body.Members;
 
-    res.status(200).json({ message: "Sub-task added successfully" });
+    // Confirm that Members is an array; if it's a string, convert it to an array
+    if (!Array.isArray(Members)) {
+        Members = [Members];
+    }
+    console.log(Members.length);
+    try {
+
+        for (let i = 0; i < Members.length; i++) {
+            console.log(i);
+            const member = Members[i];
+
+            // Search for a task where 'members' array contains an object with the matching 'id'
+            const user = await Task.findOne({ _id: taskId });
+
+            if (user) {
+                // Get the matching member from the members array
+                const mem = user.members.find(mem => mem.id === member);
+                console.log(mem);
+            } else {
+                console.log(`No task found for member: ${member}`);
+            }
+        }
+
+        //console.log(JSON.stringify(Members));
+
+        res.status(200).json({ message: "Sub-task added successfully" });
+    } catch (error) {
+        console.error("Error adding sub-task:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 });
 
 // Start the server
