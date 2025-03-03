@@ -9,6 +9,7 @@ const Project = require('./mongo/project.js');
 const Chat = require('./mongo/chats.js');
 const Task = require('./mongo/task.js');
 const GChat = require('./mongo/group_chats.js');
+const STask = require('./mongo/sub_task.js');
 const { ObjectId, GridFSBucket } = require("mongodb");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");

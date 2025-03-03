@@ -8,9 +8,9 @@
     <title>task</title>
     <link rel="stylesheet" href="/CSS/Header.css">
     <link rel="stylesheet" href="/CSS/task.css">
+    <script src="/js/task.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.min.js"></script>
-    <script src="/js/task.js"></script>
 </head>
 
 <body>
@@ -22,18 +22,52 @@
                 </h2>
                 <div class="tab">
                     <button class="tablinks" onclick="openTab(event, 'ComInfo')">Dashboard</button>
+                    <button class="tablinks" onclick="openTab(event, 'add')">Add Sub Task</button>
                     <button class="tablinks" onclick="openTab(event, 'Super')">Task Chats</button>
                     <button class="tablinks" onclick="openTab(event, 'TeamMem')">Team Memebers</button>
                 </div>
 
                 <div id="ComInfo" class="tabcontent">
+                    <h1>Task Dashboard</h1>
                     <svg id="gantt"></svg>
                     <div id="no-tasks" class="no-tasks-message" style="display: none;">No tasks to display</div>
+                    <br>
+                    <br>
+                    <h1>Task Details</h1>
                     <label for="progress">Overall Task Progress:</label>
                     <input type="range" id="progress" name="progress" min="0" max="100" value="50">
                     <span id="progress-value"></span>
-                    <button type="button" id="submit" onclick="progress()">Submit</button>
+                    <button type="button" class="button" id="submit" onclick="progress()">Submit</button>
+                </div>
 
+                <div id="add" class="tabcontent">
+                    <form id="form">
+                        <h1>Create Sub-Task</h1>
+                        <label for="taskName">Task Name:</label>
+                        <input type="text" id="taskName" name="taskName" required>
+                        <label for="description">Description:</label>
+                        <input id="description" name="description" required>
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" id="startDate" name="startDate" required>
+                        <label for="endDate">End Date:</label>
+                        <input type="date" id="endDate" name="endDate" required>
+                        <br>
+                        <label for="members">Members:</label>
+                        <select id="members" name="members" required>
+                            <option value="0">Select Members</option>
+                            <% task.members.forEach(member=> { %>
+                                <option value="<%= member.id %>">
+                                    <%= member.level %>
+                                        <%= member.firstName %>
+                                            <%= member.lastName %>
+                                </option>
+                                <% }) %>
+                        </select>
+                        <button type="button" id="addMem" onclick="addMem()">Add</button>
+                        <list id="memList"></list>
+                        <br>
+                        <button type="button" id="submit" class="button">Submit</button>
+                    </form>
                 </div>
 
                 <div id="Super" class="tabcontent">

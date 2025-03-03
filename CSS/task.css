@@ -105,6 +105,22 @@ input {
     position: relative;
 }
 
+select,
+option {
+    color: black !important;
+    background-color: white !important;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 .no-tasks-message {
     position: absolute;
     top: 50%;
@@ -128,4 +144,33 @@ svg {
     font-size: 18px;
     font-weight: bold;
     min-width: 40px;
+}
+
+#addMem {
+    background-color: #007bff;
+    /* Primary blue color */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#addMem:hover {
+    background-color: #0056b3;
+    /* Darker blue for hover */
+    transform: scale(1.05);
+}
+
+#addMem:active {
+    background-color: #00408a;
+    transform: scale(0.98);
+}
+
+#addMem:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.7);
 }

@@ -23,7 +23,7 @@
                         Date(project.endDate.toISOString()).toLocaleDateString('en-GB', { day: '2-digit' ,
                         month: 'short' , year: 'numeric' }) %>
             </h2>
-            <div class="gantt-container">
+            <div class="gantt-container" style="display: flex;justify-content: center;">
                 <svg id="gantt" class="gantt"></svg>
                 <div id="no-tasks" class="no-tasks-message" style="display: none;">No tasks to display</div>
             </div>

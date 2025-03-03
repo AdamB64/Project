@@ -1,5 +1,3 @@
-//document.getElementById('ComInfo').style.display = "block";
-
 function openTab(evt, cityName) {
     document.getElementById('Help').style.display = "none";
     var i, tabcontent, tablinks;
@@ -45,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
         start: startDate,
         end: endDate
     });
+    gantt.render();
 });
 
 function progress() {
@@ -72,3 +71,52 @@ function progress() {
     });
 
 }
+
+function addMem() {
+    const dropdown = document.getElementById('members');
+    const selectedValue = dropdown.options[dropdown.selectedIndex].value;
+    const selectedText = dropdown.options[dropdown.selectedIndex].text;
+    const list = document.getElementById('memList');
+    const listItem = document.createElement('li');
+    if (selectedValue) {
+        console.log("Selected value:", selectedValue);
+
+        // Check if the member is already in the list
+        var existingItems = list.getElementsByTagName("li");
+        for (var i = 0; i < existingItems.length; i++) {
+            console.log("Existing item:", existingItems)
+            if (existingItems[i].innerText === selectedText) {
+                alert("Member is already added!");
+                return;
+            }
+        }
+    }
+    listItem.appendChild(document.createTextNode(selectedText));
+    list.appendChild(listItem);
+
+    // Create a hidden input field to submit the value
+    var hiddenInput = document.createElement("input");
+    hiddenInput.type = "hidden";
+    hiddenInput.name = "members"; // Allow multiple selections
+    hiddenInput.value = selectedValue;
+    listItem.appendChild(hiddenInput);
+    console.log("List item:", listItem);
+    console.log("Hidden input:", hiddenInput);
+}
+
+
+document.getElementById('submit').addEventListener('click', function () {
+    console.log("Submit button clicked");
+
+    let form = document.getElementById('form');
+    let formData = new FormData(form);
+    let formObject = {};
+
+    formData.forEach((value, key) => {
+        formObject[key] = value;
+    });
+
+    console.log("Form Data:", formObject); // Log the entire form as an object
+});
+
+addMem();
