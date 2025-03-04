@@ -14,7 +14,7 @@ function openTab(evt, cityName) {
 }
 
 
-document.addEventListener("DOMContentLoaded", function () {
+/*document.addEventListener("DOMContentLoaded", function () {
 
     let startDate = new Date(window.taskData.startDate);
     let endDate = new Date(window.taskData.endDate);
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
         end: endDate
     });
     gantt.render();
-});
+});*/
 
 function progress() {
     const u = window.location.href
