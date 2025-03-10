@@ -117,6 +117,7 @@ document.getElementById('addMem').addEventListener('click', function () {
     // Add a remove button
     var removeButton = document.createElement("button");
     removeButton.textContent = "Remove";
+    removeButton.classList.add("button1");
     removeButton.onclick = function () {
         list.removeChild(listItem);
     };
