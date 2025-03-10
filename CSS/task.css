@@ -14,6 +14,8 @@ body {
     background-color: #f1f1f1;
 }
 
+
+
 /* Style the buttons inside the tab */
 .tab button {
     background-color: inherit;
@@ -42,6 +44,10 @@ body {
 /* Create an active/current tablink class */
 .tab button.active {
     background-color: #ccc;
+}
+
+#main {
+    margin-top: 75px;
 }
 
 /* Style the tab content */
@@ -250,4 +256,8 @@ h2 {
 
 .button1:hover {
     background-color: #0056b3;
+}
+
+#back {
+    margin-top: 20px;
 }
