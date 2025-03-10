@@ -1297,6 +1297,36 @@ app.post('/add-Sub_Task/:id', async (req, res) => {
     }
 });
 
+app.post('/update-Sub_Task/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { Progress } = req.body;
+
+        //console.log("Progress:", Progress);
+        //console.log("Task ID:", id);
+
+        // Find the task
+        const existingTask = await STask.findById(id);
+        if (!existingTask) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+
+        // Update task progress
+        existingTask.todo = Progress;
+
+        await existingTask.save();
+
+        return res.status(200).json({ message: "Task updated successfully", task: existingTask });
+    } catch (error) {
+        console.error("Error updating task:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
+
+
+
 
 // Start the server
 app.listen(PORT, '0.0.0.0', () => {

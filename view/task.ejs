@@ -34,7 +34,8 @@
                             <h3>Not Started</h3>
                             <% sub_task.forEach(task=> { if (task.todo === "Not Started") { %>
                                 <div class="task" onclick="toggleDetails('<%= task.TaskID %>')">
-                                    <%= task.task %>
+                                    <%= task.task %> <button type="button" class="button1" id="update"
+                                            onclick="update('<%= task._id %>','Started')">Started</button>
                                         <div>
                                             <div id="details-<%= task.TaskID %>" class="details">
                                                 <p><strong>Description:</strong>
@@ -55,13 +56,6 @@
                                                                     <%= member.lastName %> (<%= member.email %>)
                                                         </p>
                                                         <% }) %>
-                                                            <select id="status" name="status">
-                                                                <option value="Not Started">Not Started</option>
-                                                                <option value="Started">Started</option>
-                                                                <option value="Done">Done</option>
-                                                            </select>
-                                                            <button type="button" class="button" id="update"
-                                                                onclick="update()">Update</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -74,7 +68,10 @@
                             <% sub_task.forEach(task=> { if (task.todo === "Started") { %>
                                 <div class="task" onclick="toggleDetails('<%= task.TaskID %>')">
                                     <strong>
-                                        <%= task.task %>
+                                        <%= task.task %> <button type="button" class="button1" id="update"
+                                                onclick="update('<%= task._id %>','Not Started')">Not Started</button>
+                                            <button type="button" class="button1" id="update"
+                                                onclick="update('<%= task._id %>','Done')">Done</button>
                                     </strong>
                                     <div id="details-<%= task.TaskID %>" class="details">
                                         <p><strong>Description:</strong>
@@ -106,7 +103,8 @@
                             <% sub_task.forEach(task=> { if (task.todo === "Done") { %>
                                 <div class="task" onclick="toggleDetails('<%= task.TaskID %>')">
                                     <strong>
-                                        <%= task.type %>
+                                        <%= task.task %> <button type="button" class="button1" id="update"
+                                                onclick="update('<%= task._id %>','Started')">Started</button>
                                     </strong>
                                     <div id="details-<%= task.TaskID %>" class="details">
                                         <p><strong>Description:</strong>
@@ -184,7 +182,9 @@
             </div>
             <script>
                 function toggleDetails(taskID) {
-                    $("#details-" + taskID).slideToggle();
+                    if (!event.target.matches("button")) {
+                        $("#details-" + taskID).slideToggle();
+                    }
                 }
             </script>
             <script>

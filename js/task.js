@@ -1,3 +1,5 @@
+document.getElementById('ComInfo').style.display = "block";
+
 function openTab(evt, cityName) {
     document.getElementById('Help').style.display = "none";
     var i, tabcontent, tablinks;
@@ -197,3 +199,28 @@ document.getElementById('FSubmit').addEventListener('click', function (event) {
         alert("An error occurred while submitting the form.");
     });
 });
+
+function update(id, todo) {
+    /*console.log("Update button clicked");
+    console.log("ID:", id);
+    console.log("Todo:", todo);*/
+
+    fetch(`/update-Sub_Task/${id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ Progress: todo })
+    }).then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Request failed.');
+    }).then(data => {
+        console.log("Success:", data);
+        alert("Sub Task Updated Successfully");
+        window.location.reload();
+    }).catch(error => {
+        console.error("Error:", error);
+    });
+}

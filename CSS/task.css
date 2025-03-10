@@ -232,3 +232,22 @@ h2 {
 .members p {
     margin: 5px 0;
 }
+
+
+.button1 {
+    margin-left: 20px;
+    padding: 5px 15px;
+    font-size: 14px;
+    background-color: #3f4f61;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.button1:hover {
+    background-color: #0056b3;
+}
