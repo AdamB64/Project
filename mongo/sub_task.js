@@ -13,7 +13,6 @@ const sub_taskSchema = new mongoose.Schema({
         lastName: { type: String, required: true },
         email: { type: String, required: true },
         level: { type: String, required: true },
-        profile: { type: String, required: true },
         id: { type: String, required: true },
     }]
 });

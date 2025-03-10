@@ -228,10 +228,32 @@ function update(id, todo) {
 }
 
 
-function change(id) {
+function change(task) {
+    // Clean the JSON string
+    let cleanedTaskString = task
+        .replace(/new ObjectId\("([a-f0-9]{24})"\)/g, '"$1"')  // Convert ObjectId
+        .replace(/([{,])\s*([\w$]+)\s*:/g, '$1"$2":')         // Ensure all keys are quoted
+        .replace(/:\s*'([^']*)'/g, ': "$1"');                // Convert single-quoted values to double quotes
+
+
+    let taskObject = null;
+    // Now parse the cleaned JSON
+    try {
+        taskObject = JSON.parse(cleanedTaskString);
+        //console.log(taskObject.task); // Now it should work
+    } catch (error) {
+        console.error("JSON Parsing Error:", error);
+        console.log("Cleaned JSON String:", cleanedTaskString); // Debug output
+    }
+
+
+
     const cover = document.getElementById('cover')
     cover.classList.add('cover')
     cover.classList.remove('hide')
+
+    const name = document.getElementById('name')
+    name.textContent = "task name " + taskObject.task
 }
 
 function closeCover() {
