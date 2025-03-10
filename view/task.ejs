@@ -37,6 +37,8 @@
                                 <div class="task" onclick="toggleDetails('<%= task.TaskID %>')">
                                     <%= task.task %> <button type="button" class="button1" id="update"
                                             onclick="update('<%= task._id %>','Started')">Started</button>
+                                        <button type="button" class="button1" id="update"
+                                            onclick="change('<%= task._id %>','Done')">change</button>
                                         <div>
                                             <div id="details-<%= task.TaskID %>" class="details">
                                                 <p><strong>Description:</strong>
@@ -73,6 +75,8 @@
                                                 onclick="update('<%= task._id %>','Not Started')">Not Started</button>
                                             <button type="button" class="button1" id="update"
                                                 onclick="update('<%= task._id %>','Done')">Done</button>
+                                            <button type="button" class="button1" id="update"
+                                                onclick="change('<%= task._id %>','Done')">change</button>
                                     </strong>
                                     <div id="details-<%= task.TaskID %>" class="details">
                                         <p><strong>Description:</strong>
@@ -106,6 +110,8 @@
                                     <strong>
                                         <%= task.task %> <button type="button" class="button1" id="update"
                                                 onclick="update('<%= task._id %>','Started')">Started</button>
+                                            <button type="button" class="button1" id="update"
+                                                onclick="change('<%= task._id %>','Done')">change</button>
                                     </strong>
                                     <div id="details-<%= task.TaskID %>" class="details">
                                         <p><strong>Description:</strong>
@@ -180,6 +186,12 @@
 
                 </div>
 
+            </div>
+            <div id="cover" class="hide">
+                <div class="covercontent">
+                    <h1>hello</h1>
+                    <button class="button2" onclick='closeCover()'>close</button>
+                </div>
             </div>
             <script>
                 function toggleDetails(taskID) {

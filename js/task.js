@@ -225,3 +225,17 @@ function update(id, todo) {
         console.error("Error:", error);
     });
 }
+
+
+function change(id) {
+    const cover = document.getElementById('cover')
+    cover.classList.add('cover')
+    cover.classList.remove('hide')
+}
+
+function closeCover() {
+    console.log("Close button clicked");
+    const cover = document.getElementById('cover')
+    cover.classList.add('hide')
+    cover.classList.remove('cover')
+}

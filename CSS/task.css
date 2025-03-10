@@ -50,6 +50,28 @@ body {
     margin-top: 75px;
 }
 
+.hide {
+    display: none;
+}
+
+.cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: 9998;
+}
+
+.covercontent {
+    color: white;
+    z-index: 9999;
+}
+
 /* Style the tab content */
 .tabcontent {
     display: none;
@@ -255,6 +277,24 @@ h2 {
 }
 
 .button1:hover {
+    background-color: #0056b3;
+}
+
+.button2 {
+    margin-left: 20px;
+    padding: 10px 30px;
+    font-size: 14px;
+    background-color: #3f4f61;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.button2:hover {
     background-color: #0056b3;
 }
 
