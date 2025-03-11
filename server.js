@@ -454,7 +454,7 @@ app.post('/add-company', async (req, res) => {
         if (supervisorExists) { return res.status(201).send({ message: 'Supervisor already exists' }); }
         const memberExists = await Company.findOne({ "members.email": members[0].email });
         if (memberExists) { return res.status(201).send({ message: 'Member already exists' }); }
-        console.log(company.password);
+        //console.log(company.password);
         const hashPassword = await bcrypt.hash(company.password, saltRounds);
 
         // Encrypt passwords for supervisors
@@ -1052,7 +1052,7 @@ app.post('/update-task/:id', async (req, res) => {
 app.post("/getFiles", async (req, res) => {
     try {
         const { fileIds } = req.body; // Get file IDs from request
-        console.log("File IDs:", fileIds);
+        //console.log("File IDs:", fileIds);
 
         if (!fileIds || !Array.isArray(fileIds)) {
             return res.status(400).json({ error: "Invalid file IDs" });
