@@ -516,7 +516,7 @@ app.post('/add-company', async (req, res) => {
             httpOnly: true, // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production", // Use HTTPS in production
             sameSite: "strict", // Helps prevent CSRF attacks
-            maxAge: 60 * 60 * 7000 // 1 hour expiration
+            maxAge: 60 * 60 * 7000 // 7 hour expiration
         });
         //console.log("home");
         res.json({ message: "Login Successful" });
@@ -562,7 +562,7 @@ app.post("/SLogin", async (req, res) => {
             httpOnly: true, // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production", // Use HTTPS in production
             sameSite: "strict", // Helps prevent CSRF attacks
-            maxAge: 60 * 60 * 7000 // 1 hour expiration
+            maxAge: 60 * 60 * 7000 // 7 hour expiration
         });
         res.redirect(`/home`);
     } catch (error) {
@@ -607,7 +607,7 @@ app.post("/MLogin", async (req, res) => {
             httpOnly: true, // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production", // Use HTTPS in production
             sameSite: "strict", // Helps prevent CSRF attacks
-            maxAge: 60 * 60 * 7000 // 1 hour expiration
+            maxAge: 60 * 60 * 7000 // 7 hour expiration
         });
         res.redirect(`/home`);
     } catch (error) {
