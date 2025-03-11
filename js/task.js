@@ -257,7 +257,7 @@ function change(task) {
 }
 
 function closeCover() {
-    console.log("Close button clicked");
+    //console.log("Close button clicked");
     const cover = document.getElementById('cover')
     cover.classList.add('hide')
     cover.classList.remove('cover')

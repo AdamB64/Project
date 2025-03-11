@@ -189,9 +189,18 @@
             </div>
             <div id="cover" class="hide">
                 <div class="covercontent">
-                    <h1>Change Sub_Task</h1>
+                    <h1>Change all Sub Task details or some</h1>
                     <form>
                         <label id="name" for="taskName">Task Name: </label>
+                        <input type="text" id="taskName" name="taskName">
+                        <label id="desc" for="description">Description: </label>
+                        <input type="text" id="description" name="description">
+                        <label id="start" for="startDate">Start Date: </label>
+                        <input type="date" id="startDate" name="startDate">
+                        <label id="end" for="endDate">End Date: </label>
+                        <input type="date" id="endDate" name="endDate">
+                        <br>
+
                     </form>
                     <br>
                     <button class="button2" onclick='closeCover()'>close</button>
@@ -200,7 +209,7 @@
             <script>
                 function toggleDetails(taskID) {
                     if (!event.target.matches("button")) {
-                        console.log(taskID);
+                        //console.log(taskID);
                         $("#details-" + taskID).slideToggle();
                     }
                 }

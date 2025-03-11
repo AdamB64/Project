@@ -21,8 +21,6 @@ const cookieParser = require("cookie-parser");
 const e = require('express');
 const ejs = require('ejs');
 const multer = require("multer");
-const { get } = require('http');
-const { profile } = require('console');
 
 //how many round should be used to generate the encrypted password
 const saltRounds = 10;
@@ -64,6 +62,7 @@ const storage = new GridFsStorage({
         };
     },
 });
+
 const upload = multer({ storage }).array("files", 5); // Accepts up to 5 files
 
 
@@ -891,20 +890,21 @@ app.post('/get-messages', async (req, res) => {
     }
 });
 
-app.post('/get-Gmessages/:id', async (req, res) => {
+app.post('/get-Gmessages', async (req, res) => {
     try {
         const id = req.body.id;
         // For simplicity, fetch the first available group chat.
         // You can adjust this to use a group chat ID from req.body if needed.
-        const groupChat = await GChat.findOne(id);
+        const groupChat = await GChat.findOne({ _id: id });
+        //console.log("Group Chat:", groupChat);
         if (!groupChat) {
-            return res.status(404).json({ error: 'Group chat not found.' });
+            res.json([]);
         }
         //console.log("Group Chat:", groupChat);
         // Return the messages stored in the "input" array
         res.json(groupChat.input);
     } catch (error) {
-        console.error("Error fetching group messages:", error);
+        //console.error("Error fetching group messages:", error);
         res.status(500).json({ error: 'Internal server error.' });
     }
 })
@@ -1052,6 +1052,7 @@ app.post('/update-task/:id', async (req, res) => {
 app.post("/getFiles", async (req, res) => {
     try {
         const { fileIds } = req.body; // Get file IDs from request
+        console.log("File IDs:", fileIds);
 
         if (!fileIds || !Array.isArray(fileIds)) {
             return res.status(400).json({ error: "Invalid file IDs" });
@@ -1323,9 +1324,6 @@ app.post('/update-Sub_Task/:id', async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 });
-
-
-
 
 
 // Start the server
