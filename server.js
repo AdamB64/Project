@@ -925,6 +925,7 @@ app.post('/get-Gmessages', async (req, res) => {
         }
         //console.log("Group Chat:", groupChat);
         // Return the messages stored in the "input" array
+        console.log(groupChat.input);
         res.json(groupChat.input);
     } catch (error) {
         //console.error("Error fetching group messages:", error);
@@ -1241,7 +1242,7 @@ app.post('/addGChat/:id', upload, async (req, res) => {
 
         const sender = await Company.findOne({ "members._id": user.id }) || await Company.findOne({ "supervisors._id": user.id });
         const profile = sender.members.find(mem => mem._id.toString() === user.id) || sender.supervisors.find(sup => sup._id.toString() === user.id);
-        await GChat.findByIdAndUpdate(id, { $push: { input: { profile: profile.profile, firstName: profile.firstName, lastName: profile.lastName, _id: user.id, file: fileIds, message: message, timestamp: time, date: date } } }, { new: true, runValidators: true });
+        await GChat.findByIdAndUpdate(id, { $push: { input: { profile: profile.profile, firstName: profile.firstName, lastName: profile.lastName, id: user.id, file: fileIds, message: message, timestamp: time, date: date } } }, { new: true, runValidators: true });
         res.status(200).json({ message: "Chat saved successfully" });
 
     } catch {
@@ -1354,6 +1355,7 @@ app.post('/update-Sub_Task/:id', async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
 
 
 // Start the server

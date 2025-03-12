@@ -56,6 +56,7 @@ document.getElementById("form").addEventListener("submit", function (event) {
 
 let profile;
 
+
 $(document).ready(function () {
     const url = window.location.pathname.split("/")[2];
     let lastMessageId = null; // Store last message ID to avoid duplicate messages
@@ -70,22 +71,26 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify({ id: url }),
             success: function (response) {
-                //console.log(response);
+                console.log(response);
+                let count = 0;
                 let shouldScroll = isScrolledToBottom();
                 // 🔹 Check if the message has attached files
 
                 response.forEach(function (message) {
+                    console.log(count);
+                    count++;
+                    //console.log(message);
                     if (!document.getElementById(`msg-${message._id}`)) {
-                        //console.log(message);
-                        let messageClass = window.chatData.chatId === message._id ? "sent" : "received";
+                        console.log(message);
+                        let messageClass = window.chatData.chatId === message.id ? "sent" : "received";
 
                         // 🔹 Check if the message has attached files
                         let filesHtml = `<div class="message-files" id="msg-${message._id}-files"></div>`;
-                        console.log(window.profiles.length);
+                        //console.log(window.profiles.length);
                         for (let i = 0; i < window.profiles.length; i++) {
-                            console.log(window.profiles[i].id);
-                            console.log(message._id);
-                            if (message._id == window.profiles[i].id) {
+                            //console.log(window.profiles[i].id);
+                            //console.log(message._id);
+                            if (message.id == window.profiles[i].id) {
                                 profile = window.profiles[i].profilePic;
                             }
                         }
@@ -143,6 +148,7 @@ $(document).ready(function () {
             ${filesHtml} <!-- 🔹 Placeholder for file attachments -->
         </div>
     </div>`;
+                        console.log(messageHtml);
                         $('#chat-box').append(messageHtml);
                     }
                 });
