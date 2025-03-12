@@ -17,6 +17,9 @@
         <div id="main">
             <button class="back-button" id="back" onclick="window.location.href='/GChats/<%= id %>'">Back</button>
             <div id="form-container">
+                <script>
+                    console.log("<%= profile %>");
+                </script>
                 <% if(missingUsers=="undefinded" || missingUsers.length==0){ %>
                     <h1>Everyone is already in the group</h1>
                     <% } else { %>

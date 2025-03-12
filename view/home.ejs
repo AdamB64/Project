@@ -7,13 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
     <link rel="stylesheet" type="text/css" href="/CSS/Header.css">
-    <link rel="stylesheet" type="text/css"  href="/CSS/home.css">
+    <link rel="stylesheet" type="text/css" href="/CSS/home.css">
     <script src="/js/home.js"></script>
 </head>
 
 <body>
     <%- include('header') %> <!-- This includes the header.html content -->
         <% if (typeof Code !=="undefined" ) { %>
+            <script>
+                console.log("<%=Code%>");
+            </script>
             <%- Code %>
                 <% } else { %>
                     <p>No user data available. Please wait for the data to be

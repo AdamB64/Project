@@ -16,11 +16,10 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const { GridFsStorage } = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
-const { AutoEncryptionLoggerLevel } = require('mongodb-legacy');
 const cookieParser = require("cookie-parser");
-const e = require('express');
 const ejs = require('ejs');
 const multer = require("multer");
+const { profile } = require('console');
 
 //how many round should be used to generate the encrypted password
 const saltRounds = 10;
@@ -70,7 +69,6 @@ const upload = multer({ storage }).array("files", 5); // Accepts up to 5 files
 app.use('/CSS', express.static(path.join(__dirname, 'CSS')));
 app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
-app.use('/jKanban', express.static(path.join(__dirname, 'jKanban')));
 
 
 //---------------------GET routes---------------------
@@ -102,6 +100,7 @@ app.get('/admin', authenticateToken, async (req, res) => {
     }
 
 });
+
 
 app.get('/task/:id', authenticateToken, async (req, res) => {
     const task = await Task.findById(req.params.id);
@@ -357,12 +356,34 @@ app.get("/file/:id", async (req, res) => {
 
 
 app.get('/GChats/:id', authenticateToken, async (req, res) => {
-    const chat = await GChat.findById(req.params.id);
-    //console.log(chat);
-    const UToken = req.cookies?.token;
-    let user = getUser(UToken);
-    const id = user.id;
-    res.render('group_chat', { chat, id });
+    try {
+        // Check if the ID is a valid ObjectId before querying the database
+        const chat = await GChat.find({ _id: req.params.id });
+        //console.log(chat);
+        const UToken = req.cookies?.token;
+        let user = getUser(UToken);
+
+        let profiles = [];
+
+        for (let i = 0; i < chat[0].members.length; i++) {
+            //console.log(chat[0].members[i]._id);
+            const con = await Company.findOne
+                ({ $or: [{ "members._id": chat[0].members[i]._id }, { "supervisors._id": chat[0].members[i]._id }] });
+            //console.log(con);
+            const m = con.members.find(mem => mem.email === chat[0].members[i].email) ||
+                con.supervisors.find(sup => sup.email === chat[0].members[i].email);
+            const mem = { _id: m._id, profile: m.profile };
+            profiles.push(mem);
+        }
+
+
+        const id = user.id;
+        //console.log(profiles);
+        res.render('group_chat', { chat, id, profiles });
+    } catch (error) {
+        console.error("Error fetching group chat:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 })
 
 app.get('/GInvite/:id', authenticateToken, async (req, res) => {
@@ -1211,7 +1232,7 @@ app.post('/addGChat/:id', upload, async (req, res) => {
 
         const sender = await Company.findOne({ "members._id": user.id }) || await Company.findOne({ "supervisors._id": user.id });
         const profile = sender.members.find(mem => mem._id.toString() === user.id) || sender.supervisors.find(sup => sup._id.toString() === user.id);
-        await GChat.findByIdAndUpdate(id, { $push: { input: { profile: profile.profile, firstName: profile.firstName, lastName: profile.lastName, id: user.id, file: fileIds, message: message, timestamp: time, date: date } } }, { new: true, runValidators: true });
+        await GChat.findByIdAndUpdate(id, { $push: { input: { profile: profile.profile, firstName: profile.firstName, lastName: profile.lastName, _id: user.id, file: fileIds, message: message, timestamp: time, date: date } } }, { new: true, runValidators: true });
         res.status(200).json({ message: "Chat saved successfully" });
 
     } catch {

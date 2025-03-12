@@ -19,7 +19,7 @@ function getCurrentDate() {
 
 document.getElementById("form").addEventListener("submit", function (event) {
     event.preventDefault();
-    console.log("Submit clicked");
+    //console.log("Submit clicked");
 
     const formData = new FormData(this);
     var message = formData.get("msg");
@@ -31,10 +31,7 @@ document.getElementById("form").addEventListener("submit", function (event) {
     formData.append("message", message)
     formData.append("time", time)
     formData.append("date", date);
-    console.log(formData);
-    for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-    }
+    //console.log(formData);
 
     const msg = document.getElementById("msg");
     msg.value = "";
@@ -44,7 +41,7 @@ document.getElementById("form").addEventListener("submit", function (event) {
     updateFileDisplay();
 
     const url = window.location.pathname.split("/")[2];
-    console.log(url);
+    //console.log(url);
 
     fetch(`/addGChat/${url}`, {
         method: "POST",
@@ -57,13 +54,15 @@ document.getElementById("form").addEventListener("submit", function (event) {
 
 });
 
+let profile;
+
 $(document).ready(function () {
     const url = window.location.pathname.split("/")[2];
     let lastMessageId = null; // Store last message ID to avoid duplicate messages
 
     function fetchMessages() {
         const url = window.location.pathname.split("/")[2];
-        console.log(url);
+        //console.log(url);
         let lastMessageId = null;
         $.ajax({
             url: '/get-Gmessages',
@@ -71,17 +70,26 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify({ id: url }),
             success: function (response) {
-                console.log(response);
+                //console.log(response);
                 let shouldScroll = isScrolledToBottom();
                 // 🔹 Check if the message has attached files
 
                 response.forEach(function (message) {
                     if (!document.getElementById(`msg-${message._id}`)) {
                         //console.log(message);
-                        let messageClass = window.chatData.chatId === message.id ? "sent" : "received";
+                        let messageClass = window.chatData.chatId === message._id ? "sent" : "received";
 
                         // 🔹 Check if the message has attached files
                         let filesHtml = `<div class="message-files" id="msg-${message._id}-files"></div>`;
+                        console.log(window.profiles.length);
+                        for (let i = 0; i < window.profiles.length; i++) {
+                            console.log(window.profiles[i].id);
+                            console.log(message._id);
+                            if (message._id == window.profiles[i].id) {
+                                profile = window.profiles[i].profilePic;
+                            }
+                        }
+                        console.log(profile);
 
                         if (message.file && message.file.length > 0) {
                             // 🔹 Send POST request to get file details
@@ -92,7 +100,7 @@ $(document).ready(function () {
                             })
                                 .then(response => response.json())
                                 .then(files => {
-                                    console.log("Files Received:", files);
+                                    //console.log("Files Received:", files);
                                     let fileDisplayHtml = "";
 
                                     files.forEach(file => {
@@ -129,7 +137,7 @@ $(document).ready(function () {
     <div class="message-container ${messageClass}" id="msg-${message._id}">
         <p class="message-time">${message.timestamp} <br>on the ${new Date(message.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
         <div class="message-content">
-            <img src="${message.profile}" alt="Profile Picture" class="message-profile">
+            <img src="${profile}" alt="Profile Picture" class="message-profile">
             <strong class="message-sender">${message.firstName} ${message.lastName}:</strong>
             <span class="message-text">${message.message}</span>
             ${filesHtml} <!-- 🔹 Placeholder for file attachments -->

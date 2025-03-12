@@ -14,7 +14,6 @@ const groupChatSchema = new mongoose.Schema({
     ],
     input: [
         {
-            profile: { type: String },
             firstName: { type: String },
             lastName: { type: String },
             id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
