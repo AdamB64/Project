@@ -15,7 +15,8 @@ const sub_taskSchema = new mongoose.Schema({
         level: { type: String, required: true },
         id: { type: String, required: true },
     }]
-});
+},
+    { timestamps: true }); // Enables createdAt & updatedAt fields automatically););
 
 const Sub_Task = mongoose.model('Sub_Task', sub_taskSchema);
 

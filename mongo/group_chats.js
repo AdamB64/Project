@@ -23,7 +23,8 @@ const groupChatSchema = new mongoose.Schema({
             date: { type: String }
         }
     ]
-});
+},
+    { timestamps: true }); // Enables createdAt & updatedAt fields automatically););
 
 const GroupChat = mongoose.model('GroupChat', groupChatSchema);
 

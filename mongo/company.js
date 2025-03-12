@@ -29,7 +29,8 @@ const companySchema = new mongoose.Schema({
             profile: { type: String, required: true }
         }
     ]
-});
+},
+    { timestamps: true }); // Enables createdAt & updatedAt fields automatically););
 
 // Create the model
 const Company = mongoose.model('Company', companySchema);

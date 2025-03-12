@@ -14,7 +14,8 @@ const chatSchema = new mongoose.Schema({
             date: { type: String, required: true }
         }
     ]
-});
+},
+    { timestamps: true }); // Enables createdAt & updatedAt fields automatically););
 
 const Chat = mongoose.model('Chat', chatSchema);
 

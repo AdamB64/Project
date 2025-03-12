@@ -15,7 +15,8 @@ const taskSchema = new mongoose.Schema({
         level: { type: String, required: true },
         id: { type: String, required: true },
     }]
-});
+},
+    { timestamps: true }); // Enables createdAt & updatedAt fields automatically);
 
 const Task = mongoose.model('Task', taskSchema);
 
