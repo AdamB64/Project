@@ -240,9 +240,9 @@ app.get('/Members', authenticateToken, async (req, res) => {
 });
 
 app.get('/invite', authenticateToken, (req, res) => {
-    console.log(req.user);
+    //console.log(req.user);
     if (req.user.role === "supervisor") {
-        console.log(req.user);
+        //console.log(req.user);
         res.render('invite');
     }
     else {
@@ -1109,7 +1109,7 @@ app.post('/delete/:email/:id', async (req, res) => {
         //console.log("email " + email + " id " + id);
 
         const c = await Chat.deleteMany({ "users.id": id });
-        console.log(c);
+        //console.log(c);
 
 
         const Mcompany = await Project.findOne({ _id: id });
@@ -1160,10 +1160,9 @@ app.post('/delete/:id', async (req, res) => {
     try {
         //console.log(req.params);
         const { id } = req.params;
-        console.log("id " + id);
+        //console.log("id " + id);
 
         const c = await Chat.deleteMany({ "users.id": id });
-        console.log(c);
 
         const UToken = req.cookies?.token;
         let user = getUser(UToken);
