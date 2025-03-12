@@ -925,7 +925,6 @@ app.post('/get-Gmessages', async (req, res) => {
         }
         //console.log("Group Chat:", groupChat);
         // Return the messages stored in the "input" array
-        console.log(groupChat.input);
         res.json(groupChat.input);
     } catch (error) {
         //console.error("Error fetching group messages:", error);

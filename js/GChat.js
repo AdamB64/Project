@@ -71,14 +71,11 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify({ id: url }),
             success: function (response) {
-                console.log(response);
-                let count = 0;
+                //console.log(response);
                 let shouldScroll = isScrolledToBottom();
                 // 🔹 Check if the message has attached files
 
                 response.forEach(function (message) {
-                    console.log(count);
-                    count++;
                     //console.log(message);
                     if (!document.getElementById(`msg-${message._id}`)) {
                         console.log(message);
@@ -94,7 +91,7 @@ $(document).ready(function () {
                                 profile = window.profiles[i].profilePic;
                             }
                         }
-                        console.log(profile);
+                        //console.log(profile);
 
                         if (message.file && message.file.length > 0) {
                             // 🔹 Send POST request to get file details
