@@ -33,6 +33,24 @@
                         <%= member.role %>
                     </p>
                     <button class="button" onClick="ChatUser('<%= member._id %>')">chat with user</button>
+                    <button class="button" onclick="deleteMem('<%= member.id %>')">Delete</button>
+                    <script>
+                        function deleteMem(users) {
+                            console.log(users);
+                            fetch(`/delete/${users}`,
+                                {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' }
+                                })
+                                .then(res => res.json()).then(data => {
+                                    console.log(data);
+                                    if (data.status === 200) {
+                                        alert('Member Deleted');
+                                        window.location.reload();
+                                    }
+                                    else if (data.status === 201) { alert('Supervisor was deleted'); }
+                                }).catch(err => { console.log(err); });
+                        }</script>
                     <script>
                         function ChatUser(users) {
                             window.location.href = `/chat/${users}`;

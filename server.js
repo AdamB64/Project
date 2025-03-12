@@ -19,7 +19,6 @@ const Grid = require("gridfs-stream");
 const cookieParser = require("cookie-parser");
 const ejs = require('ejs');
 const multer = require("multer");
-const { profile } = require('console');
 
 //how many round should be used to generate the encrypted password
 const saltRounds = 10;
@@ -229,9 +228,10 @@ app.get('/Members', authenticateToken, async (req, res) => {
     if (req.user.role === "supervisor") {
         //console.log(req.user);
         const company = await Company.find({ "members.level": "Member", email: req.user.Company_email });
-        const members = company.map(c => c.members).flat();
+        const member = company.map(c => c.members).flat();
+
         //console.log(members);
-        res.render('Members', { members: members });
+        res.render('Members', { members: member });
     }
     else {
         const referer = req.get('Referer') || "/";
@@ -240,7 +240,9 @@ app.get('/Members', authenticateToken, async (req, res) => {
 });
 
 app.get('/invite', authenticateToken, (req, res) => {
+    console.log(req.user);
     if (req.user.role === "supervisor") {
+        console.log(req.user);
         res.render('invite');
     }
     else {
@@ -1106,6 +1108,10 @@ app.post('/delete/:email/:id', async (req, res) => {
         const { email, id } = req.params;
         //console.log("email " + email + " id " + id);
 
+        const c = await Chat.deleteMany({ "users.id": id });
+        console.log(c);
+
+
         const Mcompany = await Project.findOne({ _id: id });
 
         const member = Mcompany.members.find(mem => mem.email === email);
@@ -1154,7 +1160,10 @@ app.post('/delete/:id', async (req, res) => {
     try {
         //console.log(req.params);
         const { id } = req.params;
-        //console.log("id " + id);
+        console.log("id " + id);
+
+        const c = await Chat.deleteMany({ "users.id": id });
+        console.log(c);
 
         const UToken = req.cookies?.token;
         let user = getUser(UToken);
@@ -1167,12 +1176,13 @@ app.post('/delete/:id', async (req, res) => {
 
         const company = await Company.findOne({
             "supervisors._id": id
+        }) || await Company.findOne({
+            "members._id": id
         });
 
-        await Company.updateOne(
-            { _id: company._id },
-            { $pull: { supervisors: { _id: id } } }
-        );
+        await Company.updateOne({ _id: company._id }, { $pull: { supervisors: { _id: id } } });
+        await Company.updateOne({ _id: company._id }, { $pull: { members: { _id: id } } });
+
         return res.status(200).json({ message: "User Deleted", status: 200 });
     } catch (error) {
         console.error("Error deleting user:", error);
