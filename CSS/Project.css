@@ -245,16 +245,19 @@ h2 {
 }
 
 .low-importance .bar {
+    height: 30px;
     fill: green !important;
     /* Low Importance */
 }
 
 .medium-importance .bar {
+    height: 30px;
     fill: orange !important;
     /* Medium Importance */
 }
 
 .high-importance .bar {
+    height: 30px;
     fill: red !important;
     /* High Importance */
 }
