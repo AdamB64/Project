@@ -1108,7 +1108,7 @@ app.post('/delete/:email/:id', async (req, res) => {
         const { email, id } = req.params;
         //console.log("email " + email + " id " + id);
 
-        const c = await Chat.deleteMany({ "users.id": id });
+        await Chat.deleteMany({ "users.id": id });
         //console.log(c);
 
 
