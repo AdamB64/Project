@@ -47,19 +47,16 @@ function openTab(evt, cityName) {
     gantt.render();
 });*/
 
-function progress() {
-    const u = window.location.href
-    const parts = u.split("/");
-    const url = parts[parts.length - 1];
-    var x = document.getElementById("progress");
+const u = window.location.href
+const parts = u.split("/");
+const url = parts[parts.length - 1];
+//var x = document.getElementById("progress");
+document.addEventListener("DOMContentLoaded", function () {
     fetch(`/update-task/${url}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            progress: x.value
-        })
+        }
     }).then(response => {
         if (response.ok) {
             return response.json();
@@ -67,12 +64,11 @@ function progress() {
         throw new Error('Request failed.');
     }).then(data => {
         console.log("Success:", data);
-        window.location.reload();
+
     }).catch(error => {
         console.error("Error:", error);
     });
-
-}
+});
 
 document.getElementById('addMem').addEventListener('click', function () {
     //console.log("Add member button clicked");
@@ -130,7 +126,7 @@ document.getElementById('FSubmit').addEventListener('click', function (event) {
     event.preventDefault(); // Prevent default form submission behavior
 
     const hiddenInput = document.getElementById('HMember');
-    console.log(hiddenInput);
+    //console.log(hiddenInput);
     let form = document.getElementById('form');
     let formData = new FormData(form);
     let formObject = {};
@@ -148,7 +144,7 @@ document.getElementById('FSubmit').addEventListener('click', function (event) {
         } else {
             formObject[key] = value.trim(); // Directly assign other values
         }
-        console.log("Key:", key, "Value:", value);
+        //console.log("Key:", key, "Value:", value);
 
         // Check if any field is empty
         if (!formObject[key]) {
@@ -193,7 +189,7 @@ document.getElementById('FSubmit').addEventListener('click', function (event) {
         }
         throw new Error('Request failed.');
     }).then(data => {
-        console.log("Success:", data);
+        //console.log("Success:", data);
         alert("Sub Task Added Successfully");
         window.location.reload();
     }).catch(error => {
@@ -219,9 +215,18 @@ function update(id, todo) {
         }
         throw new Error('Request failed.');
     }).then(data => {
-        console.log("Success:", data);
+        //console.log("Success:", data);
         alert("Sub Task Updated Successfully");
-        window.location.reload();
+        updateTask()
+            .then(() => {
+                //console.log("Task updated successfully!");
+                window.location.reload(); // Reloads the page after update
+            })
+            .catch(error => {
+                console.error("Error updating task:", error);
+                alert("Failed to update the task. Please try again.");
+            });
+
     }).catch(error => {
         console.error("Error:", error);
     });
@@ -261,4 +266,27 @@ function closeCover() {
     const cover = document.getElementById('cover')
     cover.classList.add('hide')
     cover.classList.remove('cover')
+}
+
+function updateTask() {
+    return fetch(`/update-task/${url}`, {  // ✅ Added `return`
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Request failed.');
+        })
+        .then(data => {
+            //console.log("Success:", data);
+            return data; // ✅ Ensure the Promise resolves
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            throw error; // ✅ Pass error up to be handled
+        });
 }

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/CSS/project.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
 
@@ -17,6 +18,22 @@
     <%- include('header') %>
         <div class="content">
             <h1>Project: <%= project.name %> <br>Members page: <a href="/project/members/<%= project._id %>">Members</a>
+                    <h2 id="progress">
+                        <script>
+                            $.ajax({
+                                url: `/update-project/<%= project._id %>`, // Ensure correct syntax
+                                type: "POST",  // Use POST or the correct method
+                                data: { /* Include the necessary data if required */ },
+                                success: function (response) {
+                                    console.log("Project updated successfully:", response.project);
+                                    document.getElementById("progress").innerHTML = `Progress: ${response.project.progress}%`;
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("Error updating project:", error);
+                                }
+                            });
+                        </script>
+                    </h2>
             </h1><button id="Bbutton" onclick="window.location.href='/projects'">Back to Projects</button>
             <h2>start <%= new Date(project.startDate.toISOString()).toLocaleDateString('en-GB', { day: '2-digit' ,
                     month: 'short' , year: 'numeric' }) %> end <%= new

@@ -644,7 +644,7 @@ app.post('/logout', (req, res) => {
     res.redirect("/login");
 });
 
-app.post('/users', async (req, res) => {
+app.post('/users', authenticateToken, async (req, res) => {
     try {
         let sup;
         const UToken = req.cookies?.token;
@@ -683,7 +683,7 @@ app.post('/users', async (req, res) => {
     }
 });
 
-app.post('/change-password/:userId', async (req, res) => {
+app.post('/change-password/:userId', authenticateToken, async (req, res) => {
     try {
 
         const { userId } = req.params;
@@ -724,7 +724,7 @@ app.post('/change-password/:userId', async (req, res) => {
 
 
 // Upload Profile Image in Base64
-app.post("/upload-profile", async (req, res) => {
+app.post("/upload-profile", authenticateToken, async (req, res) => {
     try {
         const { userId, profileImage } = req.body;
         //console.log("userId " + userId + " profileImage " + profileImage);
@@ -760,7 +760,7 @@ app.post("/upload-profile", async (req, res) => {
 });
 
 
-app.post('/addProject', async (req, res) => {
+app.post('/addProject', authenticateToken, async (req, res) => {
     try {
         //console.log(req.body);
         let mem = []
@@ -834,7 +834,38 @@ app.post('/addProject', async (req, res) => {
 });
 
 
-app.post('/addChat', upload, async (req, res) => {
+app.post('/update-project/:id', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const project = await Project.findById(id);
+        if (!project) return res.status(404).json({ message: "Project not found" });
+
+        const tasks = await Task.find({ projectID: id });
+
+        // Calculate project progress using task weighting
+        let totalWeight = 0;
+        let weightedProgress = 0;
+
+        tasks.forEach(task => {
+            const taskWeight = task.weight || 1; // Default weight is 1 if not set
+            weightedProgress += (task.progress / 100) * taskWeight;
+            totalWeight += taskWeight;
+        });
+
+        const progress = totalWeight > 0 ? (weightedProgress / totalWeight) * 100 : 0;
+        project.progress = progress.toFixed(2);
+        await project.save();
+
+        res.status(200).json({ message: "Project progress updated", project });
+    } catch (error) {
+        console.error("Error updating project progress:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
+
+
+app.post('/addChat', authenticateToken, upload, async (req, res) => {
     try {
         const { user, message, time, profile, chatter, date } = req.body;
         //console.log("Uploaded Files:", req.files);
@@ -896,7 +927,7 @@ app.post('/addChat', upload, async (req, res) => {
 
 
 
-app.post('/get-messages', async (req, res) => {
+app.post('/get-messages', authenticateToken, async (req, res) => {
     try {
         const { user, chatter } = req.body;
         //console.log("user " + user + " chatter " + chatter);
@@ -913,7 +944,7 @@ app.post('/get-messages', async (req, res) => {
     }
 });
 
-app.post('/get-Gmessages', async (req, res) => {
+app.post('/get-Gmessages', authenticateToken, async (req, res) => {
     try {
         const id = req.body.id;
         // For simplicity, fetch the first available group chat.
@@ -932,7 +963,7 @@ app.post('/get-Gmessages', async (req, res) => {
     }
 })
 
-app.post('/add-worker', async (req, res) => {
+app.post('/add-worker', authenticateToken, async (req, res) => {
     //console.log(req.body);
     const { role, firstName, lastName, email, password, type } = req.body;
     const UToken = req.cookies.token;
@@ -979,7 +1010,7 @@ app.post('/add-worker', async (req, res) => {
 });
 
 
-app.post('/add-task', async (req, res) => {
+app.post('/add-task', authenticateToken, async (req, res) => {
     try {
         const { taskName, taskDescription, taskStartDate, taskEndDate, members, url } = req.body;
         const UToken = req.cookies.token;
@@ -1045,34 +1076,41 @@ app.post('/add-task', async (req, res) => {
     }
 });
 
-app.post('/update-task/:id', async (req, res) => {
+
+app.post('/update-task/:id', authenticateToken, async (req, res) => {
     try {
         const { id } = req.params;
-        const { progress } = req.body;
+        const task = await Task.findById(id);
+        if (!task) return res.status(404).json({ message: "Task not found" });
 
-        //console.log("Progress:", progress);
-        //console.log("Task ID:", id);
+        const subTasks = await STask.find({ TaskID: id });
 
-        // Find the task
-        const existingTask = await Task.findById(id);
-        if (!existingTask) {
-            return res.status(404).json({ message: "Task not found" });
-        }
+        const completedSubTasks = subTasks.filter(sub => sub.todo === "Done").length;
+        const startedSubTasks = subTasks.filter(sub => sub.todo === "Started").length;
+        const totalSubTasks = subTasks.length;
 
-        // Update task progress
-        existingTask.progress = progress;
+        // Define weight for "Started" tasks (e.g., 50% progress contribution)
+        const startedWeight = 0.5; // Adjust this weight as needed
 
-        await existingTask.save();
+        // Calculate progress dynamically
+        const progress = totalSubTasks > 0
+            ? ((completedSubTasks + (startedSubTasks * startedWeight)) / totalSubTasks) * 100
+            : 0;
 
-        return res.status(200).json({ message: "Task updated successfully", task: existingTask });
+
+        task.progress = progress;
+        await task.save();
+
+        res.status(200).json({ message: "Task updated successfully", task });
     } catch (error) {
         console.error("Error updating task:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({ message: "Internal Server Error" });
     }
 });
 
 
-app.post("/getFiles", async (req, res) => {
+
+app.post("/getFiles", authenticateToken, async (req, res) => {
     try {
         const { fileIds } = req.body; // Get file IDs from request
         //console.log("File IDs:", fileIds);
@@ -1100,7 +1138,7 @@ app.post("/getFiles", async (req, res) => {
 });
 
 
-app.post('/delete/:email/:id', async (req, res) => {
+app.post('/delete/:email/:id', authenticateToken, async (req, res) => {
     try {
 
         const UToken = req.cookies?.token;
@@ -1138,7 +1176,7 @@ app.post('/delete/:email/:id', async (req, res) => {
 });
 
 
-app.post('/admin', async (req, res) => {
+app.post('/admin', authenticateToken, async (req, res) => {
     const password = req.body.password;
 
     const UToken = req.cookies?.token;
@@ -1156,7 +1194,7 @@ app.post('/admin', async (req, res) => {
     }
 })
 
-app.post('/delete/:id', async (req, res) => {
+app.post('/delete/:id', authenticateToken, async (req, res) => {
     try {
         //console.log(req.params);
         const { id } = req.params;
@@ -1189,7 +1227,7 @@ app.post('/delete/:id', async (req, res) => {
     }
 });
 
-app.post('/makeChat', async (req, res) => {
+app.post('/makeChat', authenticateToken, async (req, res) => {
     const chatName = req.body.chatName;
     let Members = req.body.membersList;
     const UToken = req.cookies?.token;
@@ -1229,7 +1267,7 @@ app.post('/makeChat', async (req, res) => {
 });
 
 
-app.post('/addGChat/:id', upload, async (req, res) => {
+app.post('/addGChat/:id', authenticateToken, upload, async (req, res) => {
     try {
         const fileIds = req.files ? req.files.map(file => file.id) : [];
         const { message, time, date, } = req.body;
@@ -1249,7 +1287,7 @@ app.post('/addGChat/:id', upload, async (req, res) => {
     }
 });
 
-app.post('/addGInvite/:id', async (req, res) => {
+app.post('/addGInvite/:id', authenticateToken, async (req, res) => {
     const id = req.params.id;
     const members = req.body.userId;
     //console.log(members);
@@ -1268,7 +1306,7 @@ app.post('/addGInvite/:id', async (req, res) => {
     }
 });
 
-app.post('/add-Sub_Task/:id', async (req, res) => {
+app.post('/add-Sub_Task/:id', authenticateToken, async (req, res) => {
     //console.log(req.body);
     const taskId = req.params.id;
     const { taskName, description, startDate, endDate } = req.body;
@@ -1328,7 +1366,7 @@ app.post('/add-Sub_Task/:id', async (req, res) => {
     }
 });
 
-app.post('/update-Sub_Task/:id', async (req, res) => {
+app.post('/update-Sub_Task/:id', authenticateToken, async (req, res) => {
     try {
         const { id } = req.params;
         const { Progress } = req.body;

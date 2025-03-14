@@ -30,6 +30,12 @@
 
                 <div id="ComInfo" class="tabcontent">
                     <h1>Task Dashboard</h1>
+                    <h2>
+                        <label for="progress">Overall Task Progress:</label>
+                        <h2 id="progress-value">
+                            <%= task.progress %>
+                        </h2>
+                    </h2>
                     <div class="container">
                         <div class="column">
                             <h3>Not Started</h3>
@@ -142,10 +148,6 @@
                     <br>
                     <br>
                     <h1>Task Details</h1>
-                    <label for="progress">Overall Task Progress:</label>
-                    <input type="range" id="progress" name="progress" min="0" max="100" value="<%= task.progress %>">
-                    <span id="progress-value"></span>
-                    <button type="button" class="button" id="submit" onclick="progress()">Submit</button>
                 </div>
 
                 <div id="add" class="tabcontent">
@@ -155,6 +157,12 @@
                         <input type="text" id="taskName" name="taskName" required>
                         <label for="description">Description:</label>
                         <input id="description" name="description" required>
+                        <label for="importance">Importance:</label>
+                        <select id="importance" required>
+                            <option value="1">Low</option>
+                            <option value="2">Medium</option>
+                            <option value="3">High</option>
+                        </select>
                         <label for="startDate">Start Date:</label>
                         <input type="date" id="startDate" name="startDate" required>
                         <label for="endDate">End Date:</label>
