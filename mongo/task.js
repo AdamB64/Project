@@ -8,7 +8,7 @@ const taskSchema = new mongoose.Schema({
     projectID: { type: String, required: true },
     compantEmail: { type: String, required: true },
     progress: { type: String, required: true, default: "0" },
-    importance: { type: String, required: true, default: 1 },
+    importance: { type: Number, required: true, default: 1 },
     members: [{
         firstName: { type: String, required: true },
         lastName: { type: String, required: true },

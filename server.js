@@ -839,23 +839,35 @@ app.post('/update-project/:id', authenticateToken, async (req, res) => {
         const project = await Project.findById(id);
         if (!project) return res.status(404).json({ message: "Project not found" });
 
+        // Fetch all tasks associated with the project
         const tasks = await Task.find({ projectID: id });
 
-        // Calculate project progress using task weighting
-        let totalWeight = 0;
-        let weightedProgress = 0;
+        if (tasks.length === 0) {
+            project.progress = 0;
+            await project.save();
+            return res.status(200).json({ message: "Project progress updated", project });
+        }
 
+        // Step 1: Calculate total weight of tasks
+        const totalWeight = tasks.reduce((sum, task) => sum + (task.importance || 1), 0);
+
+        let progressSum = 0;
+
+        // Step 2: Calculate weighted progress dynamically
         tasks.forEach(task => {
-            const taskWeight = task.weight || 1; // Default weight is 1 if not set
-            weightedProgress += (task.progress / 100) * taskWeight;
-            totalWeight += taskWeight;
+            let weight = ((task.importance || 1) / totalWeight) * 100; // Assign weight as a percentage of 100
+            let completionFactor = task.progress / 100; // Convert task progress to a factor (0 to 1)
+            progressSum += weight * completionFactor;
         });
 
-        const progress = totalWeight > 0 ? (weightedProgress / totalWeight) * 100 : 0;
-        project.progress = progress.toFixed(2);
+        // Step 3: Ensure project progress scales to 100%
+        const progress = progressSum.toFixed(2);
+
+        // Update project progress
+        project.progress = progress;
         await project.save();
 
-        res.status(200).json({ message: "Project progress updated", project });
+        res.status(200).json({ message: "Project progress updated successfully", project });
     } catch (error) {
         console.error("Error updating project progress:", error);
         res.status(500).json({ message: "Internal Server Error" });
