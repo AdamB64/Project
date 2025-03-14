@@ -1083,28 +1083,32 @@ app.post('/update-task/:id', authenticateToken, async (req, res) => {
         const task = await Task.findById(id);
         if (!task) return res.status(404).json({ message: "Task not found" });
 
+        // Fetch all subtasks linked to the task
         const subTasks = await STask.find({ TaskID: id });
 
-        const completedSubTasks = subTasks.filter(sub => sub.todo === "Done");
-        const startedSubTasks = subTasks.filter(sub => sub.todo === "Started");
-        const totalSubTasks = subTasks.length;
+        if (subTasks.length === 0) {
+            task.progress = 0;
+            await task.save();
+            return res.status(200).json({ message: "Task updated successfully", task });
+        }
 
-        // Default weight for "Started" tasks (e.g., 50% contribution)
-        const startedWeight = 0.5; // Adjust as needed
-
-        // Calculate total weight of all sub-tasks (importance level 1, 2, or 3)
-        const totalWeight = subTasks.reduce((sum, sub) => sum + (sub.importance || 1), 0);
-
-        // Calculate weighted completed progress
-        const completedWeight = completedSubTasks.reduce((sum, sub) => sum + (sub.importance || 1), 0);
-        const startedWeightSum = startedSubTasks.reduce((sum, sub) => sum + (sub.importance || 1) * startedWeight, 0);
-
-        // Calculate progress percentage
-        const progress = totalWeight > 0
-            ? ((completedWeight + startedWeightSum) / totalWeight) * 100
-            : 0;
+        // Step 1: Calculate total importance to determine weight distribution
+        const totalImportance = + parseInt(subTasks.reduce((sum, sub) => sum + (sub.importance || 1), 0));
 
 
+        let progressSum = 0;
+
+        // Step 2: Calculate weighted progress dynamically
+        subTasks.forEach(sub => {
+            let weight = ((parseInt(sub.importance) || 1) / totalImportance) * 100; // Assign weight as a percentage of 100
+            let completionFactor = sub.todo === "Done" ? 1 : sub.todo === "Started" ? 0.5 : 0;
+            progressSum += weight * completionFactor;
+        });
+
+        // Step 3: Ensure progress always scales to 100%
+        const progress = progressSum.toFixed(2);
+
+        // Update task progress
         task.progress = progress;
         await task.save();
 
@@ -1114,6 +1118,8 @@ app.post('/update-task/:id', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
+
 
 
 

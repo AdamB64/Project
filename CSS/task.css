@@ -303,18 +303,24 @@ h2 {
 }
 
 .task1 {
+    padding: 7px 17px;
+    text-align: center;
     border-radius: 10px;
     margin: 10px 0;
     background-color: rgb(119, 194, 6);
 }
 
 .task2 {
+    padding: 7px 17px;
+    text-align: center;
     border-radius: 10px;
     margin: 10px 0;
     background-color: rgb(255, 255, 0);
 }
 
 .task3 {
+    padding: 7px 17px;
+    text-align: center;
     border-radius: 10px;
     margin: 10px 0;
     background-color: rgb(255, 0, 0);

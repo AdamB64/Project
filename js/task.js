@@ -134,6 +134,11 @@ document.getElementById('FSubmit').addEventListener('click', function (event) {
     let isValid = true;
     let errorMessage = "";
 
+    const membersList = document.getElementById('memList');
+    const name = document.getElementById('taskName');
+    const description = document.getElementById('description');
+
+
     // Convert form data to an object
     formData.forEach((value, key) => {
         if (key === "members") {
@@ -163,12 +168,26 @@ document.getElementById('FSubmit').addEventListener('click', function (event) {
     let startDate = new Date(formObject.startDate);
     let endDate = new Date(formObject.endDate);
 
+    if (name.value.length > 10) {
+        isValid = false;
+        errorMessage += "Task name should not be more than 10 characters.\n";
+    }
+
     if (isNaN(startDate) || isNaN(endDate)) {
         isValid = false;
         errorMessage += "Invalid date format. Please select valid dates.\n";
     } else if (startDate >= endDate) {
         isValid = false;
         errorMessage += "Start date must be before the end date.\n";
+    } else if (membersList.children.length === 0) {
+        isValid = false;
+        errorMessage += "Please add at least one member.\n";
+    } else if (name.value === "") {
+        isValid = false;
+        errorMessage += "Please enter the task name.\n";
+    } else if (description.value === "") {
+        isValid = false;
+        errorMessage += "Please enter the task description.\n";
     }
 
     if (!isValid) {
