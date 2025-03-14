@@ -1240,6 +1240,8 @@ app.post('/delete/:id', authenticateToken, async (req, res) => {
             "members._id": id
         });
 
+
+
         // Remove members from related collections
         await GChat.updateMany({}, { $pull: { members: { id: id } } });
         await Project.updateMany({}, { $pull: { members: { _id: id } } });
