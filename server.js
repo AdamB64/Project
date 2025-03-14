@@ -764,7 +764,7 @@ app.post('/addProject', authenticateToken, async (req, res) => {
     try {
         //console.log(req.body);
         let mem = []
-        const { projectName, projectDescription, projectStartDate, projectDeadline, projectStatus, members } = req.body;
+        const { projectName, projectDescription, projectStartDate, projectDeadline, members } = req.body;
         //console.log(projectName + " " + projectDescription + " " + projectStartDate + " " + projectDeadline + " " + projectStatus + " " + members);
         mem = await Company.find(
             { "members.email": { $in: members } },
@@ -819,7 +819,6 @@ app.post('/addProject', authenticateToken, async (req, res) => {
             description: projectDescription,
             startDate: projectStartDate,
             endDate: projectDeadline,
-            status: projectStatus,
             companyEmail: com.email,
             members: membersArray
         });
@@ -1012,7 +1011,7 @@ app.post('/add-worker', authenticateToken, async (req, res) => {
 
 app.post('/add-task', authenticateToken, async (req, res) => {
     try {
-        const { taskName, taskDescription, taskStartDate, taskEndDate, members, url } = req.body;
+        const { taskName, taskDescription, taskStartDate, taskEndDate, members, url, taskWeight } = req.body;
         const UToken = req.cookies.token;
 
         // Validate request body
@@ -1049,6 +1048,7 @@ app.post('/add-task', authenticateToken, async (req, res) => {
 
         const newTask = new Task({
             task: taskName,
+            importance: taskWeight,
             description: taskDescription,
             start: taskStartDate,
             end: taskEndDate,

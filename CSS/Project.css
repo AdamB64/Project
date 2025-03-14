@@ -243,3 +243,18 @@ h2 {
     background: black;
     color: white;
 }
+
+.low-importance .bar {
+    fill: green !important;
+    /* Low Importance */
+}
+
+.medium-importance .bar {
+    fill: orange !important;
+    /* Medium Importance */
+}
+
+.high-importance .bar {
+    fill: red !important;
+    /* High Importance */
+}

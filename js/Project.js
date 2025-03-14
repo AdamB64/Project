@@ -42,6 +42,27 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    tasks.forEach(task => {
+        if (task.importance == 1) {
+            task.custom_class = "low-importance";
+        } else if (task.importance == 2) {
+            task.custom_class = "medium-importance";
+        } else {
+            task.custom_class = "high-importance";
+        }
+    });
+
+
+    let importance = null;
+    if (tasks.importance == 1) {
+        importance = "Low";
+    } else if (tasks.importance == 2) {
+        importance = "Medium";
+    }
+    else {
+        importance = "High";
+    }
+
     //console.log("Tasks:", tasks);
     let gantt = new Gantt("#gantt", tasks, {
         view_mode: "Month",
@@ -49,16 +70,35 @@ document.addEventListener("DOMContentLoaded", function () {
         lines: "both",
         start: startDate,
         end: endDate,
-        custom_popup_html: function (task) {
-            return `
-                <div class="custom-tooltip">
-                    <h3>Progress: ${task.progress}%<h3>
-                    <p>Start: ${new Date(task.start).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p><p>End: ${new Date(task.end).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
-                    <p>Description: <em>${task.description}</em></p>
-                </div>
-            `;
+        custom_popup_html:
+            function (task) {
+                return ` 
+            <div class="custom-tooltip"> 
+            <h3>Progress: ${task.progress}%<h3>
+             <h4>Importance: ${importance}</h4> 
+             <p>Start: ${new Date(task.start).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+             <p>End: ${new Date(task.end).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p> 
+        <p>Description: <em>${task.description}</em></p> </div > `;
+            },
+        on_render: () => {
+            document.querySelectorAll('.bar').forEach(bar => {
+                let taskName = bar.getAttribute('data-id'); // Get task ID
+                let task = tasks.find(t => t.id === taskName); // Find the task object
+
+                if (task) {
+                    if (task.importance == 1) {
+                        bar.style.fill = "green";  // Low Importance
+                    } else if (task.importance == 2) {
+                        bar.style.fill = "orange"; // Medium Importance
+                    } else {
+                        bar.style.fill = "red";    // High Importance
+                    }
+                }
+            });
         }
     });
+
+
     //console.log(gantt.tasks);
 
     // Override the dates function to generate a timeline that spans the whole period
@@ -237,12 +277,15 @@ document.addEventListener("DOMContentLoaded", function () {
         let task = {};
         let mem = [];
         for (let [key, value] of formData.entries()) {
+            console.log(key, value);
             if (key === "members") {
                 mem.push(value);
             } else {
                 task[key] = value;
             }
         }
+        const importance = document.getElementById("taskWeight").value;
+        console.log("Importance:", importance);
         const taskStart = document.getElementById("taskStartDate").value;
         const taskEnd = document.getElementById("taskEndDate").value;
         const projectStart = new Date(window.projectData.startDate);
