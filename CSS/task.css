@@ -301,3 +301,21 @@ h2 {
 #back {
     margin-top: 20px;
 }
+
+.task1 {
+    border-radius: 10px;
+    margin: 10px 0;
+    background-color: rgb(119, 194, 6);
+}
+
+.task2 {
+    border-radius: 10px;
+    margin: 10px 0;
+    background-color: rgb(255, 255, 0);
+}
+
+.task3 {
+    border-radius: 10px;
+    margin: 10px 0;
+    background-color: rgb(255, 0, 0);
+}

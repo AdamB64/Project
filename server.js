@@ -1085,16 +1085,23 @@ app.post('/update-task/:id', authenticateToken, async (req, res) => {
 
         const subTasks = await STask.find({ TaskID: id });
 
-        const completedSubTasks = subTasks.filter(sub => sub.todo === "Done").length;
-        const startedSubTasks = subTasks.filter(sub => sub.todo === "Started").length;
+        const completedSubTasks = subTasks.filter(sub => sub.todo === "Done");
+        const startedSubTasks = subTasks.filter(sub => sub.todo === "Started");
         const totalSubTasks = subTasks.length;
 
-        // Define weight for "Started" tasks (e.g., 50% progress contribution)
-        const startedWeight = 0.5; // Adjust this weight as needed
+        // Default weight for "Started" tasks (e.g., 50% contribution)
+        const startedWeight = 0.5; // Adjust as needed
 
-        // Calculate progress dynamically
-        const progress = totalSubTasks > 0
-            ? ((completedSubTasks + (startedSubTasks * startedWeight)) / totalSubTasks) * 100
+        // Calculate total weight of all sub-tasks (importance level 1, 2, or 3)
+        const totalWeight = subTasks.reduce((sum, sub) => sum + (sub.importance || 1), 0);
+
+        // Calculate weighted completed progress
+        const completedWeight = completedSubTasks.reduce((sum, sub) => sum + (sub.importance || 1), 0);
+        const startedWeightSum = startedSubTasks.reduce((sum, sub) => sum + (sub.importance || 1) * startedWeight, 0);
+
+        // Calculate progress percentage
+        const progress = totalWeight > 0
+            ? ((completedWeight + startedWeightSum) / totalWeight) * 100
             : 0;
 
 
@@ -1309,7 +1316,7 @@ app.post('/addGInvite/:id', authenticateToken, async (req, res) => {
 app.post('/add-Sub_Task/:id', authenticateToken, async (req, res) => {
     //console.log(req.body);
     const taskId = req.params.id;
-    const { taskName, description, startDate, endDate } = req.body;
+    const { taskName, description, startDate, endDate, importance } = req.body;
     let Members = req.body.members; // Ensure 'members' is lowercase
 
     // Confirm that Members is an array; if it's a string, convert it to an array
@@ -1353,6 +1360,7 @@ app.post('/add-Sub_Task/:id', authenticateToken, async (req, res) => {
             start: startDate,
             end: endDate,
             TaskID: taskId,
+            importance: importance,
             companyEmail: user1.Company_email,
             members: foundMembers
         });
