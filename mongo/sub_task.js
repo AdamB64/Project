@@ -5,6 +5,7 @@ const sub_taskSchema = new mongoose.Schema({
     description: { type: String, required: true },
     start: { type: String, required: true },
     end: { type: String, required: true },
+    ProjectID: { type: String, required: true },
     TaskID: { type: String, required: true },
     companyEmail: { type: String, required: true },
     todo: { type: String, required: true, default: "Not Started" },

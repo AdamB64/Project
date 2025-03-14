@@ -29,14 +29,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const projectDescription = document.getElementById("projectDescription").value.trim();
         const projectStartDate = document.getElementById("projectStartDate").value.trim();
         const projectDeadline = document.getElementById("projectDeadline").value.trim();
-        const projectStatus = document.getElementById("projectStatus").value.trim();
         const projectDropDown = document.getElementById("projectDropDown");
 
         // Convert to Date objects
         const startDate = new Date(projectStartDate);
         const deadlineDate = new Date(projectDeadline);
 
-        if (!projectName || !projectDescription || !projectStartDate || !projectDeadline || !projectStatus || projectDropDown.selectedIndex === 0) {
+        if (!projectName || !projectDescription || !projectStartDate || !projectDeadline || projectDropDown.selectedIndex === 0) {
             alert("Please fill in all fields and select a project member.");
             return;
         } else if (startDate > deadlineDate) {
@@ -134,6 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(response => {
                     console.log(response);
                     alert("Project created successfully!");
+                    window.location.reload();
                 })
                 .catch(error => {
                     console.error("Error:", error);

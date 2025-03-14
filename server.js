@@ -306,8 +306,10 @@ app.get('/project/members/:id', authenticateToken, async (req, res) => {
     const UToken = req.cookies?.token;
     let user = getUser(UToken);
 
-
-    const renderedHTML = ejs.render(process.env.PROJECT_DEL, { members });
+    let renderedHTML = [];
+    for (let i = 0; i < members.length; i++) {
+        renderedHTML.push(ejs.render(process.env.PROJECT_DEL, { members: members[i] }));
+    }
     const s = await Project.findOne({ _id: req.params.id });
     const mem = s.members.find(mem => mem.email === user.email);
     //console.log(mem);
@@ -1164,36 +1166,30 @@ app.post("/getFiles", authenticateToken, async (req, res) => {
 
 
 app.post('/delete/:email/:id', authenticateToken, async (req, res) => {
+    console.log("ran");
     try {
-
-        const UToken = req.cookies?.token;
-        let user = getUser(UToken);
         const { email, id } = req.params;
         //console.log("email " + email + " id " + id);
-
-        await Chat.deleteMany({ "users.id": id });
-        //console.log(c);
 
 
         const Mcompany = await Project.findOne({ _id: id });
 
-        const member = Mcompany.members.find(mem => mem.email === email);
+        //console.log("member");
+        await Project.updateOne(
+            { _id: Mcompany._id },
+            { $pull: { members: { email: email } } }
+        );
 
-        if (member.level === "Supervisor" && user.level === "Supervisor") {
-            //console.log("supervisor");
-            await Company.updateOne(
-                { _id: Mcompany._id },
-                { $pull: { supervisors: { email: req.params.email } } }
-            );
-            res.status(201).json({ message: "User deleted successfully", status: 201 });
-        } else {
-            //console.log("member");
-            await Project.updateOne(
-                { _id: Mcompany._id },
-                { $pull: { members: { email: email } } }
-            );
-            res.status(200).json({ message: "User deleted successfully", status: 200 });
-        }
+        await Task.updateMany(
+            { projectID: id },
+            { $pull: { members: { email: email } } }
+        );
+
+        await STask.updateMany(
+            { ProjectID: id },
+            { $pull: { members: { email: email } } }
+        );
+        res.status(200).json({ message: "User deleted successfully", status: 200 });
     } catch (error) {
         console.error("Error deleting user:", error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -1225,7 +1221,9 @@ app.post('/delete/:id', authenticateToken, async (req, res) => {
         const { id } = req.params;
         //console.log("id " + id);
 
-        const c = await Chat.deleteMany({ "users.id": id });
+        await Chat.deleteMany({ "users.id": id });
+
+
 
         const UToken = req.cookies?.token;
         let user = getUser(UToken);
@@ -1241,6 +1239,12 @@ app.post('/delete/:id', authenticateToken, async (req, res) => {
         }) || await Company.findOne({
             "members._id": id
         });
+
+        // Remove members from related collections
+        await GChat.updateMany({}, { $pull: { members: { id: id } } });
+        await Project.updateMany({}, { $pull: { members: { _id: id } } });
+        await Task.updateMany({}, { $pull: { members: { id: id } } });
+        await STask.updateMany({}, { $pull: { members: { id: id } } });
 
         await Company.updateOne({ _id: company._id }, { $pull: { supervisors: { _id: id } } });
         await Company.updateOne({ _id: company._id }, { $pull: { members: { _id: id } } });
@@ -1335,7 +1339,7 @@ app.post('/add-Sub_Task/:id', authenticateToken, async (req, res) => {
     //console.log(req.body);
     const taskId = req.params.id;
     const { taskName, description, startDate, endDate, importance } = req.body;
-    let Members = req.body.members; // Ensure 'members' is lowercase
+    let Members = req.body.members;
 
     // Confirm that Members is an array; if it's a string, convert it to an array
     if (!Array.isArray(Members)) {
@@ -1345,7 +1349,10 @@ app.post('/add-Sub_Task/:id', authenticateToken, async (req, res) => {
     //console.log("Members Count:", Members.length);
 
     try {
+        //console.log("Task ID:", taskId);
         const user = await Task.findOne({ _id: taskId });
+        const project = await Project.findOne({ _id: user.projectID });
+        console.log("Project:", project);
 
         if (!user) {
             return res.status(404).json({ message: "Task not found" });
@@ -1377,6 +1384,7 @@ app.post('/add-Sub_Task/:id', authenticateToken, async (req, res) => {
             description: description,
             start: startDate,
             end: endDate,
+            ProjectID: project._id,
             TaskID: taskId,
             importance: importance,
             companyEmail: user1.Company_email,

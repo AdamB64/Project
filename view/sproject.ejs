@@ -29,8 +29,9 @@
                         <option value="" disabled selected>Select members</option>
                         <% members.forEach(function(member) { %>
                             <option value="<%= member.email %>">
-                                <%= member.firstName %>
-                                    <%= member.lastName %>
+                                <%= member.level %>
+                                    <%= member.firstName %>
+                                        <%= member.lastName %>
                             </option>
                             <% }); %>
                     </select>

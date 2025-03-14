@@ -7,7 +7,6 @@ const ProjectSchema = new mongoose.Schema({
     progress: { type: Number, required: true, default: 0 },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    status: { type: String, required: true },
     companyEmail: { type: String, required: true },
     members: [
         {
