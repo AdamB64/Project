@@ -130,16 +130,20 @@
                                     <strong>
                                         <%= task.task %>
                                             <% if (task.members.length===1) { %>
-                                                <button onclick="alert('There are no members in this task!')"
+                                                <button
+                                                    onclick="alert('There are no members in this sub_task!\nPlease add members to the sub_task!')"
                                                     style="color: red; background-color: rgb(0, 0, 0); font-weight: bold;">
                                                     !
                                                 </button>
                                                 <% } %> <button type="button" class="button1" id="update"
                                                         onclick="update('<%= task._id %>','Started')">Started</button>
                                                     <button type="button" class="button1" id="update"
-                                                        onclick="change(`<%= task %>`)">change</button>
+                                                        onclick='change(`<%- JSON.stringify(task) %>`)'>
+                                                        Change
+                                                    </button>
+
                                     </strong>
-                                    <div id="details-<%= task._id %>" class="details">
+                                    <div id=" details-<%=task._id %>" class="details">
                                         <p><strong>Description:</strong>
                                             <%= task.description %>
                                         </p>
@@ -217,17 +221,43 @@
             </div>
             <div id="cover" class="hide">
                 <div class="covercontent">
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <h1 id="name">Change Sub Task details</h1>
                     <h1>Change all Sub Task details or some</h1>
                     <form>
                         <label id="name" for="taskName">Task Name: </label>
                         <input type="text" id="taskName" name="taskName">
                         <label id="desc" for="description">Description: </label>
                         <input type="text" id="description" name="description">
+                        <label id="imp" for="importance">Importance: </label>
+                        <select id="importance" name="importance">
+                            <option value=1>Low</option>
+                            <option value=2>Medium</option>
+                            <option value=3>High</option>
+                        </select>
                         <label id="start" for="startDate">Start Date: </label>
                         <input type="date" id="startDate" name="startDate">
                         <label id="end" for="endDate">End Date: </label>
                         <input type="date" id="endDate" name="endDate">
                         <br>
+                        <label id="mem" for="Amembers">Add Members: </label>
+                        <select id="Amembers">
+                            <option value="0">Select Members</option>
+                        </select>
+                        <button type="button" id="addMem">Add</button>
+                        <list id="memList"></list>
+                        <br>
+                        <label id="mem" for="Rmembers">Remove Members: </label>
+                        <select id="Rmembers">
+                            <option value="0">Select Members</option>
+                        </select>
+                        <button type="button" id="removeMem" class="btn">Remove</button>
+                        <list id="memList"></list>
+                        <br>
+                        <button type="button" id="CSubmit" class="button">Submit</button>
 
                     </form>
                     <br>

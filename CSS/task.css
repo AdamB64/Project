@@ -55,6 +55,7 @@ body {
 }
 
 .cover {
+    overflow: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,6 +69,7 @@ body {
 }
 
 .covercontent {
+    overflow: auto;
     color: white;
     z-index: 9999;
 }
@@ -175,6 +177,19 @@ svg {
 }
 
 #addMem {
+    background-color: #007bff;
+    /* Primary blue color */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn {
     background-color: #007bff;
     /* Primary blue color */
     color: white;
