@@ -99,6 +99,22 @@
                         chatId: "<%= id %>",
                     };
                 </script>
+                <script>
+                    // Ensure alertMessages is an array, handling both single and multiple alerts
+                    let alertMessages = '<%= alertMessage %>';
+
+                    if (!Array.isArray(alertMessages)) {
+                        alertMessages = [alertMessages];
+                    }
+
+                    // Show alerts on page load
+                    window.onload = function () {
+                        alertMessages.forEach(msg => alert(msg));
+                    };
+
+
+                </script>
+
                 <script src="/JS/GChat.js"></script>
 </body>
 

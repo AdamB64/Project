@@ -368,22 +368,35 @@ app.get('/GChats/:id', authenticateToken, async (req, res) => {
         let user = getUser(UToken);
 
         let profiles = [];
+        let alertMessage = [];
+        //console.log(chat[0].members.length);
 
         for (let i = 0; i < chat[0].members.length; i++) {
             //console.log(chat[0].members[i]._id);
-            const con = await Company.findOne
-                ({ $or: [{ "members._id": chat[0].members[i]._id }, { "supervisors._id": chat[0].members[i]._id }] });
+            const con = await Company.findOne({ "members._id": chat[0].members[i]._id }) || await Company.findOne({ "supervisors._id": chat[0].members[i]._id });
             //console.log(con);
-            const m = con.members.find(mem => mem.email === chat[0].members[i].email) ||
-                con.supervisors.find(sup => sup.email === chat[0].members[i].email);
-            const mem = { _id: m._id, profile: m.profile };
-            profiles.push(mem);
+            if (!con) {
+                alertMessage.push(`user ${chat[0].members[i].level} ${chat[0].members[i].firstName} ${chat[0].members[i].lastName} has been delted from the company`);
+                await GChat.findOneAndUpdate(
+                    { _id: req.params.id },
+                    { $pull: { members: { _id: chat[0].members[i]._id } } },
+                    { new: true, runValidators: true }
+                );
+            } else {
+                const m = con.members.find(mem => mem.email === chat[0].members[i].email) ||
+                    con.supervisors.find(sup => sup.email === chat[0].members[i].email);
+                const mem = { _id: m._id, profile: m.profile };
+                profiles.push(mem);
+            }
         }
 
 
         const id = user.id;
         //console.log(profiles);
-        res.render('group_chat', { chat, id, profiles });
+        if (profiles.length === 1) {
+            alertMessage.push("Only Chatter left in chat");
+        }
+        res.render('group_chat', { chat, id, profiles, alertMessage });
     } catch (error) {
         console.error("Error fetching group chat:", error);
         res.status(500).json({ message: "Internal server error" });
