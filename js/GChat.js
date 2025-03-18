@@ -49,7 +49,7 @@ document.getElementById("form").addEventListener("submit", function (event) {
     }).then(function (response) {
         return response.json();
     }).then(function (json) {
-        console.log(json);
+        //console.log(json);
     });
 
 });
@@ -78,7 +78,7 @@ $(document).ready(function () {
                 response.forEach(function (message) {
                     //console.log(message);
                     if (!document.getElementById(`msg-${message._id}`)) {
-                        console.log(message);
+                        //console.log(message);
                         let messageClass = window.chatData.chatId === message.id ? "sent" : "received";
 
                         // 🔹 Check if the message has attached files
@@ -145,7 +145,7 @@ $(document).ready(function () {
             ${filesHtml} <!-- 🔹 Placeholder for file attachments -->
         </div>
     </div>`;
-                        console.log(messageHtml);
+                        //console.log(messageHtml);
                         $('#chat-box').append(messageHtml);
                     }
                 });

@@ -1442,6 +1442,20 @@ app.post('/update-Sub_Task/:id', authenticateToken, async (req, res) => {
     }
 });
 
+app.post('/deleteGroup', authenticateToken, async (req, res) => {
+    //console.log("ran");
+    try {
+        //console.log(req.body);
+        const id = req.body.id;
+        //console.log("id " + id);
+        await GChat.deleteOne({ _id: id });
+        res.status(200).json({ message: "Group Deleted" });
+    } catch (error) {
+        console.error("Error deleting group:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
 
 
 // Start the server

@@ -110,8 +110,57 @@
                     // Show alerts on page load
                     window.onload = function () {
                         alertMessages.forEach(msg => alert(msg));
-                    };
+                        // Check if user is the last member
+                        let isLastMember = `<%= profiles.length === 1 ? 'true' : 'false' %>`;
+                        let chatId = "<%= chat[0].id %>"; // Get chat ID from the server
+                        console.log(chatId);
 
+                        if (isLastMember) {
+                            showDeleteConfirmation(chatId);
+                        }
+                    };
+                    function showDeleteConfirmation(chatId) {
+                        let confirmationBox = document.createElement("div");
+                        confirmationBox.innerHTML = `
+            <div style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 20px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                border-radius: 10px;
+                text-align: center;
+                z-index: 1000;">
+                <p>Since you are the last member of this group chat, do you wish to delete it?</p>
+                <button onclick="deleteGroup('${chatId}')" style="background: red; color: white; padding: 10px 20px; border: none; cursor: pointer; margin-right: 10px;">Yes</button>
+                <button onclick="closePopup(this)" style="background: gray; color: white; padding: 10px 20px; border: none; cursor: pointer;">No</button>
+            </div>
+        `;
+                        document.body.appendChild(confirmationBox);
+                    }
+
+                    function closePopup(button) {
+                        button.parentElement.remove(); // Remove the popup
+                    }
+
+                    function deleteGroup(chatId) {
+                        fetch('/deleteGroup', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: chatId })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                alert(data.message);
+                                window.location.href = "/Chats"; // Redirect to chats list after deletion
+                            })
+                            .catch(error => {
+                                console.error("Error deleting group:", error);
+                                alert("Failed to delete the group chat.");
+                            });
+                    }
 
                 </script>
 
