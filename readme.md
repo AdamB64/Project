@@ -139,7 +139,7 @@ Real-time communication.
 
 /home – Dashboard
 
-/create – Project creation
+/create – Company creation
 
 /user – User profile
 
