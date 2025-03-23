@@ -48,81 +48,81 @@ Flow is a full-featured project management platform designed for team collaborat
 
 ## <details> <summary><strong>📁 File Structure</strong>
 
-Project/
-├── CSS/
-│   ├── about.css
-│   ├── admin.css
-│   ├── Chat.css
-│   ├── Chats.css
-│   ├── create.css
-│   ├── GChats.css
-│   ├── GInvite.css
-│   ├── Header.css
-│   ├── home.css
-│   ├── Invite.css
-│   ├── login.css
-│   ├── Members.css
-│   ├── PMembers.css
-│   ├── profile.css
-│   ├── project.css
-│   ├── projects.css
-│   ├── SProject.css
-│   ├── start.css
-│   ├── task.css
-│   └── users.css
-├── images/
-│   └── icon.png
-├── js/
-│   ├── chat.js
-│   ├── chats.js
-│   ├── create.js
-│   ├── GChat.js
-│   ├── GInvite.js
-│   ├── home.js
-│   ├── index.js
-│   ├── invite.js
-│   ├── login.js
-│   ├── project.js
-│   ├── SProject.js
-│   ├── task.js
-│   └── users.js
-├── mongo/
-│   ├── chats.js
-│   ├── company.js
-│   ├── group_chats.js
-│   ├── mongo.js
-│   ├── project.js
-│   ├── sub_task.js
-│   └── task.js
-├── view/
-│   ├── about.ejs
-│   ├── admin.ejs
-│   ├── chat.ejs
-│   ├── chats.ejs
-│   ├── create.ejs
-│   ├── GInvite.ejs
-│   ├── group_chat.ejs
-│   ├── header.ejs
-│   ├── home.ejs
-│   ├── Invite.ejs
-│   ├── login.ejs
-│   ├── member.ejs
-│   ├── Members.ejs
-│   ├── profile.ejs
-│   ├── project.ejs
-│   ├── projects.ejs
-│   ├── sproject.ejs
-│   ├── start.ejs
-│   ├── task.ejs
-│   └── user.ejs
-├── .env
-├── .gitignore
-├── Design.docx
-├── development.docx
-├── package.json
-├── package-lock.json
-├── server.js
-└── start.sh
+Project/<br>
+├── CSS/<br>
+│   ├── about.css<br>
+│   ├── admin.css<br>
+│   ├── Chat.css<br>
+│   ├── Chats.css<br>
+│   ├── create.css<br>
+│   ├── GChats.css<br>
+│   ├── GInvite.css<br>
+│   ├── Header.css<br>
+│   ├── home.css<br>
+│   ├── Invite.css<br>
+│   ├── login.css<br>
+│   ├── Members.css<br>
+│   ├── PMembers.css<br>
+│   ├── profile.css<br>
+│   ├── project.css<br>
+│   ├── projects.css<br>
+│   ├── SProject.css<br>
+│   ├── start.css<br>
+│   ├── task.css<br>
+│   └── users.css<br>
+├── images/<br>
+│   └── icon.png<br>
+├── js/<br>
+│   ├── chat.js<br>
+│   ├── chats.js<br>
+│   ├── create.js<br>
+│   ├── GChat.js<br>
+│   ├── GInvite.js<br>
+│   ├── home.js<br>
+│   ├── index.js<br>
+│   ├── invite.js<br>
+│   ├── login.js<br>
+│   ├── project.js<br>
+│   ├── SProject.js<br>
+│   ├── task.js<br>
+│   └── users.js<br>
+├── mongo/<br>
+│   ├── chats.js<br>
+│   ├── company.js<br>
+│   ├── group_chats.js<br>
+│   ├── mongo.js<br>
+│   ├── project.js<br>
+│   ├── sub_task.js<br>
+│   └── task.js<br>
+├── view/<br>
+│   ├── about.ejs<br>
+│   ├── admin.ejs<br>
+│   ├── chat.ejs<br>
+│   ├── chats.ejs<br>
+│   ├── create.ejs<br>
+│   ├── GInvite.ejs<br>
+│   ├── group_chat.ejs<br>
+│   ├── header.ejs<br>
+│   ├── home.ejs<br>
+│   ├── Invite.ejs<br>
+│   ├── login.ejs<br>
+│   ├── member.ejs<br>
+│   ├── Members.ejs<br>
+│   ├── profile.ejs<br>
+│   ├── project.ejs<br>
+│   ├── projects.ejs<br>
+│   ├── sproject.ejs<br>
+│   ├── start.ejs<br>
+│   ├── task.ejs<br>
+│   └── user.ejs<br>
+├── .env<br>
+├── .gitignore<br>
+├── Design.docx<br>
+├── development.docx<br>
+├── package.json<br>
+├── package-lock.json<br>
+├── server.js<br>
+└── start.sh<br>
 </summary></details>
 
 
