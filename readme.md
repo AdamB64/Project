@@ -88,15 +88,15 @@ npm start
 
 http://localhost:3000
 
-Usage
-Supervisors
+# Usage
+## Supervisors
 Create and manage projects.
 
 Assign tasks and sub-tasks with importance levels.
 
 View and track team progress using weighted progress calculations.
 
-Delete members:
+### Delete members:
 
 From the Members page (removes them from the company).
 
@@ -108,7 +108,7 @@ Accessed via button on the Home page.
 
 Requires company password for access.
 
-Members
+## Members
 View assigned projects and tasks.
 
 Manage sub-tasks in a To-Do style list:
@@ -123,7 +123,7 @@ Chat with team members and in groups.
 
 Update personal profile and image.
 
-General
+## General
 JWT authentication with session cookie support.
 
 Dashboard tailored to role (Supervisor or Member).
@@ -132,7 +132,7 @@ RESTful APIs and EJS-rendered views.
 
 Real-time communication.
 
-Example Routes
+# Example Routes
 / – Start page
 
 /login – Login
@@ -155,7 +155,7 @@ Example Routes
 
 /projects/:id/members – Project-specific member management
 
-Scripts
+# Scripts
 For Linux/Ubuntu setup:
 
 ```bash
