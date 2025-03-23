@@ -150,7 +150,7 @@ npm run install-modules
 
 3. Configure environment varibales:
 
-Create a .env file in the root directory and add:
+Create a .env file in the root directory and add but also change MONGO_URL, JWT_SECRET and secret:
 ```env
 MONGO_URL="mongo url"
 JWT_SECRET="random string of characters"
