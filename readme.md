@@ -46,8 +46,7 @@ Flow is a full-featured project management platform designed for team collaborat
 - **Authentication:** JWT, bcrypt
 - **Utilities:** CORS, session cookies, RESTful API
 
-<details> <summary><strong>📁 File Structure</strong>
-
+<details> <summary><strong>📁 File Structure</strong></summary>
 Project/<br>
 ├── CSS/<br>
 │   ├── about.css<br>
@@ -123,7 +122,7 @@ Project/<br>
 ├── package-lock.json<br>
 ├── server.js<br>
 └── start.sh<br>
-</summary></details>
+</details>
 
 
 ## Installation
