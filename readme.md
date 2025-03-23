@@ -65,6 +65,7 @@ Project/ ├── CSS/ │ ├── about.css │ ├── admin.css │ ├�
 
 ```bash
 git clone https://github.com/AdamB64/Project.git
+```
 cd Project
 
 2. Install dependencies:
@@ -167,3 +168,4 @@ git clone https://AdamB64:(githubtoken)@github.com/AdamB64/Project.git
 cd Project
 npm run install-modules
 npm start
+```
