@@ -14,55 +14,42 @@ A web-based project management system that allows users to create, manage, and t
 
 ## Overview
 
-This application serves as a platform for project management, offering functionality for supervisors and members to manage their projects and collaborate effectively.
+Flow is a full-featured project management platform designed for team collaboration, role-based project tracking, and real-time communication. It provides tools for supervisors to manage teams and for members to effectively contribute to projects and tasks.
 
 ## Features
 
 - User authentication using JWT and session-based tokens.
 - Role-based access control for supervisors and members.
-- Project creation, management, and task assignment.
-- Profile management, including image uploads.
-- Dynamic dashboards for project and user monitoring.
+- Project creation, task assignment, and sub-task tracking.
+- Sub-tasks are displayed as a **To-Do list** with statuses: `Not Started`, `Started`, `Done`.
+- Tasks and sub-tasks have an **importance level** from `Low` to `High`.
+- **Progress tracking is weighted by importance** — overall project completion depends on:
+  - The importance of each task/sub-task.
+  - The number of tasks/sub-tasks completed.
+- Profile management, including optional image uploads.
+- Real-time chat and group chat functionality.
+- Dynamic dashboards for both supervisors and members.
+- **User Deletion Flow:**
+  - **Members** can be removed from:
+    - The **Members page** (removes them from the company entirely).
+    - The **Project’s Members list** (removes them from just that project and its associated tasks/sub-tasks).
+  - **Supervisors** can only be deleted from the **Admin Page** (requires password).
+- **Admin Page** (for supervisors only):
+  - Used only to delete other supervisors.
+  - Accessed from the **Home page** via button.
+  - Requires typing in the **company password**.
 
 ## Technologies
 
-- **Frontend:** EJS templates, CSS, JavaScript.
-- **Backend:** Node.js, Express.js, MongoDB.
-- **Authentication:** JWT, bcrypt.
-- **Utilities:** CORS, session-based cookies, RESTful API.
+- **Frontend:** EJS templates, CSS, JavaScript
+- **Backend:** Node.js, Express.js, MongoDB
+- **Authentication:** JWT, bcrypt
+- **Utilities:** CORS, session cookies, RESTful API
 
 ## File Structure
 
-- **CSS/** - Stylesheets
-- **images/** - Image assets
-- **js/** - Frontend JavaScript files
-  - create.js
-  - home.js
-  - index.js
-  - login.js
-  - Project.js
-  - users.js
-- **mongo/** - MongoDB schema files
-- **node_modules/** - Dependencies
-- **view/** - EJS templates
-  - about.ejs
-  - chat.ejs
-  - create.ejs
-  - header.ejs
-  - home.ejs
-  - invite.ejs
-  - login.ejs
-  - Members.ejs
-  - settings.ejs
-  - sproject.ejs
-  - start.ejs
-  - user.ejs
-- **.env** - Environment variables
-- **.gitignore** - Git ignore file
-- **Design.docx** - Design document
-- **development.docx** - Development document
-- **server.js** - Main server file
-- **start.sh** - Script for setting up the environment
+Project/ ├── CSS/ │ ├── about.css │ ├── admin.css │ ├── Chat.css │ ├── Chats.css │ ├── create.css │ ├── GChats.css │ ├── GInvite.css │ ├── Header.css │ ├── home.css │ ├── Invite.css │ ├── login.css │ ├── Members.css │ ├── PMembers.css │ ├── profile.css │ ├── project.css │ ├── projects.css │ ├── SProject.css │ ├── start.css │ ├── task.css │ └── users.css ├── images/ │ └── icon.png ├── js/ │ ├── chat.js │ ├── chats.js │ ├── create.js │ ├── GChat.js │ ├── GInvite.js │ ├── home.js │ ├── index.js │ ├── invite.js │ ├── login.js │ ├── project.js │ ├── SProject.js │ ├── task.js │ └── users.js ├── mongo/ │ ├── chats.js │ ├── company.js │ ├── group_chats.js │ ├── mongo.js │ ├── project.js │ ├── sub_task.js │ └── task.js ├── view/ │ ├── about.ejs │ ├── admin.ejs │ ├── chat.ejs │ ├── chats.ejs │ ├── create.ejs │ ├── GInvite.ejs │ ├── group_chat.ejs │ ├── header.ejs │ ├── home.ejs │ ├── Invite.ejs │ ├── login.ejs │ ├── member.ejs │ ├── Members.ejs │ ├── profile.ejs │ ├── project.ejs │ ├── projects.ejs │ ├── sproject.ejs │ ├── start.ejs │ ├── task.ejs │ └── user.ejs ├── .env ├── .gitignore ├── Design.docx ├── development.docx ├── package.json ├── package-lock.json ├── server.js └── start.sh
+
 
 ## Installation
 
@@ -75,58 +62,108 @@ This application serves as a platform for project management, offering functiona
 ### Steps
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/AdamB64/Project.git
-   cd Project
 
-2. install dependencies:
-    npm run install-modules
+```bash
+git clone https://github.com/AdamB64/Project.git
+cd Project
 
-3. Configure environment variables: Create a .env file in the root directory with the following:
-    secret=YOUR_SESSION_SECRET
-    JWT_SECRET=YOUR_JWT_SECRET
-    MEM_ROLE=YOUR_MEMBER_ROLE
-    SUB_ROLE=YOUR_SUPERVISOR_ROLE
+2. Install dependencies:
 
-4. start the server
-    npm start
+npm run install-modules
 
-5. acess the application:
-    localhost:3000
+3. Configure environment varibales:
 
-## Usage
+Create a .env file in the root directory and add:
+secret=YOUR_SESSION_SECRET
+JWT_SECRET=YOUR_JWT_SECRET
+MEM_ROLE=YOUR_MEMBER_ROLE
+SUB_ROLE=YOUR_SUPERVISOR_ROLE
 
-The application supports the following functionalities:
+4. Start the server
 
-Supervisors:
-Create projects.
-Invite members to their company.
-Manage members and track project progress.
+npm start
 
-Members:
-View assigned projects.
-Manage tasks and update progress.
+5. Access the application:
 
-General:
-Secure login using JWT authentication.
-Profile management with optional image uploads.
+http://localhost:3000
 
-Example Routes in server.js:
-/ - Renders the start page.
-/login - User login page.
-/home - Dashboard for authenticated users.
-/create - Project creation page for supervisors.
-/user - Displays user-specific data.
+Usage
+Supervisors
+Create and manage projects.
 
-## Scripts:
+Assign tasks and sub-tasks with importance levels.
+
+View and track team progress using weighted progress calculations.
+
+Delete members:
+
+From the Members page (removes them from the company).
+
+From the Project’s member list (removes them from the project and any tasks/sub-tasks they were assigned).
+
+Delete supervisors via the Admin Page:
+
+Accessed via button on the Home page.
+
+Requires company password for access.
+
+Members
+View assigned projects and tasks.
+
+Manage sub-tasks in a To-Do style list:
+
+Status: Not Started, Started, Done.
+
+Each has an importance level from Low to High.
+
+Contribution to progress is weighted by importance.
+
+Chat with team members and in groups.
+
+Update personal profile and image.
+
+General
+JWT authentication with session cookie support.
+
+Dashboard tailored to role (Supervisor or Member).
+
+RESTful APIs and EJS-rendered views.
+
+Real-time communication.
+
+Example Routes
+/ – Start page
+
+/login – Login
+
+/home – Dashboard
+
+/create – Project creation
+
+/user – User profile
+
+/task – Task and sub-task view
+
+/chat – Chat page
+
+/group_chat – Group chat
+
+/admin – Admin panel (for deleting supervisors, password-protected)
+
+/members – Company members management
+
+/projects/:id/members – Project-specific member management
+
+Scripts
+For Linux/Ubuntu setup:
+
 ```bash
 sudo apt-get update
 sudo apt-get install git-all
 sudo apt install curl
-curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash 
+curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash -
 sudo apt-get install -y nodejs
 git clone https://AdamB64:(githubtoken)@github.com/AdamB64/Project.git
-ls
 cd Project
 npm run install-modules
 npm start
