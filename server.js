@@ -390,22 +390,8 @@ app.get('/project/chat/:id', authenticateToken, async (req, res) => {
   const members = project.members;
   //console.log(req.params.id);
   const Pchat = await ProjectChat.find({ "projectId": req.params.id });
-  if (Pchat.length == 0) {
-    // Fetch user profiles from Company collection where _id is in membersIds
-    const users = await Company.find({ _id: { $in: members._id } });
-
-    const c = new ProjectChat({
-      email: project.companyEmail,
-      projectId: req.params.id,
-      input: [],
-      members: members
-    })
-    await c.save();
-    res.render('PChat', { chat: c, profiles: users });
-  } else {
-    const users = await Company.find({ _id: { $in: members._id } });
-    res.render('PChat', { chat: Pchat, profiles: users });
-  }
+  const users = await Company.find({ _id: { $in: members._id } });
+  res.render('PChat', { chat: Pchat, profiles: users });
 });
 
 
@@ -921,6 +907,14 @@ app.post('/addProject', authenticateToken, async (req, res) => {
       companyEmail: com.email,
       members: membersArray
     });
+
+    const chat = new ProjectChat({
+      projectId: newProject._id,
+      members: membersArray,
+      email: com.email
+    });
+
+    await chat.save();
     //console.log("project" + newProject);
 
     await newProject.save();
@@ -1057,8 +1051,6 @@ app.post('/get-messages', authenticateToken, async (req, res) => {
 app.post('/get-Gmessages', authenticateToken, async (req, res) => {
   try {
     const id = req.body.id;
-    // For simplicity, fetch the first available group chat.
-    // You can adjust this to use a group chat ID from req.body if needed.
     const groupChat = await GChat.findOne({ _id: id });
     //console.log("Group Chat:", groupChat);
     if (!groupChat) {
@@ -1077,15 +1069,12 @@ app.post('/get-Pmessages', authenticateToken, async (req, res) => {
   //console.log("get-Pmessages");
   try {
     const id = req.body.id;
-    // For simplicity, fetch the first available group chat.
-    // You can adjust this to use a group chat ID from req.body if needed.
     //console.log("id " + id);
-    const projectChat = await ProjectChat.find({ projectId: id });
-    if (projectChat.length == 0) {
+    const projectChat = await ProjectChat.findOne({ _id: id });
+    if (!projectChat) {
       return res.json([]);
     }
-    console.log(projectChat[0].input);
-    res.json(projectChat[0].input);
+    res.json(projectChat.input);
   } catch (error) {
     //console.error("Error fetching group messages:", error);
     res.status(500).json({ error: 'Internal server error.' });

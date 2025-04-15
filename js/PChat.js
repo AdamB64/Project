@@ -61,7 +61,7 @@ $(document).ready(function () {
     let lastMessageId = null; // Store last message ID to avoid duplicate messages
 
     function fetchMessages() {
-        const url = window.chatData.projectId;
+        const url = window.chatData.chatId;
         //console.log(url);
         let lastMessageId = null;
         $.ajax({
