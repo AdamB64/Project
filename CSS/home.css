@@ -1,5 +1,6 @@
 html,
 body {
+    overflow: auto;
     height: 100%;
     margin: 0;
     padding: 0;
@@ -96,4 +97,81 @@ button.sideA:hover {
         text-align: center;
         padding: 10px;
     }
+}
+
+#main {
+    margin-top: 100px;
+}
+
+#main-conten {
+    margin-top: 100px;
+    overflow: auto;
+}
+
+.chat-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+}
+
+.chat-card {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.85rem;
+    min-height: auto;
+    height: 100px;
+    /* << controls exact height */
+    overflow: hidden;
+}
+
+.chat-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-profile {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.chat-user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.chat-user-email {
+    font-size: 0.75rem;
+    color: gray;
+    line-height: 1;
+}
+
+.chat-timestamp {
+    font-size: 0.7rem;
+    color: #999;
+    margin: 0;
+}
+
+.chat-message {
+    font-size: 0.8rem;
+    line-height: 1.2;
+}
+
+.chat-message small {
+    font-size: 0.7rem;
+    color: #666;
+}
+
+.content {
+    overflow: auto;
 }

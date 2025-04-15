@@ -109,13 +109,15 @@
 
                     // Show alerts on page load
                     window.onload = function () {
-                        alertMessages.forEach(msg => alert(msg));
+                        //alertMessages.forEach(msg => alert(msg));
                         // Check if user is the last member
                         let isLastMember = `<%= profiles.length === 1 ? 'true' : 'false' %>`;
+                        console.log(`<%= profiles.length %>`);
+                        console.log(isLastMember);
                         let chatId = "<%= chat[0].id %>"; // Get chat ID from the server
-                        console.log(chatId);
+                        //console.log(chatId);
 
-                        if (isLastMember) {
+                        if (isLastMember == `true`) {
                             showDeleteConfirmation(chatId);
                         }
                     };

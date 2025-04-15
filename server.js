@@ -140,16 +140,76 @@ app.get('/login', (req, res) => {
   res.render('login');
 });
 
-app.get('/home', authenticateToken, (req, res) => {
-  //console.log(req.user.role);
-  let code;// = process.env.MEM_ROLE
-  if (req.user.role === "supervisor") {
-    code = process.env.SUB_ROLE;
-  } else if (req.user.role === "member") {
-    code = process.env.MEM_ROLE;
+app.get('/home', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Get recent chats
+    const chats = await Chat.find({ 'users.id': userId })
+      .sort({ updatedAt: -1 })
+      .limit(4)
+      .lean(); // enables direct modification of chat objects
+
+    for (let chat of chats) {
+      // Find the other user's ID
+      const otherUserRef = chat.users.find(u => u.id !== userId);
+      if (!otherUserRef) {
+        chat.otherUser = null;
+        continue;
+      }
+
+      // Find the other user in Company (either in supervisors or members)
+      const company = await Company.findOne({
+        $or: [
+          { 'supervisors._id': otherUserRef.id },
+          { 'members._id': otherUserRef.id }
+        ]
+      });
+
+      let fullUser = null;
+      if (company) {
+        fullUser =
+          company.supervisors.find(s => s._id.toString() === otherUserRef.id) ||
+          company.members.find(m => m._id.toString() === otherUserRef.id);
+      }
+
+      // Replace `users` field with just the basic info of the other user
+      if (fullUser) {
+        chat.user = {
+          id: otherUserRef.id,
+          firstName: fullUser.firstName,
+          lastName: fullUser.lastName,
+          email: fullUser.email,
+          profile: fullUser.profile
+        };
+      } else {
+        chat.user = null;
+      }
+
+      delete chat.users; // remove the original users array
+    }
+
+    const groupChats = await GChat.find({ 'members._id': req.user.id })
+      .sort({ updatedAt: -1 }) // Most recently updated first
+      .limit(4);               // Only return 4 chats
+
+    // Determine role-based sidebar code
+    let code;
+    if (req.user.role === "supervisor") {
+      code = process.env.SUB_ROLE;
+    } else if (req.user.role === "member") {
+      code = process.env.MEM_ROLE;
+    }
+
+    res.render('home', { Code: code, chat: chats, groupChats });
+
+  } catch (err) {
+    console.error('Error getting chats:', err);
+    res.status(500).send('Server error');
   }
-  res.render('home', { Code: code });
 });
+
+
 
 app.get('/chats', authenticateToken, async (req, res) => {
   try {
@@ -183,7 +243,7 @@ app.get('/chats', authenticateToken, async (req, res) => {
 
         if (com) {
           Chatuser[i] = com.members.find(mem => mem._id.toString() === matchedUserId) ||
-                        com.supervisors.find(sup => sup._id.toString() === matchedUserId) || {};
+            com.supervisors.find(sup => sup._id.toString() === matchedUserId) || {};
         } else {
           Chatuser[i] = {}; // Fallback value to prevent undefined issues
         }
@@ -384,7 +444,7 @@ app.get('/GChats/:id', authenticateToken, async (req, res) => {
         );
       } else {
         const m = con.members.find(mem => mem.email === chat[0].members[i].email) ||
-                    con.supervisors.find(sup => sup.email === chat[0].members[i].email);
+          con.supervisors.find(sup => sup.email === chat[0].members[i].email);
         const mem = { _id: m._id, profile: m.profile };
         profiles.push(mem);
       }
@@ -1287,7 +1347,7 @@ app.post('/makeChat', authenticateToken, async (req, res) => {
     for (let i = 0; i < Members.length; i++) {
       // Find the member in either members or supervisors array
       const com = c[0].members.find(mem => mem._id.toString() === Members[i]) ||
-                c[0].supervisors.find(sup => sup._id.toString() === Members[i]);
+        c[0].supervisors.find(sup => sup._id.toString() === Members[i]);
       if (com) {
         memb.push(com);
       }
