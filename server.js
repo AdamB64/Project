@@ -10,6 +10,7 @@ const Chat = require('./mongo/chats.js');
 const Task = require('./mongo/task.js');
 const GChat = require('./mongo/group_chats.js');
 const STask = require('./mongo/sub_task.js');
+const ProjectChat = require('./mongo/PChat.js');
 const { ObjectId, GridFSBucket } = require("mongodb");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
@@ -381,6 +382,29 @@ app.get('/project/members/:id', authenticateToken, async (req, res) => {
     }
   } else {
     res.render('member', { members });
+  }
+});
+
+app.get('/project/chat/:id', authenticateToken, async (req, res) => {
+  const project = await Project.findById(req.params.id);
+  const members = project.members;
+  //console.log(req.params.id);
+  const Pchat = await ProjectChat.find({ "projectId": req.params.id });
+  if (Pchat.length == 0) {
+    // Fetch user profiles from Company collection where _id is in membersIds
+    const users = await Company.find({ _id: { $in: members._id } });
+
+    const c = new ProjectChat({
+      email: project.companyEmail,
+      projectId: req.params.id,
+      input: [],
+      members: members
+    })
+    await c.save();
+    res.render('PChat', { chat: c, profiles: users });
+  } else {
+    const users = await Company.find({ _id: { $in: members._id } });
+    res.render('PChat', { chat: Pchat, profiles: users });
   }
 });
 
@@ -1038,11 +1062,30 @@ app.post('/get-Gmessages', authenticateToken, async (req, res) => {
     const groupChat = await GChat.findOne({ _id: id });
     //console.log("Group Chat:", groupChat);
     if (!groupChat) {
-      res.json([]);
+      return res.json([]);
     }
     //console.log("Group Chat:", groupChat);
     // Return the messages stored in the "input" array
     res.json(groupChat.input);
+  } catch (error) {
+    //console.error("Error fetching group messages:", error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+app.post('/get-Pmessages', authenticateToken, async (req, res) => {
+  //console.log("get-Pmessages");
+  try {
+    const id = req.body.id;
+    // For simplicity, fetch the first available group chat.
+    // You can adjust this to use a group chat ID from req.body if needed.
+    //console.log("id " + id);
+    const projectChat = await ProjectChat.find({ projectId: id });
+    if (projectChat.length == 0) {
+      return res.json([]);
+    }
+    console.log(projectChat[0].input);
+    res.json(projectChat[0].input);
   } catch (error) {
     //console.error("Error fetching group messages:", error);
     res.status(500).json({ error: 'Internal server error.' });
@@ -1383,7 +1426,29 @@ app.post('/addGChat/:id', authenticateToken, upload, async (req, res) => {
 
     const sender = await Company.findOne({ "members._id": user.id }) || await Company.findOne({ "supervisors._id": user.id });
     const profile = sender.members.find(mem => mem._id.toString() === user.id) || sender.supervisors.find(sup => sup._id.toString() === user.id);
-    await GChat.findByIdAndUpdate(id, { $push: { input: { profile: profile.profile, firstName: profile.firstName, lastName: profile.lastName, id: user.id, file: fileIds, message: message, timestamp: time, date: date } } }, { new: true, runValidators: true });
+    await GChat.findByIdAndUpdate(id, { $push: { input: { firstName: profile.firstName, lastName: profile.lastName, id: user.id, file: fileIds, message: message, timestamp: time, date: date } } }, { new: true, runValidators: true });
+    res.status(200).json({ message: "Chat saved successfully" });
+
+  } catch {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.post('/addPChat/:id', authenticateToken, upload, async (req, res) => {
+  console.log("addPChat");
+  console.log(req.params.id);
+  try {
+    const fileIds = req.files ? req.files.map(file => file.id) : [];
+    const { message, time, date, } = req.body;
+    const UToken = req.cookies?.token;
+
+    let user = getUser(UToken);
+
+    const id = req.params.id;
+
+    const sender = await Company.findOne({ "members._id": user.id }) || await Company.findOne({ "supervisors._id": user.id });
+    const profile = sender.members.find(mem => mem._id.toString() === user.id) || sender.supervisors.find(sup => sup._id.toString() === user.id);
+    await ProjectChat.findByIdAndUpdate(id, { $push: { input: { firstName: profile.firstName, lastName: profile.lastName, id: user.id, file: fileIds, message: message, timestamp: time, date: date } } }, { new: true, runValidators: true });
     res.status(200).json({ message: "Chat saved successfully" });
 
   } catch {

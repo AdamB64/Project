@@ -18,6 +18,7 @@
     <%- include('header') %>
         <div class="content">
             <h1>Project: <%= project.name %> <br>Members page: <a href="/project/members/<%= project._id %>">Members</a>
+                    <h2>Project Chat: <a href="/project/chat/<%= project._id %>">Chat</a></h2>
                     <h2 id="progress">
                         <script>
                             $.ajax({
