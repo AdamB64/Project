@@ -14,126 +14,127 @@
 <body>
     <!-- Header -->
     <%- include('header') %>
+        <div id="main">
 
-        <!-- Sidebar -->
-        <% if (typeof Code !=="undefined" ) { %>
-            <%- Code %>
-                <% } else { %>
-                    <p>No user data available. Please wait for the data to be retrieved.</p>
-                    <script>
-                        setTimeout(function () {
-                            location.reload();
-                        }, 3000);
-                    </script>
-                    <% } %>
+            <!-- Sidebar -->
+            <% if (typeof Code !=="undefined" ) { %>
+                <%- Code %>
+                    <% } else { %>
+                        <p>No user data available. Please wait for the data to be retrieved.</p>
+                        <script>
+                            setTimeout(function () {
+                                location.reload();
+                            }, 3000);
+                        </script>
+                        <% } %>
 
-                        <!-- Main Content -->
-                        <div id="content">
-                            <div id="main-content" style="margin-left: 220px; padding: 20px;">
-                                <br>
-                                <section id="recent-chats">
-                                    <h2 style="margin-bottom: 20px;">Recent Chats</h2>
-                                    <% if (chat && chat.length> 0) { %>
-                                        <div class="chat-wrapper">
-                                            <% chat.forEach(c=> { %>
-                                                <div class="chat-card">
-                                                    <% if (c.user) { %>
-                                                        <div class="chat-user">
-                                                            <img src="<%= c.user.profile %>" alt="Profile"
-                                                                class="chat-profile">
-                                                            <div class="chat-user-info">
-                                                                <strong>
-                                                                    <a href="/profile/<%= c.user.id %>">
-                                                                        <%= c.user.firstName %>
-                                                                            <%= c.user.lastName %>
-                                                                    </a>
-                                                                </strong>
-                                                                <div class="chat-user-email">
-                                                                    <%= c.user.email %>
+                            <!-- Main Content -->
+                            <div id="content">
+                                <div id="main-content" style="margin-left: 220px; padding: 20px;">
+                                    <section id="recent-chats">
+                                        <h2 style="margin-bottom: 20px;">Recent Chats</h2>
+                                        <% if (chat && chat.length> 0) { %>
+                                            <div class="chat-wrapper">
+                                                <% chat.forEach(c=> { %>
+                                                    <div class="chat-card">
+                                                        <% if (c.user) { %>
+                                                            <div class="chat-user">
+                                                                <img src="<%= c.user.profile %>" alt="Profile"
+                                                                    class="chat-profile">
+                                                                <div class="chat-user-info">
+                                                                    <strong>
+                                                                        <a href="/profile/<%= c.user.id %>">
+                                                                            <%= c.user.firstName %>
+                                                                                <%= c.user.lastName %>
+                                                                        </a>
+                                                                    </strong>
+                                                                    <div class="chat-user-email">
+                                                                        <%= c.user.email %>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <% } else { %>
-                                                            <p>Other user not found.</p>
-                                                            <% } %>
-                                                                <div class="chat-timestamp">
-                                                                    <strong>Updated:</strong>
-                                                                    <%= new Date(c.updatedAt).toLocaleString() %>
-                                                                </div>
-                                                                <div class="chat-message">
-                                                                    <strong>Latest Message:</strong>
-                                                                    <% if (c.input && c.input.length> 0) {
-                                                                        const msg = c.input[c.input.length - 1];
-                                                                        %>
-                                                                        <div>
-                                                                            <%= msg.message %>
-                                                                        </div>
-                                                                        <small>
-                                                                            From: <%= msg.sender %> &nbsp;|&nbsp;
-                                                                                At: <%= msg.timestamp %> on <%= msg.date
-                                                                                        %>
-                                                                        </small>
-                                                                        <% } else { %>
-                                                                            <p>No messages yet.</p>
-                                                                            <% } %>
-                                                                </div>
-                                                </div>
-                                                <% }) %>
-                                        </div>
-                                        <% } else { %>
-                                            <p>No recent chats found.</p>
-                                            <% } %>
-                                </section>
-
-                                <!-- Group Chats Section -->
-                                <section id="recent-group-chats" style="margin-top: 50px;">
-                                    <h2 style="margin-bottom: 20px;">Recent Group Chats</h2>
-                                    <% if (groupChats && groupChats.length> 0) { %>
-                                        <div class="chat-wrapper">
-                                            <% groupChats.forEach(gc=> { %>
-                                                <div class="chat-card">
-                                                    <div class="chat-user-info">
-                                                        <strong>
-                                                            <a href="/GChats/<%= gc._id %>">
-                                                                <%= gc.name %>
-                                                            </a>
-                                                        </strong>
-                                                        <div class="chat-user-email">
-                                                            <%= gc.email %>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="chat-timestamp">
-                                                        <strong>Updated:</strong>
-                                                        <%= new Date(gc.updatedAt).toLocaleString() %>
-                                                    </div>
-
-                                                    <div class="chat-message">
-                                                        <strong>Latest Message:</strong>
-                                                        <% if (gc.input && gc.input.length> 0) {
-                                                            const msg = gc.input[gc.input.length - 1];
-                                                            %>
-                                                            <div>
-                                                                <%= msg.message %>
-                                                            </div>
-                                                            <small>
-                                                                From: <%= msg.firstName %>
-                                                                    <%= msg.lastName %> &nbsp;|&nbsp;
-                                                                        At: <%= msg.timestamp %> on <%= msg.date %>
-                                                            </small>
                                                             <% } else { %>
-                                                                <p>No messages yet.</p>
+                                                                <p>Other user not found.</p>
                                                                 <% } %>
+                                                                    <div class="chat-timestamp">
+                                                                        <strong>Updated:</strong>
+                                                                        <%= new Date(c.updatedAt).toLocaleString() %>
+                                                                    </div>
+                                                                    <div class="chat-message">
+                                                                        <strong>Latest Message:</strong>
+                                                                        <% if (c.input && c.input.length> 0) {
+                                                                            const msg = c.input[c.input.length - 1];
+                                                                            %>
+                                                                            <div>
+                                                                                <%= msg.message %>
+                                                                            </div>
+                                                                            <small>
+                                                                                From: <%= msg.sender %> &nbsp;|&nbsp;
+                                                                                    At: <%= msg.timestamp %> on <%=
+                                                                                            msg.date %>
+                                                                            </small>
+                                                                            <% } else { %>
+                                                                                <p>No messages yet.</p>
+                                                                                <% } %>
+                                                                    </div>
                                                     </div>
-                                                </div>
-                                                <% }) %>
-                                        </div>
-                                        <% } else { %>
-                                            <p>No recent group chats found.</p>
-                                            <% } %>
-                                </section>
+                                                    <% }) %>
+                                            </div>
+                                            <% } else { %>
+                                                <p>No recent chats found.</p>
+                                                <% } %>
+                                    </section>
+
+                                    <!-- Group Chats Section -->
+                                    <section id="recent-group-chats" style="margin-top: 50px;">
+                                        <h2 style="margin-bottom: 20px;">Recent Group Chats</h2>
+                                        <% if (groupChats && groupChats.length> 0) { %>
+                                            <div class="chat-wrapper">
+                                                <% groupChats.forEach(gc=> { %>
+                                                    <div class="chat-card">
+                                                        <div class="chat-user-info">
+                                                            <strong>
+                                                                <a href="/GChats/<%= gc._id %>">
+                                                                    <%= gc.name %>
+                                                                </a>
+                                                            </strong>
+                                                            <div class="chat-user-email">
+                                                                <%= gc.email %>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="chat-timestamp">
+                                                            <strong>Updated:</strong>
+                                                            <%= new Date(gc.updatedAt).toLocaleString() %>
+                                                        </div>
+
+                                                        <div class="chat-message">
+                                                            <strong>Latest Message:</strong>
+                                                            <% if (gc.input && gc.input.length> 0) {
+                                                                const msg = gc.input[gc.input.length - 1];
+                                                                %>
+                                                                <div>
+                                                                    <%= msg.message %>
+                                                                </div>
+                                                                <small>
+                                                                    From: <%= msg.firstName %>
+                                                                        <%= msg.lastName %> &nbsp;|&nbsp;
+                                                                            At: <%= msg.timestamp %> on <%= msg.date %>
+                                                                </small>
+                                                                <% } else { %>
+                                                                    <p>No messages yet.</p>
+                                                                    <% } %>
+                                                        </div>
+                                                    </div>
+                                                    <% }) %>
+                                            </div>
+                                            <% } else { %>
+                                                <p>No recent group chats found.</p>
+                                                <% } %>
+                                    </section>
+                                </div>
                             </div>
-                        </div>
+        </div>
 </body>
 
 </html>
