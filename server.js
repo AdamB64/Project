@@ -10,7 +10,7 @@ const Chat = require('./mongo/chats.js');
 const Task = require('./mongo/task.js');
 const GChat = require('./mongo/group_chats.js');
 const STask = require('./mongo/sub_task.js');
-const ProjectChat = require('./mongo/PChat.js');
+const PChat = require('./mongo/PChat.js');
 const { ObjectId, GridFSBucket } = require("mongodb");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
@@ -194,6 +194,10 @@ app.get('/home', authenticateToken, async (req, res) => {
       .sort({ updatedAt: -1 }) // Most recently updated first
       .limit(4);               // Only return 4 chats
 
+    const ProjectChats = await PChat.find({ 'members.id': req.user.id })
+      .sort({ updatedAt: -1 }) // Most recently updated first
+      .limit(4);               // Only return 4 chats
+
     // Determine role-based sidebar code
     let code;
     if (req.user.role === "supervisor") {
@@ -202,7 +206,7 @@ app.get('/home', authenticateToken, async (req, res) => {
       code = process.env.MEM_ROLE;
     }
 
-    res.render('home', { Code: code, chat: chats, groupChats });
+    res.render('home', { Code: code, chat: chats, groupChats, ProjectChats });
 
   } catch (err) {
     console.error('Error getting chats:', err);
@@ -255,7 +259,10 @@ app.get('/chats', authenticateToken, async (req, res) => {
 
     const GChats = await GChat.find({ "members._id": user.id });
 
-    res.render('chats', { chats, Chatuser, users, us, GChats });
+    const PChats = await PChat.find({ "members.id": user.id });
+    console.log(PChats);
+
+    res.render('chats', { chats, Chatuser, users, us, GChats, PChat: PChats });
   } catch (error) {
     console.error("Error fetching chats:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -385,20 +392,76 @@ app.get('/project/members/:id', authenticateToken, async (req, res) => {
   }
 });
 
+
 app.get('/project/chat/:id', authenticateToken, async (req, res) => {
-  const project = await Project.findById(req.params.id);
-  const members = project.members;
-  //console.log(req.params.id);
-  const Pchat = await ProjectChat.find({ "projectId": req.params.id });
-  const users = await Company.find({ _id: { $in: members._id } });
-  res.render('PChat', { chat: Pchat, profiles: users });
+  const { id } = req.params;
+  const profiles = [];
+  //console.log("project id " + id);
+
+  // ✅ Validate the ID BEFORE trying to cast it
+  if (!id || !ObjectId.isValid(id)) {
+    //console.warn("Invalid project ID received:", id);
+    return res.status(400).send("Invalid project ID");
+  }
+
+  try {
+    const objectId = new ObjectId(id);
+
+    const project = await Project.findOne({ _id: objectId });
+    if (!project) return res.status(404).send("Project not found");
+
+    const members = project.members || [];
+
+    const validMemberIds = members
+      .map(m => m._id)
+      .filter(_id => _id && ObjectId.isValid(_id));
+
+    for (let i = 0; i < members.length; i++) {
+      const memId = members[i]._id;
+
+      const con = await Company.findOne({ "members._id": memId }) || await Company.findOne({ "supervisors._id": memId });
+
+      if (!con) {
+        alertMessage.push(`User ${members[i].firstName} ${members[i].lastName} has been deleted from the company.`);
+        await Project.findOneAndUpdate(
+          { _id: new ObjectId(id) },
+          { $pull: { members: { _id: memId } } },
+          { new: true }
+        );
+      } else {
+        const found =
+          con.members.find(mem => mem.email === members[i].email) ||
+          con.supervisors.find(sup => sup.email === members[i].email);
+        if (found) {
+          profiles.push({ _id: found._id, profile: found.profile });
+        }
+      }
+    }
+
+    const Pchat = await PChat.find({ projectId: id });
+
+    if (!Pchat || Pchat.length === 0) {
+      return res.render('PChat', {
+        chat: [],
+        profiles: users,
+        id: req.user.id,
+        errorMessage: "No chat history yet."
+      });
+    }
+    //console.log(profiles)
+
+    res.render('PChat', { chat: Pchat, profiles: profiles, id: req.user.id });
+
+  } catch (err) {
+    console.error("Error rendering PChat:", err);
+    res.status(500).send("Server Error");
+  }
 });
 
 
 
 app.get("/file/:id", async (req, res) => {
   try {
-    //console.log("Processing file request...");
     const fileId = new ObjectId(req.params.id);
 
     // Get file metadata
@@ -534,13 +597,17 @@ function getUser(Token, res) {
   let user = null;
   jwt.verify(Token, process.env.JWT_SECRET, (err, u) => {
     if (err) {
-      return res.redirect("/login");
+      if (res) {
+        return res.redirect("/login");
+      } else {
+        throw new Error("Invalid token and no response object provided.");
+      }
     }
-    //console.log("ran1");
     user = u;
   });
   return user;
 }
+
 
 
 //---------------------POST routes---------------------
@@ -908,7 +975,7 @@ app.post('/addProject', authenticateToken, async (req, res) => {
       members: membersArray
     });
 
-    const chat = new ProjectChat({
+    const chat = new PChat({
       projectId: newProject._id,
       members: membersArray,
       email: com.email
@@ -1068,13 +1135,16 @@ app.post('/get-Gmessages', authenticateToken, async (req, res) => {
 app.post('/get-Pmessages', authenticateToken, async (req, res) => {
   //console.log("get-Pmessages");
   try {
-    const id = req.body.id;
+    const id = new ObjectId(req.body.id);
     //console.log("id " + id);
-    const projectChat = await ProjectChat.findOne({ _id: id });
-    if (!projectChat) {
+    const projectChat = await PChat.findOne({ _id: id });
+    //console.log("Project Chat:", projectChat);
+    if (!projectChat.input || !Array.isArray(projectChat.input)) {
+      console.log("input is missing or not an array");
       return res.json([]);
     }
-    res.json(projectChat.input);
+
+    res.json(projectChat.input || []);
   } catch (error) {
     //console.error("Error fetching group messages:", error);
     res.status(500).json({ error: 'Internal server error.' });
@@ -1437,7 +1507,7 @@ app.post('/addPChat/:id', authenticateToken, upload, async (req, res) => {
 
     const sender = await Company.findOne({ "members._id": user.id }) || await Company.findOne({ "supervisors._id": user.id });
     const profile = sender.members.find(mem => mem._id.toString() === user.id) || sender.supervisors.find(sup => sup._id.toString() === user.id);
-    await ProjectChat.findByIdAndUpdate(id, { $push: { input: { firstName: profile.firstName, lastName: profile.lastName, id: user.id, file: fileIds, message: message, timestamp: time, date: date } } }, { new: true, runValidators: true });
+    await PChat.findByIdAndUpdate(id, { $push: { input: { firstName: profile.firstName, lastName: profile.lastName, Userid: user.id, file: fileIds, message: message, timestamp: time, date: date } } }, { new: true, runValidators: true });
     res.status(200).json({ message: "Chat saved successfully" });
 
   } catch {

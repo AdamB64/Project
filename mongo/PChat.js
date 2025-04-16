@@ -16,7 +16,7 @@ const projectChatSchema = new mongoose.Schema({
         {
             firstName: { type: String },
             lastName: { type: String },
-            id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+            Userid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
             message: { type: String },
             timestamp: { type: String },
             file: { type: [String] },

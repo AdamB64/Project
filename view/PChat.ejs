@@ -21,6 +21,7 @@
 
         <% profiles.forEach(profile=> { %>
             <script>
+                console.log("Profile ID: ", "<%= profile._id %>");
                 window.profiles.push({
                     id: "<%= profile._id %>",
                     profilePic: "<%= profile.profile %>"
@@ -98,6 +99,8 @@
                 <script>
                     window.chatData = {
                         chatId: "<%= chat[0]._id %>",
+                        userId: "<%= chat[0].userId %>",
+                        ID: "<%= id %>",
                         projectId: "<%= chat[0].projectId %>",
                     };
 

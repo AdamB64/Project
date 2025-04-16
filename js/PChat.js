@@ -69,24 +69,27 @@ $(document).ready(function () {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ id: url }),
+            xhrFields: {
+                withCredentials: true // Include credentials in the request
+            },
             success: function (response) {
-                console.log(response);
+                //console.log(response);
                 let shouldScroll = isScrolledToBottom();
                 // 🔹 Check if the message has attached files
 
                 response.forEach(function (message) {
-                    //console.log(message);
+                    console.log(message);
                     if (!document.getElementById(`msg-${message._id}`)) {
                         //console.log(message);
-                        let messageClass = window.chatData.chatId === message.id ? "sent" : "received";
+                        let messageClass = window.chatData.ID === message.Userid ? "sent" : "received";
 
                         // 🔹 Check if the message has attached files
                         let filesHtml = `<div class="message-files" id="msg-${message._id}-files"></div>`;
-                        //console.log(window.profiles.length);
+                        console.log(window.profiles.length);
                         for (let i = 0; i < window.profiles.length; i++) {
-                            //console.log(window.profiles[i].id);
-                            //console.log(message._id);
-                            if (message.id == window.profiles[i].id) {
+                            console.log(window.profiles[i].id);
+                            console.log(message._id);
+                            if (message.Userid == window.profiles[i].id) {
                                 profile = window.profiles[i].profilePic;
                             }
                         }
@@ -101,7 +104,7 @@ $(document).ready(function () {
                             })
                                 .then(response => response.json())
                                 .then(files => {
-                                    //console.log("Files Received:", files);
+                                    console.log("Files Received:", files);
                                     let fileDisplayHtml = "";
 
                                     files.forEach(file => {

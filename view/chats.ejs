@@ -61,12 +61,26 @@
                 </div>
             </div>
 
-            <!-- Project Chats (Empty for Now) -->
-            <div class=" chat-section">
+            <!-- Project Chats -->
+            <div class="chat-section">
                 <h2>Project Chats</h2>
                 <div class="scrollable-container">
-
-                    <!-- Reserved for Project Chats -->
+                    <% PChat.forEach((chat)=> { %>
+                        <div class="chat">
+                            <h3>Project Chat Name: <%= chat.name %>
+                            </h3>
+                            <p><strong>Members:</strong><br>
+                                <% chat.members.forEach((member)=> { %>
+                                    <%= member.firstName %>
+                                        <%= member.lastName %><br>
+                                            <% }) %>
+                            </p>
+                            <button class="chat-button"
+                                onclick="window.location.href='project/chat/<%= chat.projectId %>'">
+                                Open Chat
+                            </button>
+                        </div>
+                        <% }); %>
                 </div>
             </div>
 
