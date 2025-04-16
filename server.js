@@ -976,6 +976,7 @@ app.post('/addProject', authenticateToken, async (req, res) => {
     });
 
     const chat = new PChat({
+      projectName: projectName,
       projectId: newProject._id,
       members: membersArray,
       email: com.email

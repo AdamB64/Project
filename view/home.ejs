@@ -31,6 +31,56 @@
                             <!-- Main Content -->
                             <div id="content">
                                 <div id="main-content" style="margin-left: 220px; padding: 20px;">
+                                    <!-- Project Chats -->
+                                    <section id="recent-project-chats" style="margin-top: 50px;">
+                                        <h2 style="margin-bottom: 20px;">Recent Project Chats</h2>
+                                        <% if (ProjectChats && ProjectChats.length> 0) { %>
+                                            <div class="chat-wrapper">
+                                                <% ProjectChats.forEach(pc=> { %>
+                                                    <div class="chat-card">
+                                                        <div class="chat-user-info">
+                                                            <strong>
+                                                                <a href="project/chat/<%= pc.projectId %>">
+                                                                    open chat: <%= pc.projectName %>
+                                                                </a><br>
+                                                                <a href="/project/<%= pc.projectId %>">Open
+                                                                    Project: <%= pc.projectName %></a>
+                                                            </strong>
+                                                        </div>
+                                                        <div class="chat-timestamp">
+                                                            <strong>Updated:</strong>
+                                                            <%= new Date(pc.updatedAt).toLocaleString() %>
+                                                        </div>
+                                                        <div class="chat-message">
+                                                            <strong>Latest Message:</strong>
+                                                            <% if (pc.input && pc.input.length> 0) {
+                                                                const msg = pc.input[pc.input.length - 1];
+                                                                %>
+                                                                <div>
+                                                                    <% if (msg.file && msg.file.length> 0) { %>
+                                                                        <%= msg.message %>(with attachment)
+                                                                            <% } else { %>
+                                                                                <%= msg.message %>
+                                                                                    <% } %>
+                                                                </div>
+                                                                <small>
+                                                                    From: <%= msg.firstName %>
+                                                                        <%= msg.lastName %> &nbsp;|&nbsp;
+                                                                            At: <%= msg.timestamp %> on <%= msg.date %>
+                                                                </small>
+                                                                <% } else { %>
+                                                                    <p id="no">No messages yet.</p>
+                                                                    <% } %>
+                                                        </div>
+                                                    </div>
+                                                    <% }) %>
+                                            </div>
+                                            <% } else { %>
+                                                <p>No recent project chats found.</p>
+                                                <% } %>
+                                    </section>
+
+                                    <!-- Recent Chats -->
                                     <section id="recent-chats">
                                         <h2 style="margin-bottom: 20px;">Recent Chats</h2>
                                         <% if (chat && chat.length> 0) { %>
@@ -66,7 +116,12 @@
                                                                             const msg = c.input[c.input.length - 1];
                                                                             %>
                                                                             <div>
-                                                                                <%= msg.message %>
+                                                                                <% if (msg.file && msg.file.length> 0) {
+                                                                                    %>
+                                                                                    <%= msg.message %>(with attachment)
+                                                                                        <% } else { %>
+                                                                                            <%= msg.message %>
+                                                                                                <% } %>
                                                                             </div>
                                                                             <small>
                                                                                 From: <%= msg.sender %> &nbsp;|&nbsp;
@@ -74,7 +129,7 @@
                                                                                             msg.date %>
                                                                             </small>
                                                                             <% } else { %>
-                                                                                <p>No messages yet.</p>
+                                                                                <p id="no">No messages yet.</p>
                                                                                 <% } %>
                                                                     </div>
                                                     </div>
@@ -85,7 +140,7 @@
                                                 <% } %>
                                     </section>
 
-                                    <!-- Group Chats Section -->
+                                    <!-- Group Chats -->
                                     <section id="recent-group-chats" style="margin-top: 50px;">
                                         <h2 style="margin-bottom: 20px;">Recent Group Chats</h2>
                                         <% if (groupChats && groupChats.length> 0) { %>
@@ -98,23 +153,22 @@
                                                                     <%= gc.name %>
                                                                 </a>
                                                             </strong>
-                                                            <div class="chat-user-email">
-                                                                <%= gc.email %>
-                                                            </div>
                                                         </div>
-
                                                         <div class="chat-timestamp">
                                                             <strong>Updated:</strong>
                                                             <%= new Date(gc.updatedAt).toLocaleString() %>
                                                         </div>
-
                                                         <div class="chat-message">
                                                             <strong>Latest Message:</strong>
                                                             <% if (gc.input && gc.input.length> 0) {
                                                                 const msg = gc.input[gc.input.length - 1];
                                                                 %>
                                                                 <div>
-                                                                    <%= msg.message %>
+                                                                    <% if (msg.file && msg.file.length> 0) { %>
+                                                                        <%= msg.message %>(with attachment)
+                                                                            <% } else { %>
+                                                                                <%= msg.message %>
+                                                                                    <% } %>
                                                                 </div>
                                                                 <small>
                                                                     From: <%= msg.firstName %>
@@ -122,7 +176,7 @@
                                                                             At: <%= msg.timestamp %> on <%= msg.date %>
                                                                 </small>
                                                                 <% } else { %>
-                                                                    <p>No messages yet.</p>
+                                                                    <p id="no">no messages yet.</p>
                                                                     <% } %>
                                                         </div>
                                                     </div>
@@ -132,6 +186,7 @@
                                                 <p>No recent group chats found.</p>
                                                 <% } %>
                                     </section>
+
                                 </div>
                             </div>
         </div>

@@ -1,6 +1,7 @@
 const mongoose = require('./mongo.js');
 
 const projectChatSchema = new mongoose.Schema({
+    projectName: { type: String, required: true },
     projectId: { type: String, required: true },
     email: { type: String, required: true },
     members: [

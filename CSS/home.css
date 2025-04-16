@@ -175,3 +175,7 @@ button.sideA:hover {
 .content {
     overflow: auto;
 }
+
+#no {
+    font-size: 10px;
+}
