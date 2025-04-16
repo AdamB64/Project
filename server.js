@@ -260,7 +260,7 @@ app.get('/chats', authenticateToken, async (req, res) => {
     const GChats = await GChat.find({ "members._id": user.id });
 
     const PChats = await PChat.find({ "members.id": user.id });
-    console.log(PChats);
+    //console.log(PChats);
 
     res.render('chats', { chats, Chatuser, users, us, GChats, PChat: PChats });
   } catch (error) {
@@ -1141,7 +1141,7 @@ app.post('/get-Pmessages', authenticateToken, async (req, res) => {
     const projectChat = await PChat.findOne({ _id: id });
     //console.log("Project Chat:", projectChat);
     if (!projectChat.input || !Array.isArray(projectChat.input)) {
-      console.log("input is missing or not an array");
+      //console.log("input is missing or not an array");
       return res.json([]);
     }
 
@@ -1342,7 +1342,7 @@ app.post("/getFiles", authenticateToken, async (req, res) => {
 
 
 app.post('/delete/:email/:id', authenticateToken, async (req, res) => {
-  console.log("ran");
+  //console.log("ran");
   try {
     const { email, id } = req.params;
     //console.log("email " + email + " id " + id);
@@ -1495,8 +1495,8 @@ app.post('/addGChat/:id', authenticateToken, upload, async (req, res) => {
 });
 
 app.post('/addPChat/:id', authenticateToken, upload, async (req, res) => {
-  console.log("addPChat");
-  console.log(req.params.id);
+  //console.log("addPChat");
+  //console.log(req.params.id);
   try {
     const fileIds = req.files ? req.files.map(file => file.id) : [];
     const { message, time, date, } = req.body;
@@ -1552,7 +1552,7 @@ app.post('/add-Sub_Task/:id', authenticateToken, async (req, res) => {
     //console.log("Task ID:", taskId);
     const user = await Task.findOne({ _id: taskId });
     const project = await Project.findOne({ _id: user.projectID });
-    console.log("Project:", project);
+    //console.log("Project:", project);
 
     if (!user) {
       return res.status(404).json({ message: "Task not found" });

@@ -124,9 +124,10 @@
                                                                                                 <% } %>
                                                                             </div>
                                                                             <small>
-                                                                                From: <%= msg.sender %> &nbsp;|&nbsp;
-                                                                                    At: <%= msg.timestamp %> on <%=
-                                                                                            msg.date %>
+                                                                                From: <%= c.user.firstName %>
+                                                                                    <%= c.user.lastName %> &nbsp;|&nbsp;
+                                                                                        At: <%= msg.timestamp %> on <%=
+                                                                                                msg.date %>
                                                                             </small>
                                                                             <% } else { %>
                                                                                 <p id="no">No messages yet.</p>
