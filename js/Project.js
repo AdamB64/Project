@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (taskStart > taskEnd) {
       alert("End date should be after the start date");
       return;
-    } else if (taskStart < projectStart || taskEnd > projectEnd) {
+    } else if (new Date(taskStart) < projectStart || new Date(taskEnd) > projectEnd) {
       alert("Task dates should be within the project timeline");
       return;
     }

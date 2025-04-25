@@ -25,7 +25,7 @@
                     <button class="tablinks" onclick="openTab(event, 'ComInfo')">Dashboard</button>
                     <button class="tablinks" onclick="openTab(event, 'add')">Add Sub Task</button>
                     <button class="tablinks" onclick="openTab(event, 'Super')">Task Chats</button>
-                    <button class="tablinks" onclick="openTab(event, 'TeamMem')">Team Memebers</button>
+                    <button class="tablinks" onclick="openTab(event, 'TeamMem')">Task Memebers</button>
                 </div>
 
                 <div id="ComInfo" class="tabcontent">
@@ -42,7 +42,7 @@
                             <% sub_task.forEach(task=> { if (task.todo === "Not Started") { %>
                                 <div class="task<%= task.importance %>" onclick="toggleDetails('<%= task._id %>')">
                                     <%= task.task %>
-                                        <% if (task.members.length===1) { %>
+                                        <% if (task.members.length===0) { %>
                                             <button onclick="alert('There are no members in this task!')"
                                                 style="color: red; background-color: rgb(0, 0, 0); font-weight: bold;">
                                                 !
@@ -84,7 +84,7 @@
                                 <div class="task<%= task.importance %>" onclick="toggleDetails('<%= task._id %>')">
                                     <strong>
                                         <%= task.task %>
-                                            <% if (task.members.length===1) { %>
+                                            <% if (task.members.length===0) { %>
                                                 <button onclick="alert('There are no members in this task!')"
                                                     style="color: red; background-color: rgb(0, 0, 0); font-weight: bold;">
                                                     !
@@ -129,7 +129,7 @@
                                 <div class="task<%= task.importance %>" onclick="toggleDetails('<%= task._id %>')">
                                     <strong>
                                         <%= task.task %>
-                                            <% if (task.members.length===1) { %>
+                                            <% if (task.members.length===0) { %>
                                                 <button
                                                     onclick="alert('There are no members in this sub_task!\nPlease add members to the sub_task!')"
                                                     style="color: red; background-color: rgb(0, 0, 0); font-weight: bold;">
@@ -211,10 +211,126 @@
                 </div>
 
                 <div id="Super" class="tabcontent">
+                    <script>
+                        window.profiles = [];
+                    </script>
 
+                    <% profiles.forEach(profile=> { %>
+                        <script>
+                            console.log("Profile ID: ", "<%= profile._id %>");
+                            window.profiles.push({
+                                id: "<%= profile._id %>",
+                                profilePic: "<%= profile.profile %>"
+                            });
+                        </script>
+                        <% }) %>
+
+                            <div id="main">
+                                <!-- Chat Messages -->
+                                <div class="chat-container" id="chat-box">
+                                    <!-- Messages will be loaded here dynamically -->
+                                </div>
+
+                                <!-- Chat Form -->
+                                <form id="form" class="chat-form">
+                                    <input type="text" id="msg" name="msg" placeholder="Type your message here"
+                                        required>
+
+                                    <div class="file-box" id="file-box">
+                                        <span>No files chosen</span>
+                                    </div>
+
+                                    <label for="file" class="file-label">📎 Attach</label>
+                                    <input type="file" id="file" name="files" multiple>
+
+                                    <button type="submit" id="send">Send</button>
+                                </form>
+                            </div>
+
+                            <script>
+                                const fileInput = document.getElementById("file");
+                                const fileBox = document.getElementById("file-box");
+                                let selectedFiles = [];
+
+                                fileInput.addEventListener("change", function () {
+                                    let newFiles = Array.from(this.files);
+
+                                    if (selectedFiles.length + newFiles.length > 5) {
+                                        alert("You can only attach up to 5 files.");
+                                        return;
+                                    }
+
+                                    selectedFiles = [...selectedFiles, ...newFiles].slice(0, 5);
+                                    updateFileDisplay();
+                                });
+
+                                function updateFileDisplay() {
+                                    fileBox.innerHTML = "";
+
+                                    if (selectedFiles.length > 0) {
+                                        selectedFiles.forEach((file, index) => {
+                                            let fileDiv = document.createElement("div");
+                                            let fileName = document.createElement("span");
+                                            fileName.textContent = file.name;
+                                            let removeBtn = document.createElement("span");
+                                            removeBtn.textContent = "✖";
+                                            removeBtn.classList.add("remove-file");
+                                            removeBtn.onclick = function () {
+                                                removeFile(index);
+                                            };
+
+                                            fileDiv.appendChild(fileName);
+                                            fileDiv.appendChild(removeBtn);
+                                            fileBox.appendChild(fileDiv);
+                                        });
+                                    } else {
+                                        fileBox.innerHTML = "<span>No files chosen</span>";
+                                    }
+                                }
+
+                                function removeFile(index) {
+                                    selectedFiles.splice(index, 1);
+                                    updateFileDisplay();
+                                }
+                            </script>
+                            <script>
+                                window.chatData = {
+                                    chatId: "<%= chat[0]._id %>",
+                                    userId: "<%= chat[0].userId %>",
+                                    ID: "<%= id %>",
+                                    projectId: "<%= chat[0].projectId %>",
+                                };
+
+                            </script>
                 </div>
 
                 <div id="TeamMem" class="tabcontent">
+                    <div class="members-container">
+                        <% members.forEach(member=> { %>
+                            <div class="member-box">
+                                <img src="<%= member.profile || '/images/default-profile.png' %>" alt="Profile Picture">
+                                <h3>
+                                    <a href="/profile/<%= member._id %>">
+                                        <%= member.firstName %>
+                                            <%= member.lastName %>
+                                    </a>
+                                </h3>
+                                <p><strong>Email:</strong>
+                                    <%= member.email %>
+                                </p>
+                                <p><strong>Username:</strong>
+                                    <%= member.email.split('@')[0] %>
+                                </p>
+                                <p><strong>Role:</strong>
+                                    <%= member.level %>
+                                </p>
+
+                                <button class="button" onclick="window.location.href=`/chat/<%= member.id %>`">chat with
+                                    user</button>
+                                <button class="button" onclick="deleteMem('<%= member.id %>')">Delete</button>
+                            </div>
+                            <% }) %>
+                    </div>
 
                 </div>
 
@@ -279,6 +395,7 @@
                     id: "<%= task.id %>",
                 }
             </script>
+            <script src="/js/TChat.js"></script>
             <script src="/js/task.js"></script>
 </body>
 

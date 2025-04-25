@@ -164,6 +164,9 @@ document.getElementById('FSubmit').addEventListener('click', function (event) {
     errorMessage += 'Members must be greater than 0.\n';
   }
 
+  const taskStart = window.taskData.startDate;
+  const taskEnd = window.taskData.endDate;
+
   // Validate start date and end date
   let startDate = new Date(formObject.startDate);
   let endDate = new Date(formObject.endDate);
@@ -188,6 +191,9 @@ document.getElementById('FSubmit').addEventListener('click', function (event) {
   } else if (description.value === "") {
     isValid = false;
     errorMessage += "Please enter the task description.\n";
+  } else if (startDate < new Date(taskStart) || endDate > new Date(taskEnd)) {
+    isValid = false;
+    errorMessage += `Sub-Task dates must be within the Task timeline (${taskStart} to ${taskEnd}).\n`;
   }
 
   if (!isValid) {

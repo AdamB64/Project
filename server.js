@@ -11,6 +11,7 @@ const Task = require('./mongo/task.js');
 const GChat = require('./mongo/group_chats.js');
 const STask = require('./mongo/sub_task.js');
 const PChat = require('./mongo/PChat.js');
+const TaskChat = require('./mongo/TChat.js');
 const { ObjectId, GridFSBucket } = require("mongodb");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
@@ -104,9 +105,42 @@ app.get('/admin', authenticateToken, async (req, res) => {
 
 app.get('/task/:id', authenticateToken, async (req, res) => {
   const task = await Task.findById(req.params.id);
+  //console.log(req.params.id);
+  const TChat = await TaskChat.find({ taskId: req.params.id });
+  //console.log(TChat);
+  //console.log(task);
+
+  //console.log(task.members);
+
+  const company = await Company.findOne({ email: task.compantEmail });
+  let mems = []
+  let profiles = [];
+
+
+  for (let i = 0; i < task.members.length; i++) {
+    const taskMember = task.members[i];
+
+    // Find the member in company members
+    let mem = company.members.find(mem => mem._id.toString() === taskMember.id);
+
+    // If not found, search in supervisors
+    if (!mem) {
+      mem = company.supervisors.find(sup => sup._id.toString() === taskMember.id);
+    }
+
+    if (mem) {
+      //console.log(mem);
+      profiles.push({ _id: mem._id, profile: mem.profile });
+      mems.push(mem);
+    }
+  }
+
+  const UToken = req.cookies?.token;
+  let user = getUser(UToken);
+
   const sub_task = await STask.find({ "TaskID": req.params.id });
   //console.log(task);
-  res.render('task', { task, sub_task });
+  res.render('task', { task, sub_task, members: mems, profiles, chat: TChat, id: user.id });
 });
 
 app.get('/profile/:id', authenticateToken, async (req, res) => {
@@ -1153,6 +1187,26 @@ app.post('/get-Pmessages', authenticateToken, async (req, res) => {
   }
 });
 
+app.post('/get-Tmessages', authenticateToken, async (req, res) => {
+  console.log("get-Tmessages");
+  try {
+    const id = new ObjectId(req.body.id);
+    //console.log("id " + id);
+    const projectChat = await TaskChat.findOne({ _id: id });
+    //console.log("Project Chat:", projectChat);
+    if (!projectChat.input || !Array.isArray(projectChat.input)) {
+      //console.log("input is missing or not an array");
+      return res.json([]);
+    }
+
+    res.json(projectChat.input || []);
+  } catch (error) {
+    //console.error("Error fetching group messages:", error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+
 app.post('/add-worker', authenticateToken, async (req, res) => {
   //console.log(req.body);
   const { role, firstName, lastName, email, password, type } = req.body;
@@ -1257,6 +1311,21 @@ app.post('/add-task', authenticateToken, async (req, res) => {
     });
 
     await newTask.save();
+
+    const newTChat = new TaskChat({
+      taskName: taskName,
+      taskId: newTask._id,
+      members: memberList.map(member => ({
+        level: member.level,
+        id: member._id,
+        firstName: member.firstName,
+        lastName: member.lastName,
+        email: member.email,
+      })),
+      email: user.Company_email
+    });
+    console.log("newTChat: " + newTChat);
+    await newTChat.save();
 
     // all checks are passed so proceed with task creation.
     return res.status(200).json({ message: "Task validation successful", members: memberList });
@@ -1516,6 +1585,29 @@ app.post('/addPChat/:id', authenticateToken, upload, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+app.post('/addTChat/:id', authenticateToken, upload, async (req, res) => {
+  console.log("addTChat");
+  //console.log(req.params.id);
+  try {
+    const fileIds = req.files ? req.files.map(file => file.id) : [];
+    const { message, time, date, } = req.body;
+    const UToken = req.cookies?.token;
+
+    let user = getUser(UToken);
+
+    const id = req.params.id;
+
+    const sender = await Company.findOne({ "members._id": user.id }) || await Company.findOne({ "supervisors._id": user.id });
+    const profile = sender.members.find(mem => mem._id.toString() === user.id) || sender.supervisors.find(sup => sup._id.toString() === user.id);
+    await TaskChat.findByIdAndUpdate(id, { $push: { input: { firstName: profile.firstName, lastName: profile.lastName, Userid: user.id, file: fileIds, message: message, timestamp: time, date: date } } }, { new: true, runValidators: true });
+    res.status(200).json({ message: "Chat saved successfully" });
+
+  } catch {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+);
 
 app.post('/addGInvite/:id', authenticateToken, async (req, res) => {
   const id = req.params.id;
