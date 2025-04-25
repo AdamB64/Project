@@ -29,7 +29,7 @@ body {
 }
 
 /* Prevent dragging and resizing tasks */
-.bar-wrapper {
+.bar-wrapper.medium-importance {
     pointer-events: none;
     /* Disables drag interactions */
 }

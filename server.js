@@ -355,6 +355,7 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
   //console.log(tasks);
   const renderedHTML = ejs.render(process.env.PROJECT_SUP, { project });
   //console.log(user.role);
+  //console.log(renderedHTML);
   if (user.role === "supervisor") {
     const s = await Project.findOne({ _id: req.params.id });
     const sup = s.members.find(mem => mem.email === user.email);
