@@ -17,9 +17,11 @@ function getCurrentDate() {
 }
 
 
-document.getElementById("form").addEventListener("submit", function (event) {
-    event.preventDefault();
+document.getElementById("form2").addEventListener("submit", function (event) {
+    //event.preventDefault();
     //console.log("Submit clicked");
+    const url = window.chatData.chatId;
+    //alert(url);
 
     const formData = new FormData(this);
     var message = formData.get("msg");
@@ -40,18 +42,16 @@ document.getElementById("form").addEventListener("submit", function (event) {
     fileInput.value = "";
     updateFileDisplay();
 
-    const url = window.chatData.chatId;
-    alert(url);
-    console.log(url);
+    //console.log(url);
 
-    // fetch(`/addTChat/${url}`, {
-    //     method: "POST",
-    //     body: formData,
-    // }).then(function (response) {
-    //     return response.json();
-    // }).then(function (json) {
-    //     //console.log(json);
-    // });
+    fetch(`/addTChat/${url}`, {
+        method: "POST",
+        body: formData,
+    }).then(function (response) {
+        return response.json();
+    }).then(function (json) {
+        //console.log(json);
+    });
 
 });
 
