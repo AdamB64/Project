@@ -80,6 +80,55 @@
                                                 <% } %>
                                     </section>
 
+                                    <!--recent task chats-->
+                                    <section id="recent-task-chats" style="margin-top: 50px;">
+                                        <h2 style="margin-bottom: 20px;">Recent task Chats</h2>
+                                        <% if (TaskChats && TaskChats.length> 0) { %>
+                                            <div class="chat-wrapper">
+                                                <% TaskChats.forEach(pc=> { %>
+                                                    <div class="chat-card">
+                                                        <div class="chat-user-info">
+                                                            <strong>
+                                                                <a href="task/<%= pc.taskId %>?chat=true">
+                                                                    open chat: <%= pc.taskName %>
+                                                                </a><br>
+                                                                <a href="/task/<%= pc.taskId %>">Open
+                                                                    Project: <%= pc.taskName %></a>
+                                                            </strong>
+                                                        </div>
+                                                        <div class="chat-timestamp">
+                                                            <strong>Updated:</strong>
+                                                            <%= new Date(pc.updatedAt).toLocaleString() %>
+                                                        </div>
+                                                        <div class="chat-message">
+                                                            <strong>Latest Message:</strong>
+                                                            <% if (pc.input && pc.input.length> 0) {
+                                                                const msg = pc.input[pc.input.length - 1];
+                                                                %>
+                                                                <div>
+                                                                    <% if (msg.file && msg.file.length> 0) { %>
+                                                                        <%= msg.message %>(with attachment)
+                                                                            <% } else { %>
+                                                                                <%= msg.message %>
+                                                                                    <% } %>
+                                                                </div>
+                                                                <small>
+                                                                    From: <%= msg.firstName %>
+                                                                        <%= msg.lastName %> &nbsp;|&nbsp;
+                                                                            At: <%= msg.timestamp %> on <%= msg.date %>
+                                                                </small>
+                                                                <% } else { %>
+                                                                    <p id="no">No messages yet.</p>
+                                                                    <% } %>
+                                                        </div>
+                                                    </div>
+                                                    <% }) %>
+                                            </div>
+                                            <% } else { %>
+                                                <p>No recent project chats found.</p>
+                                                <% } %>
+                                    </section>
+
                                     <!-- Recent Chats -->
                                     <section id="recent-chats">
                                         <h2 style="margin-bottom: 20px;">Recent Chats</h2>

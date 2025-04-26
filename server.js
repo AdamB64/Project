@@ -232,6 +232,10 @@ app.get('/home', authenticateToken, async (req, res) => {
       .sort({ updatedAt: -1 }) // Most recently updated first
       .limit(4);               // Only return 4 chats
 
+    const TaskChats = await TaskChat.find({ 'members.id': req.user.id })
+      .sort({ updatedAt: -1 }) // Most recently updated first
+      .limit(4);               // Only return 4 chats
+
     // Determine role-based sidebar code
     let code;
     if (req.user.role === "supervisor") {
@@ -240,7 +244,7 @@ app.get('/home', authenticateToken, async (req, res) => {
       code = process.env.MEM_ROLE;
     }
 
-    res.render('home', { Code: code, chat: chats, groupChats, ProjectChats });
+    res.render('home', { Code: code, chat: chats, groupChats, ProjectChats, TaskChats });
 
   } catch (err) {
     console.error('Error getting chats:', err);
