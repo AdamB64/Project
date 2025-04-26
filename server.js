@@ -825,6 +825,22 @@ app.post('/add-company', async (req, res) => {
   try {
     //get company, supervisors, and members from the body
     const { company, supervisors, members } = req.body;
+    company.name = company.name.replace(/[<>'"!&]/g, '');
+    company.email = company.email.replace(/[<>'"!&]/g, '');
+    company.address = company.address.replace(/[<>'"!&]/g, '');
+    company.industry = company.industry.replace(/[<>'"!&]/g, '');
+    for (let i = 0; i < supervisors.length; i++) {
+      supervisors[i].firstName = supervisors[i].firstName.replace(/[<>'"!&]/g, '');
+      supervisors[i].lastName = supervisors[i].lastName.replace(/[<>'"!&]/g, '');
+      supervisors[i].email = supervisors[i].email.replace(/[<>'"!&]/g, '');
+      supervisors[i].role = supervisors[i].role.replace(/[<>'"!&]/g, '');
+    }
+    for (let i = 0; i < members.length; i++) {
+      members[i].firstName = members[i].firstName.replace(/[<>'"!&]/g, '');
+      members[i].lastName = members[i].lastName.replace(/[<>'"!&]/g, '');
+      members[i].email = members[i].email.replace(/[<>'"!&]/g, '');
+      members[i].password = members[i].password.replace(/[<>'"!&]/g, '');
+    }
 
     //make sure that the company, supervisors, and members emails are not already in the database
     const companyExists = await Company.findOne({ email: company.email });
@@ -1120,7 +1136,9 @@ app.post('/addProject', authenticateToken, async (req, res) => {
   try {
     //console.log(req.body);
     let mem = [];
-    const { projectName, projectDescription, projectStartDate, projectDeadline, members } = req.body;
+    let { projectName, projectDescription, projectStartDate, projectDeadline, members } = req.body;
+    projectName = projectName.replace(/[<>'"!&]/g, '');
+    projectDescription = projectDescription.replace(/[<>'"!&]/g, '');
     //console.log(projectName + " " + projectDescription + " " + projectStartDate + " " + projectDeadline + " " + projectStatus + " " + members);
     mem = await Company.find(
       { "members.email": { $in: members } },
@@ -1243,7 +1261,8 @@ app.post('/update-project/:id', authenticateToken, async (req, res) => {
 
 app.post('/addChat', authenticateToken, upload, async (req, res) => {
   try {
-    const { user, message, time, profile, chatter, date } = req.body;
+    let { user, message, time, profile, chatter, date } = req.body;
+    message = message.replace(/[<>'"!&]/g, '');
     //console.log("Uploaded Files:", req.files);
 
 
@@ -1378,7 +1397,13 @@ app.post('/get-Tmessages', authenticateToken, async (req, res) => {
 
 app.post('/add-worker', authenticateToken, async (req, res) => {
   //console.log(req.body);
-  const { role, firstName, lastName, email, password, type } = req.body;
+  let { role, firstName, lastName, email, password, type } = req.body;
+  role = role.replace(/[<>'"!&]/g, '');
+  firstName = firstName.replace(/[<>'"!&]/g, '');
+  lastName = lastName.replace(/[<>'"!&]/g, '');
+  email = email.replace(/[<>'"!&]/g, '');
+  password = password.replace(/[<>'"!&]/g, '');
+  type = type.replace(/[<>'"!&]/g, '');
   const UToken = req.cookies.token;
   let user = getUser(UToken);
   //console.log(user);
@@ -1425,7 +1450,10 @@ app.post('/add-worker', authenticateToken, async (req, res) => {
 
 app.post('/add-task', authenticateToken, async (req, res) => {
   try {
-    const { taskName, taskDescription, taskStartDate, taskEndDate, members, url, taskWeight } = req.body;
+    let { taskName, taskDescription, taskStartDate, taskEndDate, members, url, taskWeight } = req.body;
+    taskName = taskName.replace(/[<>'"!&]/g, '');
+    taskDescription = taskDescription.replace(/[<>'"!&]/g, '');
+
     const UToken = req.cookies.token;
 
     // Validate request body
@@ -1674,7 +1702,8 @@ app.post('/delete/:id', authenticateToken, async (req, res) => {
 });
 
 app.post('/makeChat', authenticateToken, async (req, res) => {
-  const chatName = req.body.chatName;
+  let chatName = req.body.chatName;
+  chatName = chatName.replace(/[<>'"!&]/g, '');
   let Members = req.body.membersList;
   const UToken = req.cookies?.token;
   let user = getUser(UToken);
@@ -1716,7 +1745,8 @@ app.post('/makeChat', authenticateToken, async (req, res) => {
 app.post('/addGChat/:id', authenticateToken, upload, async (req, res) => {
   try {
     const fileIds = req.files ? req.files.map(file => file.id) : [];
-    const { message, time, date, } = req.body;
+    let { message, time, date, } = req.body;
+    message = message.replace(/[<>'"!&]/g, '');
     const UToken = req.cookies?.token;
 
     let user = getUser(UToken);
@@ -1738,7 +1768,8 @@ app.post('/addPChat/:id', authenticateToken, upload, async (req, res) => {
   //console.log(req.params.id);
   try {
     const fileIds = req.files ? req.files.map(file => file.id) : [];
-    const { message, time, date, } = req.body;
+    let { message, time, date, } = req.body;
+    message = message.replace(/[<>'"!&]/g, '');
     const UToken = req.cookies?.token;
 
     let user = getUser(UToken);
@@ -1760,7 +1791,8 @@ app.post('/addTChat/:id', authenticateToken, upload, async (req, res) => {
   //console.log(req.params.id);
   try {
     const fileIds = req.files ? req.files.map(file => file.id) : [];
-    const { message, time, date, } = req.body;
+    let { message, time, date, } = req.body;
+    message = message.replace(/[<>'"!&]/g, '');
     const UToken = req.cookies?.token;
 
     let user = getUser(UToken);
@@ -1800,7 +1832,12 @@ app.post('/addGInvite/:id', authenticateToken, async (req, res) => {
 app.post('/add-Sub_Task/:id', authenticateToken, async (req, res) => {
   //console.log(req.body);
   const taskId = req.params.id;
-  const { taskName, description, startDate, endDate, importance } = req.body;
+  let { taskName, description, startDate, endDate, importance } = req.body;
+  taskName = taskName.replace(/[<>'"!&]/g, '');
+  description = description.replace(/[<>'"!&]/g, '');
+  startDate = startDate.replace(/[<>'"!&]/g, '');
+  endDate = endDate.replace(/[<>'"!&]/g, '');
+  importance = importance.replace(/[<>'"!&]/g, '');
   let Members = req.body.members;
 
   // Confirm that Members is an array; if it's a string, convert it to an array
