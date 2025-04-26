@@ -104,6 +104,10 @@ app.get('/admin', authenticateToken, async (req, res) => {
 
 
 app.get('/task/:id', authenticateToken, async (req, res) => {
+  const validId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!validId) {
+    return res.status(400).render('404');
+  }
   const task = await Task.findById(req.params.id);
   //console.log(req.params.id);
   const TChat = await TaskChat.find({ taskId: req.params.id });
@@ -144,6 +148,10 @@ app.get('/task/:id', authenticateToken, async (req, res) => {
 });
 
 app.get('/profile/:id', authenticateToken, async (req, res) => {
+  const validId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!validId) {
+    return res.status(400).render('404');
+  }
   //console.log(req.params.id);
   const company = await Company.findOne({ "members._id": req.params.id }) || await Company.findOne({ "supervisors._id": req.params.id });
   const worker = company.supervisors.find(sup => sup._id.toString() === req.params.id) || company.members.find(mem => mem._id.toString() === req.params.id);
@@ -358,6 +366,10 @@ app.get('/invite', authenticateToken, (req, res) => {
 });
 
 app.get('/chat/:id', authenticateToken, async (req, res) => {
+  const validId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!validId) {
+    return res.status(400).render('404');
+  }
   const com = await Company.findOne({ "members._id": req.params.id }) || await Company.findOne({ "supervisors._id": req.params.id });
   let Chatuser = com.members.find(mem => mem._id.toString() === req.params.id) || com.supervisors.find(sup => sup._id.toString() === req.params.id);
   //console.log("chatuser" + Chatuser);
@@ -384,6 +396,10 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
 });
 
 app.get('/project/:id', authenticateToken, async (req, res) => {
+  const validId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!validId) {
+    return res.status(400).render('404');
+  }
   const project = await Project.findById(req.params.id);
   //console.log(project);
   const UToken = req.cookies?.token;
@@ -409,6 +425,10 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
 });
 
 app.get('/project/members/:id', authenticateToken, async (req, res) => {
+  const validId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!validId) {
+    return res.status(400).render('404');
+  }
   const project = await Project.findById(req.params.id);
   const members = project.members;
   const UToken = req.cookies?.token;
@@ -434,6 +454,10 @@ app.get('/project/members/:id', authenticateToken, async (req, res) => {
 
 
 app.get('/project/chat/:id', authenticateToken, async (req, res) => {
+  const validId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!validId) {
+    return res.status(400).render('404');
+  }
   const { id } = req.params;
   const profiles = [];
   //console.log("project id " + id);
@@ -501,6 +525,10 @@ app.get('/project/chat/:id', authenticateToken, async (req, res) => {
 
 
 app.get("/file/:id", async (req, res) => {
+  const validId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!validId) {
+    return res.status(400).render('404');
+  }
   try {
     const fileId = new ObjectId(req.params.id);
 
@@ -533,6 +561,10 @@ app.get("/file/:id", async (req, res) => {
 
 
 app.get('/GChats/:id', authenticateToken, async (req, res) => {
+  const validId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!validId) {
+    return res.status(400).render('404');
+  }
   try {
     // Check if the ID is a valid ObjectId before querying the database
     const chat = await GChat.find({ _id: req.params.id });
@@ -577,6 +609,10 @@ app.get('/GChats/:id', authenticateToken, async (req, res) => {
 });
 
 app.get('/GInvite/:id', authenticateToken, async (req, res) => {
+  const validId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!validId) {
+    return res.status(400).render('404');
+  }
   const UToken = req.cookies?.token;
   let user = getUser(UToken);
   const c = await Company.findOne({ email: user.Company_email });
@@ -1740,6 +1776,11 @@ app.post('/deleteGroup', authenticateToken, async (req, res) => {
 });
 
 
+
+// ======= 404 handler (only for wrong / non-existing URLs) =======
+app.use((req, res) => {
+  res.status(404).render('404');
+});
 
 // Start the server
 app.listen(PORT, '0.0.0.0', () => {
