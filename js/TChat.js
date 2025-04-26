@@ -42,16 +42,32 @@ document.getElementById("form2").addEventListener("submit", function (event) {
     fileInput.value = "";
     updateFileDisplay();
 
-    //console.log(url);
+    const pathname = window.location.pathname;
+
+
+    const parts = pathname.split('/');
+
+
+    const taskId = parts[2];
 
     fetch(`/addTChat/${url}`, {
         method: "POST",
         body: formData,
-    }).then(function (response) {
-        return response.json();
-    }).then(function (json) {
-        //console.log(json);
-    });
+    })
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(function (json) {
+            window.location.href = `/task/${taskId}?chat=true`; // Redirect to the chat page after sending the message
+            //console.log('Success:', json);
+        })
+        .catch(function (error) {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+
 
 });
 

@@ -294,9 +294,10 @@ app.get('/chats', authenticateToken, async (req, res) => {
     const GChats = await GChat.find({ "members._id": user.id });
 
     const PChats = await PChat.find({ "members.id": user.id });
+    const TChats = await TaskChat.find({ "members.id": user.id });
     //console.log(PChats);
 
-    res.render('chats', { chats, Chatuser, users, us, GChats, PChat: PChats });
+    res.render('chats', { chats, Chatuser, users, us, GChats, PChat: PChats, TChat: TChats });
   } catch (error) {
     console.error("Error fetching chats:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -1188,7 +1189,7 @@ app.post('/get-Pmessages', authenticateToken, async (req, res) => {
 });
 
 app.post('/get-Tmessages', authenticateToken, async (req, res) => {
-  console.log("get-Tmessages");
+  //console.log("get-Tmessages");
   try {
     const id = new ObjectId(req.body.id);
     //console.log("id " + id);
@@ -1587,7 +1588,7 @@ app.post('/addPChat/:id', authenticateToken, upload, async (req, res) => {
 });
 
 app.post('/addTChat/:id', authenticateToken, upload, async (req, res) => {
-  console.log("addTChat");
+  //console.log("addTChat");
   //console.log(req.params.id);
   try {
     const fileIds = req.files ? req.files.map(file => file.id) : [];

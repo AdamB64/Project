@@ -1,4 +1,10 @@
-document.getElementById('ComInfo').style.display = "block";
+const urlParams = new URLSearchParams(window.location.search).get("chat");
+//alert(urlParams);
+if (urlParams == `true`) {
+  document.getElementById('Super').style.display = "block";
+} else {
+  document.getElementById('ComInfo').style.display = "block";
+}
 
 function openTab(evt, cityName) {
   document.getElementById('Help').style.display = "none";

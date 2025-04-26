@@ -87,8 +87,23 @@
 
             <div class="chat-section">
                 <h2>Task Chats</h2>
-                <div class="scrollable">
-
+                <div class="scrollable-container">
+                    <% TChat.forEach((chat)=> { %>
+                        <div class="chat">
+                            <h3>Project Chat Name: <%= chat.name %>
+                            </h3>
+                            <p><strong>Members:</strong><br>
+                                <% chat.members.forEach((member)=> { %>
+                                    <%= member.firstName %>
+                                        <%= member.lastName %><br>
+                                            <% }) %>
+                            </p>
+                            <button class="chat-button"
+                                onclick="window.location.href='/task/<%= chat.taskId %>?chat=true'">
+                                Open Chat
+                            </button>
+                        </div>
+                        <% }); %>
                 </div>
             </div>
         </div>
