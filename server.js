@@ -22,6 +22,134 @@ const cookieParser = require("cookie-parser");
 const ejs = require('ejs');
 const multer = require("multer");
 
+
+
+
+//declare the html variable to be used in the ejs file
+const MEM_ROLE = `
+<div id="members">
+  <div id="sidebar">
+    <ul class="top-section">
+      <li><a class="sideA" href="/Projects">Projects</a></li>
+      <li><a class="sideA" href="/Chats">Chats</a></li>
+    </ul>
+    <ul class="bottom-section">
+      <li><a class="sideA" href="/User">User</a></li>
+      <li>
+        <form action="/logout" method="POST">
+          <button class="sideA" type="submit">Logout</button>
+        </form>
+      </li>
+    </ul>
+  </div>
+</div>
+`;
+
+const SUB_ROLE = `
+<div id="super">
+  <div id="sidebar">
+    <ul class="top-section">
+      <li><a class="sideA" href="/members">Members</a></li>
+      <li><a class="sideA" href="/SProjects">Companys Projects</a></li>
+      <li><a class="sideA" href="/projects">Projects</a></li>
+      <li><a class="sideA" href="/Chats">Chats</a></li>
+      <li><a class="sideA" href="/invite">Invite</a></li>
+    </ul>
+    <ul class="bottom-section">
+      <li><a class="sideA" href="/User">User</a></li>
+      <li>
+        <form action="/logout" method="POST">
+          <button class="sideA" type="submit">Logout</button>
+        </form>
+      </li>
+    </ul>
+  </div>
+</div>
+<script>
+const ul = document.getElementById("HDList");
+const newLi = document.createElement('li');
+newLi.className = 'HDLitem';
+const newLink = document.createElement('a');
+newLink.href = '/admin';
+newLink.className = 'HDLitemLink';
+newLink.textContent = 'Admin';
+newLi.appendChild(newLink);
+ul.appendChild(newLi);
+</script>
+`;
+
+const PROJECT_SUP = `
+<div>
+  <button class="button" onclick="showAddTaskModal()">Add Task</button>
+</div>
+<div id="cover">
+  <form id="form" style="display: none">
+    <h1>
+      Create a task that will have a set start date and deadline inside these dates
+      <%= new Date(project.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) %> and
+      <%= new Date(project.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) %>
+      and will have members assigned to the Task
+    </h1>
+    <label for="taskName">Task Name:</label>
+    <input type="text" id="taskName" name="taskName" required><br>
+    <label for="taskDescription">Task Description:</label>
+    <input type="text" id="taskDescription" name="taskDescription" required>
+    <label for="taskWeight">Importance</label>
+    <select id="taskWeight" name="taskWeight">
+      <option value="3">High</option>
+      <option value="2">Medium</option>
+      <option value="1">Low</option>
+    </select><br>
+    <label for="taskStartDate">Task Start Date:</label>
+    <input type="date" id="taskStartDate" name="taskStartDate" required><br>
+    <label for="taskEndDate">Task End Date:</label>
+    <input type="date" id="taskEndDate" name="taskEndDate" required><br>
+    <label for="taskMembers">Task Members:</label>
+    <select id="taskMembers" name="taskMembers" required>
+      <option value="" disabled selected>Select a member</option>
+      <% project.members.forEach((member) => { %>
+        <% if (member.level !== "Supervisor") { %>
+          <option value="<%= member.email %>"><%= member.level %> <%= member.firstName %> <%= member.lastName %></option>
+        <% } %>
+      <% }) %>
+    </select>
+    <button type="button" class="button" onclick="addMember()">Add selected member</button><br>
+    <list id="memberList"></list>
+    <button type="submit" class="button">Add Task</button>
+  </form><br>
+  <button style="display: none" id="close" class="button" onclick="hideAddTaskModal()">Close</button>
+</div>
+`;
+
+const PROJECT_DEL = `
+<button class="button" onclick="deleteMem('<%= members.email %>')">Delete</button>
+<script>
+function deleteMem(users) {
+  const pathname = window.location.pathname;
+  const id = pathname.split('/').pop();
+  console.log(users);
+  fetch(\`/delete/\${users}/\${id}\`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log(data);
+    if (data.status === 200) {
+      alert('Member Deleted');
+      window.location.reload();
+    } else if (data.status === 201) {
+      alert('Supervisor was deleted');
+    }
+  })
+  .catch(err => {
+    console.log(err);
+  });
+}
+</script>
+`;
+
+
 //how many round should be used to generate the encrypted password
 const saltRounds = 10;
 
@@ -247,9 +375,9 @@ app.get('/home', authenticateToken, async (req, res) => {
     // Determine role-based sidebar code
     let code;
     if (req.user.role === "supervisor") {
-      code = process.env.SUB_ROLE;
+      code = SUB_ROLE;
     } else if (req.user.role === "member") {
-      code = process.env.MEM_ROLE;
+      code = MEM_ROLE;
     }
 
     res.render('home', { Code: code, chat: chats, groupChats, ProjectChats, TaskChats });
@@ -408,7 +536,7 @@ app.get('/project/:id', authenticateToken, async (req, res) => {
 
   const tasks = await Task.find({ "projectID": req.params.id });
   //console.log(tasks);
-  const renderedHTML = ejs.render(process.env.PROJECT_SUP, { project });
+  const renderedHTML = ejs.render(PROJECT_SUP, { project });
   //console.log(user.role);
   //console.log(renderedHTML);
   if (user.role === "supervisor") {
@@ -436,7 +564,7 @@ app.get('/project/members/:id', authenticateToken, async (req, res) => {
 
   let renderedHTML = [];
   for (let i = 0; i < members.length; i++) {
-    renderedHTML.push(ejs.render(process.env.PROJECT_DEL, { members: members[i] }));
+    renderedHTML.push(ejs.render(PROJECT_DEL, { members: members[i] }));
   }
   const s = await Project.findOne({ _id: req.params.id });
   const mem = s.members.find(mem => mem.email === user.email);
