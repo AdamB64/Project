@@ -8,10 +8,7 @@ body {
     margin-top: 10px;
 }
 
-#project-info {
-    display: flex;
-    justify-content: center;
-}
+
 
 #Bbutton {
     display: block;

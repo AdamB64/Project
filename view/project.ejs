@@ -17,33 +17,30 @@
 <body>
     <%- include('header') %>
         <div class="content">
-            <div id="project-info" class="project-info">
-                <h1>Project: <%= project.name %> <br>Members page: <a
-                            href="/project/members/<%= project._id %>">Members</a>
-                        <h2>Project Chat: <a href="/project/chat/<%= project._id %>">Chat</a></h2>
-                        <h2 id="progress">
-                            <script>
-                                $.ajax({
-                                    url: `/update-project/<%= project._id %>`, // Ensure correct syntax
-                                    type: "POST",  // Use POST or the correct method
-                                    data: { /* Include the necessary data if required */ },
-                                    success: function (response) {
-                                        console.log("Project updated successfully:", response.project);
-                                        document.getElementById("progress").innerHTML = `Progress: ${response.project.progress}%`;
-                                    },
-                                    error: function (xhr, status, error) {
-                                        console.error("Error updating project:", error);
-                                    }
-                                });
-                            </script>
-                        </h2>
-                </h1><button id="Bbutton" onclick="window.location.href='/projects'">Back to Projects</button>
-                <h2>start <%= new Date(project.startDate.toISOString()).toLocaleDateString('en-GB', { day: '2-digit' ,
-                        month: 'short' , year: 'numeric' }) %> end <%= new
-                            Date(project.endDate.toISOString()).toLocaleDateString('en-GB', { day: '2-digit' ,
-                            month: 'short' , year: 'numeric' }) %>
-                </h2>
-            </div>
+            <h1>Project: <%= project.name %> <br>Members page: <a href="/project/members/<%= project._id %>">Members</a>
+                    <h2>Project Chat: <a href="/project/chat/<%= project._id %>">Chat</a></h2>
+                    <h2 id="progress">
+                        <script>
+                            $.ajax({
+                                url: `/update-project/<%= project._id %>`, // Ensure correct syntax
+                                type: "POST",  // Use POST or the correct method
+                                data: { /* Include the necessary data if required */ },
+                                success: function (response) {
+                                    console.log("Project updated successfully:", response.project);
+                                    document.getElementById("progress").innerHTML = `Progress: ${response.project.progress}%`;
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("Error updating project:", error);
+                                }
+                            });
+                        </script>
+                    </h2>
+            </h1><button id="Bbutton" onclick="window.location.href='/projects'">Back to Projects</button>
+            <h2>start <%= new Date(project.startDate.toISOString()).toLocaleDateString('en-GB', { day: '2-digit' ,
+                    month: 'short' , year: 'numeric' }) %> end <%= new
+                        Date(project.endDate.toISOString()).toLocaleDateString('en-GB', { day: '2-digit' ,
+                        month: 'short' , year: 'numeric' }) %>
+            </h2>
             <div class="gantt-container" style="display: flex;justify-content: center;">
                 <svg id="gantt" class="gantt"></svg>
                 <div id="no-tasks" class="no-tasks-message" style="display: none;">No tasks to display</div>
