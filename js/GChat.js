@@ -140,7 +140,7 @@ $(document).ready(function () {
         <p class="message-time">${message.timestamp} <br>on the ${new Date(message.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
         <div class="message-content">
             <img src="${profile}" alt="Profile Picture" class="message-profile">
-            <strong class="message-sender">${message.firstName} ${message.lastName}:</strong>
+            <strong class="message-sender"><a href="/chat/${message.id}"> ${message.firstName} ${message.lastName}</a>:</strong>
             <span class="message-text">${message.message}</span>
             ${filesHtml} <!-- 🔹 Placeholder for file attachments -->
         </div>
