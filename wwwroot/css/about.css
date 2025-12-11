@@ -1,0 +1,12 @@
+h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+p {
+    text-align: center;
+    font-size: 2em;
+    line-height: 1.6;
+    color: #333;
+}

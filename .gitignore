@@ -1,2 +1,41 @@
 .env
 node_modules/
+bin/
+obj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio / VSCode
+.vscode/
+.vs/
+
+# Logs
+*.log
+
+# Published output
+publish/
+out/
+
+# Generated launch settings (optional but recommended)
+Properties/launchSettings.json
+
+# Environment variables / secrets
+.env
+
+# Node modules (since you have a JS folder)
+node_modules/
+
+# Others you may not need
+*.swp
+*.tmp
+*.bak
+*.old
+
+# OneDrive conflicts (common in OneDrive folders)
+*.tmp~
+*.sync-conflict*
