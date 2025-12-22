@@ -9,6 +9,7 @@ const response = fetch('/api/hello')
     })
     .then(data => {
         console.log('Response from server:', data);
+        const api = document.getElementById("api").textContent = data;
     }
     ).catch(error => {
         console.error('Error:', error);
